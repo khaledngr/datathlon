@@ -65,3 +65,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 57 | Claude | Checked GitHub: Robin accepted (write), Rudy's invitation still pending | |
 | 58 | Khaled | Set his own temporary password (Claude typed the command with a placeholder only), signed in as `KHALED` and chose his real password | `SHOW USERS`: has_password = true, must_change_password = false, has_mfa = false |
 | 59 | Claude | Step 0 status: Khaled ready on Snowflake, GCP, GitHub. Waiting: Rudy (password, GitHub invite), Robin (billing activation, needed by step 2), Khaled's MFA | Step 0 closed for Khaled and Robin; Rudy's items carry over |
+| 60 | Claude | Checked billing again: still not active | Robin to finish activation before step 2 |
+| 61 | Claude | Step 1: read the TD 4.2 repo layout (`redgrave-platform`: `.gitignore`, `.env.example`, `*.example`, dbt profile for dbt Projects on Snowflake) | Pattern reused |
+| 62 | Claude | Step 1: rewrote the README (pipeline in one line, layout, getting started, secret rules); added `.env.example`, `docs/SETUP.md`, a README in `sources/`, `ingestion/`, `snowflake/`, `dbt/`, `terraform/`, `gcp/`, `dashboard/`, and empty sub-folders | D-028 |
+| 63 | Claude | Tested `.gitignore` against 9 file names: found that `dashboard/.streamlit/secrets.toml` was not blocked (rule only matched the root); fixed with `**/.streamlit/secrets.toml` | All secret patterns blocked; templates allowed |

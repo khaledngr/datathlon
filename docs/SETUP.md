@@ -1,0 +1,47 @@
+# Setup for each team member
+
+What you need on your laptop and in each account, and why. Done once.
+
+## 1. Tools
+
+| Tool | Why | Install (macOS) | Check |
+| --- | --- | --- | --- |
+| git + GitHub CLI | Code and pull requests | `brew install git gh` | `gh auth status` |
+| Google Cloud CLI | Terraform and GCS access | `brew install --cask google-cloud-sdk` | `gcloud config list` |
+| Terraform | Infrastructure as code | `brew install terraform` | `terraform -version` |
+| Docker Desktop | Local Postgres and the ingestion job | docker.com | `docker version` |
+| Python 3.11+ | Ingestion jobs, generators, Streamlit | `brew install python` | `python3 --version` |
+
+## 2. Accounts (one login per person, decision D-027)
+
+| Account | How you get it | Your role |
+| --- | --- | --- |
+| GitHub repo `khaledngr/datathlon` | Accept the invitation | write (Khaled admin) |
+| Snowflake `NVTLKDO-RP44213` | Robin or Khaled creates your user and gives you a temporary password privately; you change it at first sign-in and set up MFA | SYSADMIN for now, `DATATHLON_ENGINEER` after step 3 |
+| Google Cloud project `datathlon-513514` | Robin adds your `@albertschool.com` account | Editor (Khaled also Project IAM Admin) |
+
+## 3. Your settings
+
+```bash
+cp .env.example .env
+```
+
+Fill in your own `SNOWFLAKE_USER` and the path to your private key. The key itself stays outside the repo.
+
+### Key pair for scripts (TD 2)
+
+Scripts connect to Snowflake with a key pair, never a password:
+
+1. Create the key on your laptop with the TD 2 script (`td2/onprem-to-snowflake/gen_key.py`), outside the repo, e.g. `~/.datathlon/rsa_key.p8`.
+2. An admin attaches your **public** key to your user: `ALTER USER <YOU> SET RSA_PUBLIC_KEY = '<public key>';`
+3. Put the path of the private key in `.env` (`SNOWFLAKE_PRIVATE_KEY_PATH`).
+
+## 4. Google Cloud sign-in
+
+```bash
+gcloud auth login
+gcloud config set project datathlon-513514
+gcloud auth application-default login
+```
+
+The last command lets Terraform use your login.
