@@ -57,3 +57,4 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 49 | Claude | Tried to create the Snowflake users in the browser pane; blocked by the safety check (granting ACCOUNTADMIN). Wrote the SQL as a script for an admin to run | [snowflake/setup/00_team_users.sql](../snowflake/setup/00_team_users.sql) |
 | 50 | Group | Gave the GCP project: `datathlon-513514`, on Robin's account | D-027 updated |
 | 51 | Claude | Wrote the GCP access steps for Robin (IAM roles for Khaled and Rudy, budget, checks) | [gcp/setup/00_team_access.md](../gcp/setup/00_team_access.md) |
+| 52 | Claude | Installed the Google Cloud CLI with Homebrew (`brew install --cask google-cloud-sdk`), after the group's OK: Google Cloud SDK 591.0.0. No account signed in yet | `gcloud` ready; Khaled signs in himself |
