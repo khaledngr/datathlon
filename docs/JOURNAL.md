@@ -50,3 +50,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 42 | Claude | Diagram v4 back on Google Cloud (GCS, Google logos, Frankfurt label, "SNOWFLAKE" label without hosting text); docs switched back from AWS | [architecture/](../architecture/), docs consistent with D-026 |
 | 43 | Claude | Wrote the team access plan (Snowflake users and roles, GCP members, GitHub collaborators) | D-027 proposed |
 | 44 | Claude | Re-copied `docs/` and `architecture/` to the Drive folder (Google logos back, AWS logos removed) | Drive copy in sync |
+| 45 | Group | Approved the access plan and the repo name `datathlon`; gave GitHub usernames `rcacarie-png` (Robin), `rcausel-a11y` (Rudy) | D-027 decided |
+| 46 | Claude | Added `.gitignore` (secrets, Terraform state, dbt/Python outputs), `git init`, first commit `b0bcd22` | Local repo |
+| 47 | Claude | Created private GitHub repo `khaledngr/datathlon`; SSH push failed (port 22 blocked on this network), pushed over HTTPS with the GitHub CLI login | https://github.com/khaledngr/datathlon |
+| 48 | Claude | Invited Robin and Rudy as collaborators (write); protected `main` (pull request required, no force push, no deletion) | Invitations pending acceptance |
+| 49 | Claude | Tried to create the Snowflake users in the browser pane; blocked by the safety check (granting ACCOUNTADMIN). Wrote the SQL as a script for an admin to run | [snowflake/setup/00_team_users.sql](../snowflake/setup/00_team_users.sql) |

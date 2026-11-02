@@ -167,7 +167,7 @@ Newest decisions at the bottom.
 - **Replaced:** D-024 (trial plan) and D-025 (AWS). Diagram v4 and the build plan, TD inventory and requirements are back on GCP.
 
 ### D-027 · Team access: one login per person, least privilege
-- **Date:** 2026-11-02 · **Status:** Proposed by Claude, waiting for the group
+- **Date:** 2026-11-02 · **Status:** Decided (group said go ahead); GitHub done, Snowflake script ready, GCP waiting for the project ID
 - **Principle:** nobody shares a login or a password; each tool gives each person only what they need (graded in C7: "proportionate access with allowed/denied verification", "protected secrets").
 - **Snowflake** (account `NVTLKDO-RP44213`, today only `ROBINCCR`):
   - One user per member. `ROBINCCR` stays Robin's; a second ACCOUNTADMIN (Khaled) so the team is not locked out if Robin is unavailable.
@@ -176,4 +176,6 @@ Newest decisions at the bottom.
   - The admin (Robin) types any temporary password himself, with `MUST_CHANGE_PASSWORD = TRUE`. Claude prepares the SQL and runs only what the group approves, never typing passwords.
 - **Google Cloud:** one project with the school credits. Each member added with their own `@albertschool.com` Google account; Terraform runs with a dedicated service account; nobody gets Owner except the project owner.
 - **GitHub:** one private repo, the 3 members as collaborators, `main` protected (changes through pull requests, where GitHub Actions runs `terraform plan`). Laura gets access (or the repo goes public) before the 4 Nov upload.
-- **Information needed:** Robin's and Rudy's GitHub usernames; which GCP project (ID) and who owns it; repo name.
+- **Done 2 Nov:** private repo `khaledngr/datathlon`; Robin (`rcacarie-png`) and Rudy (`rcausel-a11y`) invited with write access; `main` protected (pull request required, no force push, no deletion; Khaled as repo admin can still push directly, `enforce_admins` off).
+- **Snowflake:** script [snowflake/setup/00_team_users.sql](../snowflake/setup/00_team_users.sql) creates `KHALED` (ACCOUNTADMIN + SYSADMIN) and `RUDY` (SYSADMIN, temporary until the Terraform roles exist). Claude's attempt to run it in the browser was blocked by the safety check on granting admin rights, so an admin runs it.
+- **Still needed:** which GCP project (ID) and who owns it.
