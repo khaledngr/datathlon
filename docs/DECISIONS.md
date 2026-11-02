@@ -186,3 +186,17 @@ Newest decisions at the bottom.
 - **Settings:** `.env.example` lists every setting; team-wide values filled in, personal ones empty; secrets are never in it, only paths to key files. `docs/SETUP.md` explains tools, accounts and the key-pair setup.
 - **Why this layout:** the jury reads the repo (README, launch documented, C3); one folder per diagram box makes "where is the code for this arrow?" easy to answer, and each owner has a clear area.
 - **Reused from:** TD 4.2 `redgrave-platform` (`.gitignore`, `.env.example`, `*.example` pattern).
+
+### D-029 · Cost guard: Snowflake credit cap + Google Cloud budget alert (step 2)
+- **Date:** 2026-11-02 · **Status:** Done (asked by the group: "be extra sure we're not paying anything extra")
+- **Snowflake:** resource monitor `DATATHLON_ACCOUNT_MONITOR` on the whole account, script [snowflake/setup/01_resource_monitor.sql](../snowflake/setup/01_resource_monitor.sql). Quota **20 credits a month** (the trial has about 100; an XSMALL warehouse uses 1 credit per hour, the pipeline needs minutes a day). 50 % and 80 % → email; 100 % → warehouses suspended (running queries finish); 110 % → suspended immediately. Checked with `SHOW RESOURCE MONITORS`: quota 20, used 0, level ACCOUNT.
+  - Emails go to `ROBINCCR` only for now: Snowflake refused `KHALED` because his email is not verified yet. Once he verifies it, add him (command in the script).
+  - Limit: a resource monitor does not cover serverless features (serverless tasks, Snowpipe). So our Tasks will run on a warehouse (`WAREHOUSE = ...`), not serverless; this ties into D-022.
+- **Google Cloud:** budget `datathlon-cost-guard` on Robin's billing account `014D04-0E9313-35FE88`, project `datathlon-513514`, all services, monthly. Amount **€10**. Email to billing admins (Robin) at 50 %, 90 %, 100 % of actual cost and at 100 % of forecast cost.
+  - The budget counts cost **before credits** ("Programmes de remises" and "Autres remises" unticked, checked after saving), so it warns us even while the trial credits pay: €10 of real usage is far more than a bucket of a few MB should cost.
+  - Type "Alertes uniquement", not "Plafond de dépenses": a spending cap only covers some services and could pause our bucket during the demo. The free trial is already a hard stop: Google does not charge the card until someone clicks **Changer** (upgrade to a paid account). **Rule: nobody clicks "Changer" / upgrade.**
+  - Trial status seen on 2 Nov: 90 days and €269.43 of credit left.
+- **Why both:** each cloud bills separately; a guard on one does not see the other (graded in C7, cost awareness).
+- **Rejected:** a lower Snowflake quota (5 credits) could stop the pipeline during the live demo; Pub/Sub automation to disable billing (too much setup for a free trial that cannot charge anyway).
+- **Later (step 3):** Terraform imports the resource monitor (pack `09-iac/snowflake`), so it is declared as code. The GCP budget stays manual: it belongs to Robin's billing account, which Terraform's service account cannot reach.
+

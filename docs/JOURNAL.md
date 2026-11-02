@@ -69,3 +69,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 61 | Claude | Step 1: read the TD 4.2 repo layout (`redgrave-platform`: `.gitignore`, `.env.example`, `*.example`, dbt profile for dbt Projects on Snowflake) | Pattern reused |
 | 62 | Claude | Step 1: rewrote the README (pipeline in one line, layout, getting started, secret rules); added `.env.example`, `docs/SETUP.md`, a README in `sources/`, `ingestion/`, `snowflake/`, `dbt/`, `terraform/`, `gcp/`, `dashboard/`, and empty sub-folders | D-028 |
 | 63 | Claude | Tested `.gitignore` against 9 file names: found that `dashboard/.streamlit/secrets.toml` was not blocked (rule only matched the root); fixed with `**/.streamlit/secrets.toml` | All secret patterns blocked; templates allowed |
+| 64 | Claude | Checked billing: `billingEnabled = True` on `014D04-0E9313-35FE88` after Robin's prepayment unlocked the free trial | Step 2 can start |
+| 65 | Claude | Ran `01_resource_monitor.sql` in the browser pane (ROBINCCR). First try refused: KHALED's email not verified; re-ran with ROBINCCR only | `SHOW RESOURCE MONITORS`: 20 credits, 0 used, level ACCOUNT |
+| 66 | Claude | Created the Google Cloud budget `datathlon-cost-guard` in Robin's console: alerts only, €10/month, credits not deducted, 50/90/100 % actual + 100 % forecast. Did not click "Changer" (upgrade) | Budget listed; settings re-checked on the edit page |
+| 67 | Claude | Logged D-029, marked step 2 done in the build plan, updated `gcp/setup/00_team_access.md` | |
+

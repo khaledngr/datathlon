@@ -23,11 +23,12 @@ gcloud projects add-iam-policy-binding datathlon-513514 --member="user:kelnagar@
 gcloud projects add-iam-policy-binding datathlon-513514 --member="user:rcausel@albertschool.com" --role="roles/editor"
 ```
 
-## 2. Billing and budget (Robin, needed in step 2)
+## 2. Billing and budget (done 2 Nov, decision D-029)
 
-The project's billing account is Robin's, so only Robin can see it and set the budget alert:
-**Billing → Budgets & alerts → Create budget** for project `datathlon-513514`, alerts at 50 %, 80 %, 100 %.
-Or give Khaled the **Billing Account Costs Manager** role on that billing account so he can create it.
+Billing account `014D04-0E9313-35FE88` (Robin's, free trial: €269.43 and 90 days left on 2 Nov).
+Budget **`datathlon-cost-guard`**: Billing → Budgets & caps. Alerts only, €10 a month, all services, credits **not** deducted (so it warns even while credits pay), emails to Robin at 50 %, 90 %, 100 % actual and 100 % forecast.
+
+**Never click "Changer" / upgrade**: while the account stays a free trial, Google cannot charge the card.
 
 ## 3. Check (each member)
 
