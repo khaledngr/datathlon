@@ -63,3 +63,5 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 55 | Robin | Created a billing account (type "Particulier") and linked it to the project | Linked (`014D04-0E9313-35FE88`) but `billingEnabled = False` at last check: account not active yet |
 | 56 | Claude | At the group's request, ran the user script in the browser pane (signed in as ROBINCCR): created `KHALED` (ACCOUNTADMIN + SYSADMIN) and `RUDY` (SYSADMIN). No passwords set by Claude | `SHOW USERS`: KHALED, ROBINCCR, RUDY |
 | 57 | Claude | Checked GitHub: Robin accepted (write), Rudy's invitation still pending | |
+| 58 | Khaled | Set his own temporary password (Claude typed the command with a placeholder only), signed in as `KHALED` and chose his real password | `SHOW USERS`: has_password = true, must_change_password = false, has_mfa = false |
+| 59 | Claude | Step 0 status: Khaled ready on Snowflake, GCP, GitHub. Waiting: Rudy (password, GitHub invite), Robin (billing activation, needed by step 2), Khaled's MFA | Step 0 closed for Khaled and Robin; Rudy's items carry over |
