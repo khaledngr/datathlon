@@ -61,3 +61,5 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 53 | Khaled | Signed in to Google Cloud on the laptop (`gcloud auth login`), project `datathlon-513514` selected | `gcloud` working |
 | 54 | Robin + Claude | IAM fixed in 4 checks: first Robin picked "IAM Admin" + "IAM Editor" (only manage service accounts and permissions, no buckets); Claude tested the permissions each time and explained the right roles | Now: Khaled = Editor + Project IAM Admin, Rudy = Editor, Robin = Owner |
 | 55 | Robin | Created a billing account (type "Particulier") and linked it to the project | Linked (`014D04-0E9313-35FE88`) but `billingEnabled = False` at last check: account not active yet |
+| 56 | Claude | At the group's request, ran the user script in the browser pane (signed in as ROBINCCR): created `KHALED` (ACCOUNTADMIN + SYSADMIN) and `RUDY` (SYSADMIN). No passwords set by Claude | `SHOW USERS`: KHALED, ROBINCCR, RUDY |
+| 57 | Claude | Checked GitHub: Robin accepted (write), Rudy's invitation still pending | |
