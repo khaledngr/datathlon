@@ -1,0 +1,37 @@
+# Secrets: never commit (D-027)
+.env
+*.env
+!.env.example
+*.p8
+*.pem
+*.key
+.streamlit/secrets.toml
+*credentials*.json
+*service-account*.json
+
+# Terraform: state and local files hold sensitive values; state lives in GCS
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Generated data files
+data/landing/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/
