@@ -167,7 +167,7 @@ Newest decisions at the bottom.
 - **Replaced:** D-024 (trial plan) and D-025 (AWS). Diagram v4 and the build plan, TD inventory and requirements are back on GCP.
 
 ### D-027 · Team access: one login per person, least privilege
-- **Date:** 2026-11-02 · **Status:** Decided (group said go ahead); GitHub done, Snowflake script ready, GCP waiting for the project ID
+- **Date:** 2026-11-02 · **Status:** Decided (group said go ahead); GitHub done; Snowflake script and GCP steps ready for Robin to run
 - **Principle:** nobody shares a login or a password; each tool gives each person only what they need (graded in C7: "proportionate access with allowed/denied verification", "protected secrets").
 - **Snowflake** (account `NVTLKDO-RP44213`, today only `ROBINCCR`):
   - One user per member. `ROBINCCR` stays Robin's; a second ACCOUNTADMIN (Khaled) so the team is not locked out if Robin is unavailable.
@@ -178,4 +178,4 @@ Newest decisions at the bottom.
 - **GitHub:** one private repo, the 3 members as collaborators, `main` protected (changes through pull requests, where GitHub Actions runs `terraform plan`). Laura gets access (or the repo goes public) before the 4 Nov upload.
 - **Done 2 Nov:** private repo `khaledngr/datathlon`; Robin (`rcacarie-png`) and Rudy (`rcausel-a11y`) invited with write access; `main` protected (pull request required, no force push, no deletion; Khaled as repo admin can still push directly, `enforce_admins` off).
 - **Snowflake:** script [snowflake/setup/00_team_users.sql](../snowflake/setup/00_team_users.sql) creates `KHALED` (ACCOUNTADMIN + SYSADMIN) and `RUDY` (SYSADMIN, temporary until the Terraform roles exist). Claude's attempt to run it in the browser was blocked by the safety check on granting admin rights, so an admin runs it.
-- **Still needed:** which GCP project (ID) and who owns it.
+- **Google Cloud:** project `datathlon-513514`, owned by Robin (billing on his account). Robin adds Khaled (Editor + Project IAM Admin, for setup and Terraform) and Rudy (Editor) with their school Google accounts: steps in [gcp/setup/00_team_access.md](../gcp/setup/00_team_access.md). Budget alert needs Robin, or billing access for Khaled.

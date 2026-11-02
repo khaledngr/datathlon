@@ -55,3 +55,5 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 47 | Claude | Created private GitHub repo `khaledngr/datathlon`; SSH push failed (port 22 blocked on this network), pushed over HTTPS with the GitHub CLI login | https://github.com/khaledngr/datathlon |
 | 48 | Claude | Invited Robin and Rudy as collaborators (write); protected `main` (pull request required, no force push, no deletion) | Invitations pending acceptance |
 | 49 | Claude | Tried to create the Snowflake users in the browser pane; blocked by the safety check (granting ACCOUNTADMIN). Wrote the SQL as a script for an admin to run | [snowflake/setup/00_team_users.sql](../snowflake/setup/00_team_users.sql) |
+| 50 | Group | Gave the GCP project: `datathlon-513514`, on Robin's account | D-027 updated |
+| 51 | Claude | Wrote the GCP access steps for Robin (IAM roles for Khaled and Rudy, budget, checks) | [gcp/setup/00_team_access.md](../gcp/setup/00_team_access.md) |
