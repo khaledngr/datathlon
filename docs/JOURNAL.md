@@ -58,3 +58,6 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 50 | Group | Gave the GCP project: `datathlon-513514`, on Robin's account | D-027 updated |
 | 51 | Claude | Wrote the GCP access steps for Robin (IAM roles for Khaled and Rudy, budget, checks) | [gcp/setup/00_team_access.md](../gcp/setup/00_team_access.md) |
 | 52 | Claude | Installed the Google Cloud CLI with Homebrew (`brew install --cask google-cloud-sdk`), after the group's OK: Google Cloud SDK 591.0.0. No account signed in yet | `gcloud` ready; Khaled signs in himself |
+| 53 | Khaled | Signed in to Google Cloud on the laptop (`gcloud auth login`), project `datathlon-513514` selected | `gcloud` working |
+| 54 | Robin + Claude | IAM fixed in 4 checks: first Robin picked "IAM Admin" + "IAM Editor" (only manage service accounts and permissions, no buckets); Claude tested the permissions each time and explained the right roles | Now: Khaled = Editor + Project IAM Admin, Rudy = Editor, Robin = Owner |
+| 55 | Robin | Created a billing account (type "Particulier") and linked it to the project | Linked (`014D04-0E9313-35FE88`) but `billingEnabled = False` at last check: account not active yet |
