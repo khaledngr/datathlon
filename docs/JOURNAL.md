@@ -73,4 +73,4 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 65 | Claude | Ran `01_resource_monitor.sql` in the browser pane (ROBINCCR). First try refused: KHALED's email not verified; re-ran with ROBINCCR only | `SHOW RESOURCE MONITORS`: 20 credits, 0 used, level ACCOUNT |
 | 66 | Claude | Created the Google Cloud budget `datathlon-cost-guard` in Robin's console: alerts only, €10/month, credits not deducted, 50/90/100 % actual + 100 % forecast. Did not click "Changer" (upgrade) | Budget listed; settings re-checked on the edit page |
 | 67 | Claude | Logged D-029, marked step 2 done in the build plan, updated `gcp/setup/00_team_access.md` | |
-
+| 68 | Khaled + Claude | Khaled verified his Snowflake email; Claude added him to the monitor alerts (`ALTER RESOURCE MONITOR ... SET NOTIFY_USERS = (ROBINCCR, KHALED)`) | `SHOW RESOURCE MONITORS`: notify_users = ROBINCCR, KHALED |

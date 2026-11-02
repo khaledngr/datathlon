@@ -17,9 +17,10 @@ CREATE RESOURCE MONITOR IF NOT EXISTS DATATHLON_ACCOUNT_MONITOR
     WITH CREDIT_QUOTA = 20
          FREQUENCY = MONTHLY
          START_TIMESTAMP = IMMEDIATELY
-         -- Only users with a VERIFIED email can be listed. Once Khaled verifies his (Snowsight →
-         -- profile → email), add him: ALTER RESOURCE MONITOR ... SET NOTIFY_USERS = (ROBINCCR, KHALED);
-         NOTIFY_USERS = (ROBINCCR)
+         -- Only users with a VERIFIED email can be listed (Snowsight → Settings → My profile).
+         -- First run had ROBINCCR only; KHALED added after he verified his email (2 Nov):
+         -- ALTER RESOURCE MONITOR DATATHLON_ACCOUNT_MONITOR SET NOTIFY_USERS = (ROBINCCR, KHALED);
+         NOTIFY_USERS = (ROBINCCR, KHALED)
     TRIGGERS
         ON 50 PERCENT DO NOTIFY
         ON 80 PERCENT DO NOTIFY
