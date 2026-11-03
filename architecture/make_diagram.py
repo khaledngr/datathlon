@@ -54,7 +54,7 @@ box("s_orders", 40, 170, 260, 88, "Web orders · Postgres\nOLTP · web shop data
 box("s_tills", 40, 274, 260, 88, "Store tills · Python feed · TD3.3\nOLTP · a JSON file every 5 s\nUC1 · store channel\nsends bad rows on purpose", "source")
 box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\nsimulated · UC3", "source")
 box("s_weather", 40, 482, 260, 88, "Weather · Open-Meteo API\nREAL · free, no key\nforecast + history per store city\nUC1 + UC3 context", "source")
-box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · data.gouv.fr API, free\nFrench calendar\nUC1 + UC3 context", "source")
+box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · OpenHolidays API, free\nFR, BE, ES calendars\nUC1 + UC3 context", "source")
 box("s_seed", 40, 690, 260, 64, "Product catalogue · CSV seed\nin the dbt repo · UC1 + UC3", "source")
 
 # ingestion: four methods

@@ -54,8 +54,8 @@
 <g opacity="1.0">
 <rect x="40" y="586" width="300" height="88" rx="10" fill="#E8ECFF" stroke="#3946C0" stroke-width="2"/>
 <text x="190.0" y="606.0" font-size="16" text-anchor="middle" fill="#101A4E" font-weight="700">School + public holidays</text>
-<text x="190.0" y="626.0" font-size="16" text-anchor="middle" fill="#101A4E">REAL · data.gouv.fr API, free</text>
-<text x="190.0" y="646.0" font-size="16" text-anchor="middle" fill="#101A4E">French calendar</text>
+<text x="190.0" y="626.0" font-size="16" text-anchor="middle" fill="#101A4E">REAL · OpenHolidays API, free</text>
+<text x="190.0" y="646.0" font-size="16" text-anchor="middle" fill="#101A4E">FR, BE, ES calendars</text>
 <text x="190.0" y="666.0" font-size="16" text-anchor="middle" fill="#101A4E">UC1 + UC3 context</text>
 </g>
 <g opacity="1.0">
