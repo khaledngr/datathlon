@@ -115,3 +115,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 107 | Claude | Wrote `sources/tills/till_feed.py`; first history had Sunday files for closed FR/BE stores (random noise), fixed, bucket folder and local copy deleted, regenerated | 450 files, 46,600 rows in `gs://…/tills/` |
 | 108 | Claude | Wrote `ingestion/sf_connect.py`, `snowflake/run_sql.py`, `snowflake/stages/01_landing_stage.sql` (stage `LANDING` + `NDJSON`), `02_tills.sql` (`TILL_SALES_RAW` + `COPY INTO`) | `LIST @LANDING` sees the files |
 | 109 | Claude | Tests: COPY 450 files / 46,600 rows / 0 errors; re-run 0; live 3 batches → COPY loads only those 3; Lyon 24 Oct prices in cents; web loader re-run reconciled | Step 6 ✅ (D-035) |
+| 110 | Robin + Claude | Robin's laptop: repo cloned, `.env` (ROBINCCR), `.venv` (Python 3.12), key pair `gen_key.py ROBINCCR`; Robin registered the public key in Snowsight | Key-pair sign-in: ROBINCCR / DATATHLON_ENGINEER / GCP_EUROPE_WEST3 |
+| 111 | Robin | `gcloud auth application-default login`; the GCP project belongs to Robin's personal Google account, so he added `rcacarie@albertschool.com` as Editor | Landing bucket readable from Robin's laptop |
+| 112 | Robin | Chose OpenHolidays instead of data.gouv.fr for the holidays | D-036 |
+| 113 | Claude | Wrote `ingestion/api_pull/pull_apis.py` and `snowflake/stages/04_api.sql` | |
+| 114 | Claude | Tests: run 1 → 2 files, COPY 8 + 6 rows; re-run → skipped, COPY 0; `--timeout 0.001` → 3 tries, exit 1, nothing uploaded | Step 7b ✅ (D-036) |

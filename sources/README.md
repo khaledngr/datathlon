@@ -9,7 +9,7 @@ Datathlon is fictional, so its internal systems are simulated on the laptop. The
 | `tills/` | Store till feed: one file per store per day (history) or a batch every 5 s (live), bad rows on purpose, files to GCS ✅ | 6 | TD 3.3 `kiosk_sales_generator.py` | UC1 store channel, live incident |
 | `stock/` | Warehouse stock export: one CSV per day after the night count | 7 | TD 2 Part A | UC3 |
 
-The two **real** sources (Open-Meteo weather, data.gouv.fr holidays) are public APIs: they have no folder here, their loader is in `ingestion/api_pull/`.
+The two **real** sources (Open-Meteo weather, OpenHolidays holidays) are public APIs: they have no folder here, their loader is in `ingestion/api_pull/`.
 
 Till feed (from the repo root, Google sign-in done):
 
