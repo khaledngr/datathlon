@@ -200,3 +200,20 @@ Newest decisions at the bottom.
 - **Rejected:** a lower Snowflake quota (5 credits) could stop the pipeline during the live demo; Pub/Sub automation to disable billing (too much setup for a free trial that cannot charge anyway).
 - **Later (step 3):** Terraform imports the resource monitor (pack `09-iac/snowflake`), so it is declared as code. The GCP budget stays manual: it belongs to Robin's billing account, which Terraform's service account cannot reach.
 
+### D-030 · Commits credit the whole team (co-authors)
+- **Date:** 2026-11-03 · **Status:** Decided (Khaled, for the group)
+- **What:** the team works together on Khaled's laptop, so every commit ends with `Co-authored-by` lines for Robin and Rudy (and Claude). GitHub then shows all three on each commit and in the contributors' activity.
+- **Emails used:** GitHub's private "noreply" addresses, which GitHub links to the right accounts without showing anyone's real email: `234458087+rcacarie-png@users.noreply.github.com` (Robin), `235127277+rcausel-a11y@users.noreply.github.com` (Rudy). Khaled is the author (`khaledngr@users.noreply.github.com`).
+- **If one person did a step alone**, we drop the others' lines for that commit, so the history stays honest about who did what.
+- **Not changed:** the commits before 3 Nov stay as they are (rewriting `main` would need a force push, which the branch protection blocks, D-027).
+
+### D-031 · Terraform design for step 3
+- **Date:** 2026-11-03 · **Status:** Decided (group said go)
+- **One Terraform folder for both clouds** (`terraform/`): one `apply` creates the Snowflake storage integration and gives its Google service account read access on the landing bucket; no copy-paste between two projects.
+- **Two warehouses** from the pack's warehouse module: `DATATHLON_WH` (pipeline, dbt) and `DATATHLON_BI_WH` (Streamlit), XSMALL, auto-suspend 60 s. Credits split by use (C7).
+- **Roles:** SYSADMIN for objects, SECURITYADMIN for roles and grants (same as the pack), ACCOUNTADMIN only for the storage integration and the resource monitor import (Snowflake allows nothing lower).
+- **Later, not in step 3:** the service user `DATATHLON_PIPELINE` (with ingestion, steps 5-6); removing SYSADMIN from people once the new roles work.
+- **Sign-in for Terraform:** key pair on `KHALED` (no password, no MFA prompt). Script [snowflake/setup/gen_key.py](../snowflake/setup/gen_key.py), adapted from TD 2: the private key goes to `~/.snowflake/datathlon/`, outside the repo.
+- **State:** remote, in the bucket `datathlon-tfstate-513514` (Frankfurt, versioned, private), created once by hand (a manual step the teacher expects us to list). Locking is built in to the GCS backend.
+- **The Google budget stays manual** (Robin's billing account, out of Terraform's reach).
+

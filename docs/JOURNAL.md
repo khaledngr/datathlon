@@ -74,3 +74,10 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 66 | Claude | Created the Google Cloud budget `datathlon-cost-guard` in Robin's console: alerts only, €10/month, credits not deducted, 50/90/100 % actual + 100 % forecast. Did not click "Changer" (upgrade) | Budget listed; settings re-checked on the edit page |
 | 67 | Claude | Logged D-029, marked step 2 done in the build plan, updated `gcp/setup/00_team_access.md` | |
 | 68 | Khaled + Claude | Khaled verified his Snowflake email; Claude added him to the monitor alerts (`ALTER RESOURCE MONITOR ... SET NOTIFY_USERS = (ROBINCCR, KHALED)`) | `SHOW RESOURCE MONITORS`: notify_users = ROBINCCR, KHALED |
+| 69 | Khaled | Set up MFA on his Snowflake user (passkey) | MFA registered; Claude advised adding an authenticator app as a backup |
+| 70 | Claude | Read the teacher's `09-iac` examples (Snowflake, GCP) and the step 3 plan; proposed parts 3a-3d and 4 choices | Group: go (D-031) |
+| 71 | Claude | Commits will carry Robin and Rudy as co-authors (GitHub noreply emails looked up with `gh api users/...`) | D-030 |
+| 72 | Claude | Adapted TD 2 `gen_key.py` into `snowflake/setup/gen_key.py` (key saved outside the repo); generated Khaled's key; registered the public key on `KHALED` in Khaled's Snowsight session | Key-pair sign-in tested from the laptop: KHALED / SYSADMIN / GCP_EUROPE_WEST3 |
+| 73 | Claude | Created Khaled's local `.env` from `.env.example` (user + key path; git-ignored) | |
+| 74 | Claude | Tried to create the state bucket: `gcloud` session expired (school account re-authentication) | Khaled signs in again |
+
