@@ -6,6 +6,10 @@ terraform {
       source  = "snowflakedb/snowflake"
       version = "~> 2.22" # pinned major version: same reflex as Docker (TD 4.2)
     }
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 6.0" # same as the resource pack 09-iac/gcp
+    }
   }
 
   # Remote state: bucket created once by hand (D-031), versioned, private. Locking is built in.

@@ -87,4 +87,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 79 | Group | Reviewed the plan and said apply | |
 | 80 | Claude | `terraform apply`; then `terraform plan` again | Apply complete (1 imported, 29 added); then **No changes** |
 | 81 | Claude | Access test: first run showed the analyst could do everything, because of default secondary roles (ALL); re-ran with `USE SECONDARY ROLES NONE` | Analyst: GOLD read OK; BRONZE, INSERT, pipeline warehouse denied. Test saved as `02_access_test.sql`; test tables dropped |
+| 82 | Claude | Wrote 3c in `terraform/storage.tf` (+ `google` provider ~> 6.0, project/region variables); removed a preview flag the provider said was no longer needed | Plan: 5 add, 0 change, 0 destroy |
+| 83 | Group | Reviewed the plan and said apply | |
+| 84 | Claude | `terraform apply`; then `terraform plan` again | Apply complete (5 added); then **No changes** |
+| 85 | Claude | End-to-end test: uploaded a test CSV with `gcloud`, read it from Snowflake via a temporary stage on `DATATHLON_GCS_INT`; tried a stage on the state bucket | Read OK (1 row); other bucket refused; test file removed |
 

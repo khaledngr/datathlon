@@ -31,3 +31,9 @@ provider "snowflake" {
   private_key       = file(var.private_key_path)
   role              = "ACCOUNTADMIN"
 }
+
+# Google Cloud: signs in with `gcloud auth application-default login` (each member's own account)
+provider "google" {
+  project = var.gcp_project_id
+  region  = var.gcp_region
+}

@@ -1,14 +1,21 @@
-# terraform/ · infrastructure as code
+# terraform/ · infrastructure as code (step 3, D-031)
 
-| What | Provider | Build step |
+One folder, two clouds: one `terraform apply` builds the Snowflake side and the Google side and wires them together.
+
+| File | What it declares | Snowflake role used |
 | --- | --- | --- |
-| Snowflake resource monitor (alert 80 %, stop 100 %) | Snowflake | 2 |
-| Database `DATATHLON`, schemas BRONZE / SILVER / QUARANTINE / GOLD, warehouses, roles `DATATHLON_ENGINEER`, `DATATHLON_ANALYST`, grants | Snowflake | 3 |
-| GCS landing bucket in `europe-west3`, access for Snowflake's service account | Google | 3 |
-| Remote state in a GCS bucket (`backend "gcs"`) | Google | 3 |
+| `versions.tf` | Providers pinned (`snowflake ~> 2.22`, `google ~> 6.0`), remote state in `gs://datathlon-tfstate-513514` | — |
+| `providers.tf` | 3 Snowflake connections (SYSADMIN, SECURITYADMIN, ACCOUNTADMIN) with a key pair; Google with your own sign-in | — |
+| `main.tf` | Database `DATATHLON`, schemas BRONZE / SILVER / QUARANTINE / GOLD, warehouses `DATATHLON_WH` and `DATATHLON_BI_WH` (module), resource monitor (imported from step 2) | SYSADMIN, ACCOUNTADMIN |
+| `roles.tf` | Roles `DATATHLON_ENGINEER` (builds) and `DATATHLON_ANALYST` (reads GOLD only), grants to the 3 members | SECURITYADMIN |
+| `storage.tf` | Landing bucket `datathlon-landing-513514` (90-day lifecycle), storage integration `DATATHLON_GCS_INT`, read-only access for Snowflake's Google account | ACCOUNTADMIN, SECURITYADMIN |
+| `modules/warehouse/` | One warehouse with our cost rules (XSMALL, auto-suspend 60 s), from the resource pack | — |
 
-Reused from: TD 4.2 `redgrave-platform/terraform` (warehouse module, roles, `backend.tf.example`), resource pack `09-iac/snowflake` and `09-iac/gcp`.
+## Run it (each member, on their own laptop)
 
-`*.tfvars`, `*.tfstate` and `.terraform/` are never committed; `terraform.tfvars.example` shows what to fill in.
+1. Key pair on your Snowflake user: `python snowflake/setup/gen_key.py YOUR_USER`, then run the printed `ALTER USER` in Snowsight
+2. Google sign-in for Terraform: `gcloud auth application-default login`
+3. `cp terraform.tfvars.example terraform.tfvars` and fill in your user and key path
+4. `terraform init` · `terraform plan` (review it) · `terraform apply` · `terraform plan` again must say **No changes**
 
-*Empty for now: filled in steps 2 and 3.*
+`*.tfvars`, `*.tfstate` and `.terraform/` are never committed. `.terraform.lock.hcl` is committed: it pins the exact provider versions for the whole team.

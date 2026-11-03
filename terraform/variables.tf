@@ -25,3 +25,15 @@ variable "team_users" {
   type        = list(string)
   default     = ["ROBINCCR", "KHALED", "RUDY"]
 }
+
+variable "gcp_project_id" {
+  description = "Google Cloud project (Robin's, with the free trial credits)"
+  type        = string
+  default     = "datathlon-513514"
+}
+
+variable "gcp_region" {
+  description = "Same region as the Snowflake account (GCP_EUROPE_WEST3): no cross-region transfer cost"
+  type        = string
+  default     = "europe-west3"
+}
