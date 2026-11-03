@@ -145,3 +145,5 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 137 | Claude | Reviewed Robin's PR #3 and ran it on Khaled's laptop: 73 / 73; started Docker and compared gold web sales with Postgres cell by cell | 1,019 cells, 0 differences |
 | 138 | Claude | Found 9 gold rows on 30-31 Aug (late till events); added `first_complete_day` on Robin's branch | Gold 1 Sep → 2 Nov, 73 / 73 |
 | 139 | Khaled | Merged PR #3 (step 9) after the fix (a journal commit pushed too early conflicted: reverted, merged, re-logged) | `main` has gold |
+| 140 | Khaled | Asked why the diagram has TD numbers; clarified that the TDs are context for our own project, not a word-for-word template | D-041 |
+| 141 | Claude | Removed TD / resource pack tags from 8 boxes of `make_diagram.py`, refreshed stale labels, regenerated SVG + Excalidraw, checked the render | 0 TD mentions left |

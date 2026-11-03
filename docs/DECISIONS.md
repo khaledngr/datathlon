@@ -321,3 +321,10 @@ Newest decisions at the bottom.
 - **Access:** the 3 tables are in GOLD, so `DATATHLON_ANALYST` reads them through the Terraform future grant (to check in step 11 with `USE SECONDARY ROLES NONE`). Holidays for the dashboard shading stay in SILVER for now: copy to gold in step 11 if the analyst needs them.
 - **Cost:** 0.80 of 20 Snowflake credits over the last 30 days.
 - **Reviewed and merged by Khaled** (PR #3, 3 Nov): re-run on Khaled's laptop as `DATATHLON_PIPELINE`, 73 / 73; gold web sales compared with **Postgres** cell by cell (1,019 day × country × category cells, 7,708 units, €324,703.75: 0 differences). **One fix before merging:** late till events dated 30-31 Aug (before the first file) made gold start on 30 Aug; macro `first_complete_day` added, gold now 1 Sep → 2 Nov (2,078 rows, €2,977,434.99, 71,289 units); the gold = silver test uses the same window.
+
+### D-041 · No TD numbers on the architecture diagram; the TDs are context, not a template
+- **Date:** 2026-11-03 · **Status:** Done (Khaled: "yes remove it")
+- **Clarified rule (Khaled):** "adapt the TD" means reading the TDs, slides, Notion and Drive to know the full course context, then building **our own** project, not copying the labs word for word. This refines D-011 ("Reuse and adapt TD code"): the TD stack stays (D-008), the TD code is a reference, not something to copy.
+- **Diagram:** the "· TD2", "· TD3.3", "TD4.2", "resource pack" tags removed from 8 boxes: the jury sees Datathlon's architecture, not our course map. Where an idea came from stays in [TD_INVENTORY.md](TD_INVENTORY.md) and the journal.
+- **Stale labels refreshed at the same time:** incremental load "schedule: to confirm" → "reconciled on every run"; stock + control file, checked against it; seed = products · stores · holidays; BRONZE and GOLD table names as built (`till_sales_raw`, `gold_sales_daily`…), GOLD "complete days only"; dashboard "reads GOLD only".
+- **Still on the diagram but not built yet:** the Snowflake Tasks bar (step 10) and GitHub Actions `terraform plan` (manual step 12): build them, or remove them before the upload (C4: no decorative components).
