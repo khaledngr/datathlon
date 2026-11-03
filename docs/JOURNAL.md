@@ -138,6 +138,3 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 130 | Claude | Wrote schema and singular tests; `dbt build` 55 / 55; freshness 6 / 6; failure shown and cleared on the accounting test; docs generated | Step 8 ✅ (D-039) |
 | 131 | Claude | Pinned the new package versions; re-ran web loader, till COPY and API pull | All reconciled, nothing loaded twice |
 | 132 | Claude | Wrote `docs/HANDOVER.md` for Robin (steps 9-12) | |
-| 137 | Claude | Reviewed Robin's PR #3 and ran it on Khaled's laptop: 73 / 73; started Docker and compared gold web sales with Postgres cell by cell | 1,019 cells, 0 differences |
-| 138 | Claude | Found 9 gold rows on 30-31 Aug (late till events); added `first_complete_day` on Robin's branch | Gold 1 Sep → 2 Nov, 73 / 73 |
-| 139 | Khaled | Merged PR #3 (step 9) after the fix | `main` has gold |
