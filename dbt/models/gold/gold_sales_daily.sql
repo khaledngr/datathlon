@@ -1,6 +1,6 @@
 -- UC1 · Daily omnichannel sales (adapted from TD 3.1 gold_daily_sales + gold_revenue_by_channel).
 -- Grain: day x channel (store / web) x country x category. Revenue = SUM(qty x unit_price), in euros.
--- Web: paid orders only, test orders left out; click & collect is a web sale (ordered online). Store: valid till lines.
+-- Complete days only (first_complete_day -> last_complete_day, D-040). Web: paid orders only, test orders left out; click & collect is a web sale (ordered online). Store: valid till lines.
 with store_sales as (
     select sale_date as sales_date, 'store' as channel, country, category, qty, revenue_eur, sale_id::string as ticket_id
     from {{ ref('silver_till_sales') }}
@@ -29,5 +29,5 @@ select
     count(distinct ticket_id)              as orders_or_tickets,
     count(*)                               as lines
 from sales
-where sales_date <= {{ last_complete_day() }}
+where sales_date between {{ first_complete_day() }} and {{ last_complete_day() }}
 group by all
