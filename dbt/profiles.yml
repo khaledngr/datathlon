@@ -1,8 +1,8 @@
 # No secret here: everything comes from the repo's .env (loaded by dbt/dbt.sh), safe to commit.
-# Local dbt Core, as the service user DATATHLON_PIPELINE (key pair). The SQL itself runs in Snowflake.
 datathlon:
   target: dev
   outputs:
+    # dbt Core on a laptop (development): the service user's key pair from .env. The SQL runs in Snowflake.
     dev:
       type: snowflake
       account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
@@ -14,3 +14,15 @@ datathlon:
       schema: SILVER
       threads: 4
       query_tag: "datathlon:dbt"
+    # dbt Projects on Snowflake (production, D-041): runs as the session or task owner, no account, user or key
+    # needed (Snowflake ignores them), started by the task OPS.T_DBT_BUILD with --target prod.
+    prod:
+      type: snowflake
+      account: "not needed"
+      user: "not needed"
+      role: DATATHLON_ENGINEER
+      warehouse: DATATHLON_WH
+      database: DATATHLON
+      schema: SILVER
+      threads: 4
+      query_tag: "datathlon:dbt-snowflake"

@@ -18,6 +18,14 @@ resource "snowflake_schema" "layer" {
   comment  = "${each.key} layer - managed by Terraform"
 }
 
+# ---------- Pipeline objects (step 10, D-041): tasks, procedures, the dbt project, the run log ----------
+# Not a data layer: the analyst gets nothing here.
+resource "snowflake_schema" "ops" {
+  database = snowflake_database.datathlon.name
+  name     = "OPS"
+  comment  = "Pipeline objects: Snowflake Tasks, load procedures, dbt project, run log - managed by Terraform"
+}
+
 # ---------- Warehouses (same module, two jobs: credits split by use) ----------
 module "pipeline_warehouse" {
   source  = "./modules/warehouse"

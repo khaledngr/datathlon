@@ -7,8 +7,11 @@ How to switch everything off after the defense, so nothing keeps costing money o
 ## 1. Stop what runs
 
 ```bash
-# Snowflake Tasks (step 10), if they exist: suspend the root task in Snowsight so no run starts
-#   ALTER TASK <root task> SUSPEND;
+# Snowflake Tasks (step 10): suspend the root task so no run starts (in Snowsight or run_sql.py)
+#   ALTER TASK DATATHLON.OPS.T_START SUSPEND;
+# Morning job (step 10): remove the cron line and the image
+crontab -l | grep -v morning_job.sh | crontab -
+docker image rm datathlon-morning-job:1.0.0
 # Local web shop database: container and its data volume
 docker compose --env-file .env -f sources/postgres/docker-compose.yml down -v
 ```
@@ -28,7 +31,7 @@ cd terraform && terraform plan -destroy    # read the list first
 terraform destroy
 ```
 
-This removes: database `DATATHLON` with every schema and table in it, both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, resource monitor, landing bucket and its IAM.
+This removes: database `DATATHLON` with every schema and table in it (incl. `OPS`: tasks, procedures, dbt project), both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, e-mail integration, resource monitor, landing bucket and its IAM.
 
 ## 4. Remove what Terraform does not own
 

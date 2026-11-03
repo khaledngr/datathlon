@@ -53,7 +53,9 @@ Evidence: `GOLD.DBT_RUN_RESULTS`, `BRONZE.LOAD_RUNS`, `COPY_HISTORY`, query tags
 
 ## 7. Before the demo (6 Nov): bring all sources to yesterday
 
-Run once per missing day, in this order: `generate_orders.py --next-day` (it refuses days after today), the web loader, `till_feed.py --history` (rewrites identical old files, `COPY INTO` skips them), `pull_apis.py`, `stock_export.py` (skips days already exported), the stage SQL, `dbt/dbt.sh build`.
+Since step 10 (D-041) this is automatic: cron runs `orchestration/morning_job.sh` at 05:30 on Robin's laptop, Snowflake Tasks load and run dbt at 06:00. By hand: `orchestration/morning_job.sh` then `EXECUTE TASK DATATHLON.OPS.T_START;`. The manual order below is what the job does.
+
+Run once per missing day, in this order: `generate_orders.py --next-day` (it refuses days after today), the web loader, `till_feed.py --history` (since step 10 it uploads only the files missing from the bucket), `pull_apis.py`, `stock_export.py` (skips days already exported), the stage SQL, `dbt/dbt.sh build`.
 
 ## 8. Traps we already hit
 

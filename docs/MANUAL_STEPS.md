@@ -16,3 +16,6 @@ The teacher's brief asks us to declare the infrastructure as code **and** list w
 | 10 | Google sign-in for Terraform | Each person: `gcloud auth application-default login` | Personal credentials, never in the repo |
 | 11 | GitHub repo, collaborators, protection of `main` | Khaled on GitHub (D-027) | Repository settings, set once |
 | 12 | GitHub Actions secrets (for `terraform plan` on pull requests) | Later step, GitHub → Settings → Secrets | Secrets are typed in GitHub, never committed |
+| 13 | Tasks, procedures and the dbt project in schema `OPS` (step 10) | `dbt/deploy_to_snowflake.py`, then [snowflake/tasks/01_daily_pipeline.sql](../snowflake/tasks/01_daily_pipeline.sql) | Pipeline code, versioned in Git and redeployed with each change; Terraform owns the schema and the rights (`EXECUTE TASK`, e-mail integration) |
+| 14 | Failure e-mail recipients `OPS.ALERT_RECIPIENTS` | One `INSERT ... SELECT email FROM SNOWFLAKE.ACCOUNT_USAGE.USERS` in Snowflake | E-mail addresses are personal data: not in Git |
+| 15 | Morning job schedule: cron line, and on macOS Full Disk Access for `/usr/sbin/cron` | Robin's laptop ([orchestration/README.md](../orchestration/README.md)) | A laptop setting, not cloud infrastructure; macOS privacy settings are changed by the owner only |

@@ -30,6 +30,8 @@ provider "snowflake" {
   authenticator     = "SNOWFLAKE_JWT"
   private_key       = file(var.private_key_path)
   role              = "ACCOUNTADMIN"
+  # the e-mail integration resource (step 10) is still a "preview" resource in provider 2.x: it must be switched on
+  preview_features_enabled = ["snowflake_email_notification_integration_resource"]
 }
 
 # Google Cloud: signs in with `gcloud auth application-default login` (each member's own account)

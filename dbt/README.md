@@ -6,7 +6,10 @@ Bronze → **silver** (clean, typed, one row per business key) and **quarantine*
 dbt/dbt.sh build             # seeds + models + tests (reads the repo's .env)
 dbt/dbt.sh source freshness  # is every bronze table loaded in the last 26 h?
 dbt/dbt.sh docs generate && dbt/dbt.sh docs serve   # lineage graph
+.venv/bin/python dbt/deploy_to_snowflake.py --run build   # production: new version of the project IN Snowflake
 ```
+
+**Two places, same code (D-041):** on a laptop `dbt/dbt.sh` runs dbt Core (target `dev`, for development). In production the project is deployed into Snowflake as `DATATHLON.OPS.DATATHLON_DBT` (dbt Projects on Snowflake, TD 3.2) and the task `OPS.T_DBT_BUILD` runs `build --target prod` every morning. Our repo is private, so `deploy_to_snowflake.py` uploads the files to a stage (instead of TD 3.2's Git repository object) and names each version after the Git commit; it copies the catalogue CSVs into `seeds/` of the upload.
 
 | Layer | Models | Schema |
 | --- | --- | --- |
