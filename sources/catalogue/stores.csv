@@ -1,0 +1,9 @@
+store_id,name,city,country,latitude,longitude
+PAR-01,Datathlon Paris La Defense,Paris,FR,48.8920,2.2380
+LYO-01,Datathlon Lyon Part-Dieu,Lyon,FR,45.7606,4.8590
+LIL-01,Datathlon Lille Centre,Lille,FR,50.6365,3.0635
+MRS-01,Datathlon Marseille Prado,Marseille,FR,43.2700,5.3950
+BDX-01,Datathlon Bordeaux Lac,Bordeaux,FR,44.8840,-0.5650
+BRU-01,Datathlon Bruxelles,Brussels,BE,50.8467,4.3525
+BCN-01,Datathlon Barcelona,Barcelona,ES,41.3851,2.1734
+MAD-01,Datathlon Madrid,Madrid,ES,40.4168,-3.7038

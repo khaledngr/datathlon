@@ -1,0 +1,25 @@
+# Datathlon web shop database (OLTP source, step 4). Adapted from the resource pack 04-source-databases
+# (Postgres part only, same pinned image). Run from the repo root:
+#   docker compose --env-file .env -f sources/postgres/docker-compose.yml up -d
+# Port 5433 on the laptop: 5432 is often taken by a local Postgres (the TD 2 one).
+# The password comes from YOUR .env (PGPASSWORD), never from this file. Local throw-away database only.
+name: datathlon
+services:
+  postgres:
+    image: postgres:16.4
+    container_name: datathlon-postgres
+    environment:
+      POSTGRES_USER: ${PGUSER:?set PGUSER in .env}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?set PGPASSWORD in .env}
+      POSTGRES_DB: ${PGDATABASE:?set PGDATABASE in .env}
+    ports: ["127.0.0.1:${PGPORT:-5433}:5432"] # only reachable from this laptop
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./01_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro # runs once, on first start
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  pg_data:

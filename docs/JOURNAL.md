@@ -94,4 +94,9 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 86 | Claude | Drift demo: changed `DATATHLON_BI_WH` by hand (auto-suspend 3600, size SMALL) as SYSADMIN | `terraform plan`: 1 to change (`3600 -> 60`, `SMALL -> XSMALL`) |
 | 87 | Claude | `terraform apply` to restore, then `terraform plan` | Apply: 1 changed; then **No changes** |
 | 88 | Claude | Wrote `docs/MANUAL_STEPS.md` (12 manual steps and why) and the drift demo script in `terraform/README.md`; step 3 marked done | Step 3 ✅ |
+| 89 | Claude | Read TD 2 (`01_create_merch_db.sql`, `incremental_orders.py`), pack `04-source-databases`, TD 3.3 generator and seed; found port 5432 taken by the TD Postgres; started Docker Desktop | Design proposed |
+| 90 | Group | Asked whether this builds on the TD or is a separate project; Claude explained: separate repo, TD code copied and adapted, TD folders untouched | Group: move on |
+| 91 | Claude | Wrote `sources/catalogue/` (products, stores), `sources/postgres/` (compose, schema, generator), `requirements.txt`, `.venv`; random local `PGPASSWORD` in `.env`; `PGPORT` 5433 | Container healthy, 4 tables |
+| 92 | Claude | `--init`, `--next-day`: counts match (1,502 / 2,956 / 62; then +40 / +76 / +2); `--init` twice gives identical data | Deterministic |
+| 93 | Claude | Found and fixed 2 watermark bugs (future `updated_at` on live rows; trigger overwriting historical refund dates); re-tested: init leaves 0 rows stamped now, next-day changes exactly 42, a plain update still stamps now | D-032 |
 

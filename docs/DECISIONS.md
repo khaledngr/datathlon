@@ -225,3 +225,14 @@ Newest decisions at the bottom.
   - Provider note: the GCS integration resource is stable in provider 2.22.1, no preview flag needed.
 - **3d, 3 Nov (step 3 closed):** drift demo tested: warehouse `DATATHLON_BI_WH` changed by hand (auto-suspend 3600 s, size SMALL); `terraform plan` showed `3600 -> 60` and `SMALL -> XSMALL` (1 to change); `apply` restored it; next plan **No changes**. Script in [terraform/README.md](../terraform/README.md). The 12 manual steps, with the reason for each, are in [docs/MANUAL_STEPS.md](MANUAL_STEPS.md).
 
+### D-032 · Web shop source (step 4)
+- **Date:** 2026-11-03 · **Status:** Done (group: "move on")
+- **Built on TD 2 and the resource pack, in the Datathlon repo** (the TD folders are not touched): schema and `updated_at` trigger from TD 2 `01_create_merch_db.sql`; Docker Compose from pack `04-source-databases` (Postgres 16.4 only); psycopg2 loading style from the pack. New: a small generator, because TD 2's 240 fixed August orders cannot feed a daily dashboard.
+- **Shared catalogue** `sources/catalogue/`: 30 sports products in 6 categories (€, 2 discontinued for UC3) and 8 stores (FR, BE, ES) with coordinates for the weather API. Used by every source, so web and store sales and stock join on the same codes.
+- **Database:** Docker `datathlon-postgres`, `localhost:5433` only (5432 is Khaled's TD Postgres), password random in each person's `.env`. Schema `datathlon`: `products`, `stores`, `orders` (fulfilment home delivery / click & collect with `store_id`, status paid / cancelled / refunded, `is_test`), `order_lines`. No personal data: customers are codes (GDPR, C7).
+- **Generator** `generate_orders.py`, fixed seed per day: `--init` = 1 Oct to yesterday (1,502 orders, 2,956 lines, 62 refunds on 3 Nov); `--next-day` = one more day + ~2 refunds of orders 2-14 days old. Prints generator vs Postgres counts.
+- **Two watermark bugs found and fixed while testing** (good material for the defense):
+  1. `--next-day` for today wrote orders stamped up to 23:00, in the future. The step 5 watermark would have jumped past refunds stamped "now" and skipped them. Fix: live rows get `updated_at` = the real time they are written.
+  2. The TD 2 trigger overwrote the historical refund dates of `--init` with "now", so step 5's first load would have shown 62 refunds "today". Fix: the trigger keeps an `updated_at` that the UPDATE sets itself; a normal update still stamps now (checked).
+- **Python:** one project environment `.venv` from `requirements.txt` (pinned: psycopg2-binary 2.9.10, snowflake-connector-python 3.12.4, cryptography 44.0.0, python-dotenv 1.0.1).
+

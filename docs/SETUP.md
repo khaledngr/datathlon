@@ -45,3 +45,15 @@ gcloud auth application-default login
 ```
 
 The last command lets Terraform use your login.
+
+## Python environment (step 4)
+
+One environment for all the Datathlon scripts, pinned versions in `requirements.txt`:
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+`.venv/` is not committed. The local Postgres runs in Docker on port **5433** (5432 is often taken by the TD 2 Postgres); its password is a random value you put in your own `.env` (`PGPASSWORD`).
+

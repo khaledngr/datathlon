@@ -1,0 +1,5 @@
+# Python packages for the Datathlon scripts (pinned: same reflex as Docker and Terraform)
+psycopg2-binary==2.9.10            # Postgres (sources/postgres, ingestion step 5) - same as the resource pack
+snowflake-connector-python==3.12.4 # Snowflake (ingestion)
+cryptography==44.0.0               # key-pair sign-in (gen_key.py)
+python-dotenv==1.0.1               # reads .env

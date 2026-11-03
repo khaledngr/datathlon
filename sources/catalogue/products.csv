@@ -1,0 +1,31 @@
+sku,name,category,price_eur,status
+DTH-RUN-001,Road running shoes Run 100,Running,39.99,active
+DTH-RUN-002,Trail running shoes Trail 500,Running,89.99,active
+DTH-RUN-003,Breathable running T-shirt,Running,9.99,active
+DTH-RUN-004,Running shorts with pocket,Running,12.99,active
+DTH-RUN-005,GPS running watch,Running,129.00,active
+DTH-HIK-001,Waterproof hiking boots,Hiking,69.99,active
+DTH-HIK-002,Hiking backpack 30 L,Hiking,34.99,active
+DTH-HIK-003,2-person camping tent,Hiking,79.99,active
+DTH-HIK-004,Fleece jacket,Hiking,19.99,active
+DTH-HIK-005,Sleeping bag 10 C,Hiking,29.99,discontinued
+DTH-CYC-001,City bike 120,Cycling,249.00,active
+DTH-CYC-002,Bike helmet,Cycling,24.99,active
+DTH-CYC-003,LED bike light set,Cycling,14.99,active
+DTH-CYC-004,Bike lock,Cycling,19.99,active
+DTH-CYC-005,Inner tube 700x25,Cycling,5.99,active
+DTH-TEA-001,Football size 5,Team sports,9.99,active
+DTH-TEA-002,Football boots,Team sports,49.99,active
+DTH-TEA-003,Basketball size 7,Team sports,19.99,active
+DTH-TEA-004,Shin guards,Team sports,7.99,active
+DTH-TEA-005,Goalkeeper gloves,Team sports,24.99,discontinued
+DTH-SWI-001,Swimming goggles,Swimming,9.99,active
+DTH-SWI-002,Swim cap,Swimming,4.99,active
+DTH-SWI-003,Swimming trunks,Swimming,14.99,active
+DTH-SWI-004,One-piece swimsuit,Swimming,24.99,active
+DTH-SWI-005,Microfibre towel,Swimming,12.99,active
+DTH-FIT-001,Yoga mat 8 mm,Fitness,19.99,active
+DTH-FIT-002,Dumbbell set 20 kg,Fitness,49.99,active
+DTH-FIT-003,Resistance bands x3,Fitness,14.99,active
+DTH-FIT-004,Skipping rope,Fitness,6.99,active
+DTH-FIT-005,Foam roller,Fitness,17.99,active
