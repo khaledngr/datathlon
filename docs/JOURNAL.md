@@ -138,3 +138,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 130 | Claude | Wrote schema and singular tests; `dbt build` 55 / 55; freshness 6 / 6; failure shown and cleared on the accounting test; docs generated | Step 8 ✅ (D-039) |
 | 131 | Claude | Pinned the new package versions; re-ran web loader, till COPY and API pull | All reconciled, nothing loaded twice |
 | 132 | Claude | Wrote `docs/HANDOVER.md` for Robin (steps 9-12) | |
+| 133 | Robin | Read `docs/HANDOVER.md`; "Go étape 9" with the two rules (business day = UTC date, gold on complete days only) | D-040 |
+| 134 | Claude | Wrote `gold_sales_daily`, `gold_stock_cover_daily`, `gold_data_quality_daily` and macro `last_complete_day`; fixed one error (numeric `order_id` and UUID `sale_id` in one column → cast to text) | GOLD: 2,087 / 11,424 / 450 rows |
+| 135 | Claude | Hand check from BRONZE, line by line: Belgium, 24 Oct, Cycling. Store 22 raw lines − 5 rejected = 17 lines, 22 units, €1,462.83; web 2 paid orders, 4 units, €69.96 | Equal to gold; frozen in `assert_gold_hand_checked_day` |
+| 136 | Claude | Tests: gold = silver (revenue and units), hand-checked day, All Saints alerts, quality lines add up, gold keys; failure shown (expected value + €0.01 → FAIL 1) then cleared; `dbt build` 73 / 73 (57 tests) | Step 9 ✅ (D-040) |

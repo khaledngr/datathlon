@@ -23,6 +23,9 @@ models:
     quarantine:
       +schema: QUARANTINE
       +materialized: table
+    gold:
+      +schema: GOLD              # the analyst role reads GOLD only (Terraform future grant)
+      +materialized: table
 
 seeds:
   datathlon:
