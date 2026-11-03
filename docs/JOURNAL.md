@@ -99,4 +99,6 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 91 | Claude | Wrote `sources/catalogue/` (products, stores), `sources/postgres/` (compose, schema, generator), `requirements.txt`, `.venv`; random local `PGPASSWORD` in `.env`; `PGPORT` 5433 | Container healthy, 4 tables |
 | 92 | Claude | `--init`, `--next-day`: counts match (1,502 / 2,956 / 62; then +40 / +76 / +2); `--init` twice gives identical data | Deterministic |
 | 93 | Claude | Found and fixed 2 watermark bugs (future `updated_at` on live rows; trigger overwriting historical refund dates); re-tested: init leaves 0 rows stamped now, next-day changes exactly 42, a plain update still stamps now | D-032 |
+| 94 | Robin + Khaled | Robin's first pull request (#1, from his own laptop): diagram title "Data Pipeline of Datathlon", draft label removed; Khaled merged it | Pulled into the laptop copy (step 4 commit rebased on top, no conflict); Drive diagram updated |
+| 95 | Claude | Noticed Robin's commit email is `rob@MacBook-Pro-de-Robin.local`, which GitHub cannot link to his account, so the commit does not count for him | Robin to set `git config --global user.email "234458087+rcacarie-png@users.noreply.github.com"` |
 
