@@ -106,4 +106,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 98 | Claude | Generator: `country` column, holiday / back-to-school / weekend demand and category boosts, history from 1 Sep; recreated the Docker database (schema change) and regenerated | 3,479 orders, 6,665 lines; counts match; deterministic |
 | 99 | Claude | Measured the effect in SQL: FR +74 % in All Saints holidays, +31 % the week before, +32 % back to school; outdoor share 48 % → 62 %; ES spike on 12 Oct | Effect visible |
 | 100 | Claude | Added `.mailmap` for Robin's laptop email | Git shows his name; GitHub graph needs his `git config` fix |
+| 101 | Robin | Fixed his git email and started step 7b (APIs) on his laptop, in parallel | Not on GitHub yet at time of writing |
+| 102 | Claude | Generated the pipeline key (private key outside the repo, public key in `terraform/keys/`); added `DATATHLON_PIPELINE` service user to Terraform | Plan 2 add; applied; then No changes |
+| 103 | Claude | Wrote `load_web_orders.py` (from TD 2) and added `PIPELINE_USER` / `PIPELINE_PRIVATE_KEY_PATH` to `.env.example` | |
+| 104 | Claude | Tests: first load, re-run (0 merged), `--next-day` + load (45 inserted, 2 refunds updated), re-run (0); statuses compared Postgres vs BRONZE | All reconciled; step 5 ✅ (D-034) |
 

@@ -109,3 +109,23 @@ resource "snowflake_grant_privileges_to_account_role" "analyst_gold_future" {
     }
   }
 }
+
+# ---------- Service user for the pipeline (step 5, D-031 / D-034) ----------
+# The scripts and Tasks run as this user, not as a person. Key pair only (no password, cannot use Snowsight),
+# and NO secondary roles: it only ever has DATATHLON_ENGINEER, whatever else exists in the account.
+resource "snowflake_service_user" "pipeline" {
+  provider                       = snowflake.security
+  name                           = "DATATHLON_PIPELINE"
+  comment                        = "Datathlon pipeline (ingestion, dbt, Tasks) - managed by Terraform"
+  rsa_public_key                 = trimspace(file("${path.module}/keys/datathlon_pipeline.pub")) # public half: safe in Git
+  default_role                   = snowflake_account_role.engineer.name
+  default_warehouse              = module.pipeline_warehouse.name
+  default_secondary_roles_option = "NONE"
+  statement_timeout_in_seconds   = 900 # a stuck query is cancelled after 15 min instead of burning credits
+}
+
+resource "snowflake_grant_account_role" "engineer_to_pipeline" {
+  provider  = snowflake.security
+  role_name = snowflake_account_role.engineer.name
+  user_name = snowflake_service_user.pipeline.name
+}
