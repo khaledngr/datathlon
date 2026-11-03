@@ -113,3 +113,33 @@ models:
       - name: holiday_type
         data_tests:
           - accepted_values: {values: ['school', 'public']}
+
+  - name: gold_sales_daily
+    description: "UC1: units and paid revenue (EUR) per day x channel x country x category. Complete days only (D-040)."
+    columns:
+      - name: sales_key
+        data_tests: [unique, not_null]
+      - name: channel
+        data_tests:
+          - accepted_values: {values: ['store', 'web']}
+      - name: country
+        data_tests:
+          - accepted_values: {values: ['FR', 'BE', 'ES']}
+      - name: revenue_eur
+        data_tests: [not_null]
+
+  - name: gold_stock_cover_daily
+    description: "UC3: days of cover per day x store x product, alert under 3 days. Discontinued products excluded."
+    columns:
+      - name: stock_key
+        data_tests: [unique, not_null]
+      - name: on_hand
+        data_tests: [not_null]
+      - name: is_alert
+        data_tests: [not_null]
+
+  - name: gold_data_quality_daily
+    description: "Till feed quality per file day x store: raw, silver and quarantined lines (by reason), prices fixed."
+    columns:
+      - name: quality_key
+        data_tests: [unique, not_null]
