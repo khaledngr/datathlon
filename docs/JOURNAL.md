@@ -110,4 +110,4 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 102 | Claude | Generated the pipeline key (private key outside the repo, public key in `terraform/keys/`); added `DATATHLON_PIPELINE` service user to Terraform | Plan 2 add; applied; then No changes |
 | 103 | Claude | Wrote `load_web_orders.py` (from TD 2) and added `PIPELINE_USER` / `PIPELINE_PRIVATE_KEY_PATH` to `.env.example` | |
 | 104 | Claude | Tests: first load, re-run (0 merged), `--next-day` + load (45 inserted, 2 refunds updated), re-run (0); statuses compared Postgres vs BRONZE | All reconciled; step 5 ✅ (D-034) |
-
+| 105 | Claude | README rewritten short (what it is, diagram, quick start, folders, rules) at Khaled's request: 66 → 44 lines | Details stay in folder READMEs and docs/ |
