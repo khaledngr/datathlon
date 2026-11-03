@@ -151,3 +151,4 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 143 | Claude | Audit: dbt 73 / 73, freshness 6 / 6, Drive in sync except `make_diagram.py`; `terraform plan` shows Robin's unmerged step 10 objects (left alone) | Report to Khaled |
 | 144 | Claude | Tidy-up: 6 `.gitkeep` removed, lint fixed (generator output identical), stale facts fixed in 9 docs, team line removed from the README | ruff clean, dbt green |
 | 145 | Khaled | Approved the README wording without "Group 8" ("project for Data Engineering & Cloud Infrastructure, Albert School"); README edits are shown to him before they are made | D-042 |
+| 146 | Claude | Removed "Group 8" from the brand sheet subtitle (same reason as the README, D-042); old branch `diagram-title` left for Robin to delete | PR |
