@@ -3,11 +3,16 @@
 Data style from TD 2 (orders + order lines, updated_at as the watermark); loading style from the resource pack
 04-source-databases (psycopg2, standard PG* settings). The data is synthetic and deterministic (fixed seed per day).
 
-  python sources/postgres/generate_orders.py --init        # catalogue + every day from 1 Oct 2026 to yesterday
+  python sources/postgres/generate_orders.py --init        # catalogue + every day from 1 Sep 2026 to yesterday
   python sources/postgres/generate_orders.py --next-day    # one more day of orders + a few refunds of old orders
 
 --next-day refunds old orders with an UPDATE: the trigger moves their updated_at, so the incremental load (step 5)
 must pick them up again and MERGE them, not duplicate them. That is the point of the demo.
+The data is shaped for the dashboard (D-033): demand follows each country's holidays (sources/catalogue/holidays.csv,
+same dates as the holiday API the pipeline loads), so the BI can show the effect of school holidays:
+  school holidays +60 % (x share of the country), the week before +30 % (families get ready), public holiday +40 %,
+  back to school (1-14 Sep) +30 %; during school holidays outdoor categories sell more, at back to school team sports
+  and swimming (club sign-ups). Weekends: Saturday x1.6, Sunday x1.3.
 Each run prints what it wrote, then counts the rows in Postgres: both must match ("done when" of step 4).
 Settings: PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD from the repo's .env.
 """
@@ -22,14 +27,19 @@ from dotenv import load_dotenv
 
 REPO = Path(__file__).resolve().parents[2]
 CATALOGUE = REPO / "sources" / "catalogue"
-FIRST_DAY = date(2026, 10, 1)
+FIRST_DAY = date(2026, 9, 1)  # a "normal" September baseline before the autumn holidays
 SEED = 2026
 
-ORDERS_PER_DAY = 40          # weekday average; Saturday x1.6, Sunday x1.3
+ORDERS_PER_DAY = {"FR": 28, "BE": 6, "ES": 6}  # normal weekday, by delivery country (70 / 15 / 15 %)
 CLICK_COLLECT_SHARE = 0.30   # picked up in a store
 CANCELLED_SHARE = 0.03       # cancelled before payment went through
 REFUND_SHARE = 0.05          # refunded a few days later
 TEST_ORDERS_EVERY = 3        # one QA test order every 3 days
+
+
+HOLIDAY_CATEGORIES = {"Hiking": 2.5, "Cycling": 2.0, "Swimming": 2.0}   # outdoor and family trips
+BACK_TO_SCHOOL_CATEGORIES = {"Team sports": 2.5, "Swimming": 2.0}      # club sign-ups in September
+BASE_CATEGORY_WEIGHT = {"Running": 3, "Hiking": 3, "Fitness": 2}        # others 1
 
 
 def read_csv(name):
@@ -50,24 +60,54 @@ def load_catalogue(cur):
     return products, stores
 
 
-def day_orders(day, first_order_id, products, stores):
+def load_holidays():
+    return [{**h, "start": date.fromisoformat(h["start_date"]), "end": date.fromisoformat(h["end_date"]),
+             "share": float(h["share"])} for h in read_csv("holidays.csv")]
+
+
+def demand(day, country, holidays):
+    """How busy the web shop is for one country on one day, and which categories gain (the BI story)."""
+    factor = {5: 1.6, 6: 1.3}.get(day.weekday(), 1.0)
+    category_boost = {}
+    for h in (h for h in holidays if h["country"] == country):
+        if h["type"] == "school" and h["start"] <= day <= h["end"]:
+            factor *= 1 + 0.6 * h["share"]
+            category_boost = HOLIDAY_CATEGORIES
+        elif h["type"] == "school" and h["start"] - timedelta(days=7) <= day < h["start"]:
+            factor *= 1 + 0.3 * h["share"]
+            category_boost = HOLIDAY_CATEGORIES
+        elif h["type"] == "public" and day == h["start"]:
+            factor *= 1.4
+    if date(day.year, 9, 1) <= day <= date(day.year, 9, 14):
+        factor *= 1.3
+        category_boost = BACK_TO_SCHOOL_CATEGORIES
+    return factor, category_boost
+
+
+def day_orders(day, first_order_id, products, stores, holidays):
     """All orders of one day, the same every time for the same day (seed = SEED + day)."""
     rng = random.Random(SEED * 1000 + day.toordinal())
-    weekend = {5: 1.6, 6: 1.3}.get(day.weekday(), 1.0)
-    n = max(1, round(rng.gauss(ORDERS_PER_DAY * weekend, 5)))
     sellable = [p for p in products if p["status"] == "active"]
-    weights = [3 if p["category"] in ("Running", "Hiking") else 2 if p["category"] == "Fitness" else 1 for p in sellable]
+
+    plan = []  # (country, product weights) for each order of the day
+    for country, base in ORDERS_PER_DAY.items():
+        factor, boost = demand(day, country, holidays)
+        weights = [BASE_CATEGORY_WEIGHT.get(p["category"], 1) * boost.get(p["category"], 1) for p in sellable]
+        n = max(0, round(rng.gauss(base * factor, base * 0.12)))
+        plan += [(country, weights)] * n
+    rng.shuffle(plan)
 
     orders, lines = [], []
-    for i in range(n):
+    for i, (country, weights) in enumerate(plan):
         order_id = first_order_id + i
         ts = datetime.combine(day, time(7), timezone.utc) + timedelta(seconds=rng.randint(0, 16 * 3600))
         click_collect = rng.random() < CLICK_COLLECT_SHARE
         orders.append({
             "order_id": order_id,
             "customer_ref": f"C{rng.randint(1, 5000):05d}",
+            "country": country,
             "fulfilment": "click_collect" if click_collect else "home_delivery",
-            "store_id": rng.choice(stores)["store_id"] if click_collect else None,
+            "store_id": rng.choice([s for s in stores if s["country"] == country])["store_id"] if click_collect else None,
             "status": "cancelled" if rng.random() < CANCELLED_SHARE else "paid",
             "is_test": False,
             "order_ts": ts,
@@ -77,10 +117,10 @@ def day_orders(day, first_order_id, products, stores):
             lines.append({"order_id": order_id, "line_no": line_no, "sku": p["sku"],
                           "qty": rng.choices([1, 2, 3], [80, 15, 5])[0], "unit_price_eur": p["price_eur"]})
     if day.toordinal() % TEST_ORDERS_EVERY == 0:
-        test_id = first_order_id + n
+        test_id = first_order_id + len(plan)
         ts = datetime.combine(day, time(6, 30), timezone.utc)
-        orders.append({"order_id": test_id, "customer_ref": "TEST-QA", "fulfilment": "home_delivery", "store_id": None,
-                       "status": "paid", "is_test": True, "order_ts": ts, "updated_at": ts})
+        orders.append({"order_id": test_id, "customer_ref": "TEST-QA", "country": "FR", "fulfilment": "home_delivery",
+                       "store_id": None, "status": "paid", "is_test": True, "order_ts": ts, "updated_at": ts})
         lines.append({"order_id": test_id, "line_no": 1, "sku": sellable[0]["sku"], "qty": 1,
                       "unit_price_eur": sellable[0]["price_eur"]})
     # the weighted draw can pick the same sku twice in one order: keep one line per sku, then renumber
@@ -96,9 +136,9 @@ def day_orders(day, first_order_id, products, stores):
     return orders, unique_lines
 
 
-def insert_day(cur, day, products, stores, simulate_time):
+def insert_day(cur, day, products, stores, holidays, simulate_time):
     cur.execute("SELECT coalesce(max(order_id), 0) + 1 FROM datathlon.orders")
-    orders, lines = day_orders(day, cur.fetchone()[0], products, stores)
+    orders, lines = day_orders(day, cur.fetchone()[0], products, stores, holidays)
     if not simulate_time:
         # Live mode: updated_at = when the row is really written, never in the future. Otherwise an order
         # stamped 23:00 would push the step 5 watermark past refunds stamped "now", and they would be skipped.
@@ -106,7 +146,7 @@ def insert_day(cur, day, products, stores, simulate_time):
         for o in orders:
             o["updated_at"] = written_at
     cur.executemany(
-        "INSERT INTO datathlon.orders VALUES (%(order_id)s, %(customer_ref)s, %(fulfilment)s, %(store_id)s, "
+        "INSERT INTO datathlon.orders VALUES (%(order_id)s, %(customer_ref)s, %(country)s, %(fulfilment)s, %(store_id)s, "
         "%(status)s, %(is_test)s, %(order_ts)s, %(updated_at)s)", orders)
     cur.executemany(
         "INSERT INTO datathlon.order_lines VALUES (%(order_id)s, %(line_no)s, %(sku)s, %(qty)s, %(unit_price_eur)s)", lines)
@@ -124,7 +164,7 @@ def refund_some(cur, day, simulate_time):
         "SELECT order_id FROM datathlon.orders WHERE status = 'paid' AND NOT is_test "
         "AND order_ts::date BETWEEN %s AND %s ORDER BY order_id", (day - timedelta(days=14), day - timedelta(days=2)))
     candidates = [r[0] for r in cur.fetchall()]
-    picked = rng.sample(candidates, k=min(len(candidates), round(ORDERS_PER_DAY * REFUND_SHARE)))
+    picked = rng.sample(candidates, k=min(len(candidates), round(sum(ORDERS_PER_DAY.values()) * REFUND_SHARE)))
     for order_id in picked:
         if simulate_time:  # history: the refund happened at noon that day (the trigger keeps an explicit updated_at)
             cur.execute("UPDATE datathlon.orders SET status = 'refunded', updated_at = %s WHERE order_id = %s",
@@ -162,9 +202,10 @@ def main():
                 raise SystemExit("No orders yet: run --init first.")
             days = [last + timedelta(1)]
         products, stores = load_catalogue(cur)
+        holidays = load_holidays()
         before = counts(cur)
         for day in days:
-            o, l = insert_day(cur, day, products, stores, simulate_time=a.init)
+            o, l = insert_day(cur, day, products, stores, holidays, simulate_time=a.init)
             written["orders"] += o
             written["order_lines"] += l
             written["refunded"] += refund_some(cur, day, simulate_time=a.init)

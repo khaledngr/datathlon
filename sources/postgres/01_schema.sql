@@ -1,7 +1,7 @@
 -- Datathlon · web shop database (PostgreSQL), adapted from TD 2 01_create_merch_db.sql
 -- Runs automatically on the container's first start (docker-entrypoint-initdb.d).
 -- Changes from TD 2: schema merch -> datathlon, GBP -> EUR, stores table, fulfilment + store_id
--- (click & collect), is_test flag (UC1 exclusion), product status (UC3 exclusion).
+-- (click & collect), country, is_test flag (UC1 exclusion), product status (UC3 exclusion).
 -- The data is loaded by generate_orders.py from sources/catalogue/*.csv.
 
 CREATE SCHEMA IF NOT EXISTS datathlon;
@@ -26,6 +26,7 @@ CREATE TABLE datathlon.stores (
 CREATE TABLE datathlon.orders (
     order_id     integer PRIMARY KEY,
     customer_ref text        NOT NULL,                -- a code only: no personal data (GDPR)
+    country      text        NOT NULL CHECK (country IN ('FR', 'BE', 'ES')), -- delivery or pick-up country
     fulfilment   text        NOT NULL CHECK (fulfilment IN ('home_delivery', 'click_collect')),
     store_id     text REFERENCES datathlon.stores(store_id), -- pick-up store, click & collect only
     status       text        NOT NULL CHECK (status IN ('paid', 'cancelled', 'refunded')),

@@ -1,0 +1,17 @@
+country,type,start_date,end_date,name,share
+BE,school,2026-10-19,2026-11-01,All Saints Holidays,0.5
+BE,public,2026-11-01,2026-11-01,All Saints Day,1.0
+BE,school,2026-11-02,2026-11-08,All Saints Holidays,0.5
+BE,public,2026-11-11,2026-11-11,Armistice Day,1.0
+BE,school,2026-12-21,2027-01-03,Winter Holidays,1.0
+BE,public,2026-12-25,2026-12-25,Christmas Day,1.0
+ES,public,2026-10-12,2026-10-12,Spanish National Day,1.0
+ES,public,2026-11-01,2026-11-01,All Saints' Day,1.0
+ES,public,2026-12-06,2026-12-06,Constitution Day,1.0
+ES,public,2026-12-08,2026-12-08,Immaculate Conception,1.0
+ES,public,2026-12-25,2026-12-25,Christmas Day,1.0
+FR,school,2026-10-18,2026-11-01,All Saints Holidays,1.0
+FR,public,2026-11-01,2026-11-01,All Saints Day,1.0
+FR,public,2026-11-11,2026-11-11,Armistice Day,1.0
+FR,school,2026-12-20,2027-01-03,Christmas Holidays,1.0
+FR,public,2026-12-25,2026-12-25,Christmas Day,1.0

@@ -7,7 +7,7 @@ Here it runs in **Docker** on the laptop and a generator plays the shop.
 | --- | --- | --- |
 | `docker-compose.yml` | Postgres 16.4 on `localhost:5433`, password from your `.env` | resource pack `04-source-databases` (Postgres part) |
 | `01_schema.sql` | Schema `datathlon`: `products`, `stores`, `orders`, `order_lines` + the `updated_at` trigger (watermark) | TD 2 `01_create_merch_db.sql`, adapted |
-| `generate_orders.py` | `--init`: catalogue + 1 Oct → yesterday (~45 orders/day, more on weekends). `--next-day`: one more day + refunds of old orders | new (TD 2 had fixed data) |
+| `generate_orders.py` | `--init`: catalogue + 1 Sep → yesterday (~40 orders/normal day, shaped by holidays, D-033). `--next-day`: one more day + refunds of old orders | new (TD 2 had fixed data) |
 
 Products and stores come from the shared catalogue [sources/catalogue/](../catalogue/): the same codes are used by the tills, the stock export and the dbt seed.
 
@@ -29,7 +29,15 @@ Each run ends with a table *generator vs postgres* and `Counts match.` (the "don
 | 30 % click & collect (`store_id` = pick-up store) | omnichannel: ordered online, collected in store |
 | 2 discontinued products, never sold | UC3 exclusion |
 | `customer_ref` is a code (`C00042`), no name, email or address | GDPR: no personal data in the pipeline (C7) |
-| Same seed → same data on every laptop | `--init` twice gives the same 2,956 lines and €157,538.81 |
+| Same seed → same data on every laptop | `--init` twice gives the same 6,665 lines and €348,406.43 (run on 3 Nov) |
+| Orders follow each country's holidays ([holidays.csv](../catalogue/holidays.csv)) | the dashboard must show the effect of school holidays (D-033) |
+
+## Shaped for the dashboard (D-033)
+
+Measured on the generated data (France, paid web orders per day): normal 28.7 · back to school 37.9 (+32 %) ·
+week before All Saints 37.6 (+31 %) · **All Saints school holidays 49.9 (+74 %)**. Hiking + cycling + swimming go from
+48 % to 62 % of units during the holidays. Belgium rises less (half its children per break), Spain stays flat
+except its public holidays (12 Oct).
 
 ## The watermark (what step 5 relies on)
 

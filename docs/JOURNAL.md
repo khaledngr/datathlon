@@ -101,4 +101,9 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 93 | Claude | Found and fixed 2 watermark bugs (future `updated_at` on live rows; trigger overwriting historical refund dates); re-tested: init leaves 0 rows stamped now, next-day changes exactly 42, a plain update still stamps now | D-032 |
 | 94 | Robin + Khaled | Robin's first pull request (#1, from his own laptop): diagram title "Data Pipeline of Datathlon", draft label removed; Khaled merged it | Pulled into the laptop copy (step 4 commit rebased on top, no conflict); Drive diagram updated |
 | 95 | Claude | Noticed Robin's commit email is `rob@MacBook-Pro-de-Robin.local`, which GitHub cannot link to his account, so the commit does not count for him | Robin to set `git config --global user.email "234458087+rcacarie-png@users.noreply.github.com"` |
+| 96 | Khaled | Asked that fake data be shaped for the BI story, e.g. more buying around FR / BE / ES (school) holidays | D-033 |
+| 97 | Claude | Checked OpenHolidays API (school + public holidays FR, BE; public ES); wrote `sources/catalogue/fetch_holidays.py` → `holidays.csv` (16 nationwide rows, Alsace-only day removed) | |
+| 98 | Claude | Generator: `country` column, holiday / back-to-school / weekend demand and category boosts, history from 1 Sep; recreated the Docker database (schema change) and regenerated | 3,479 orders, 6,665 lines; counts match; deterministic |
+| 99 | Claude | Measured the effect in SQL: FR +74 % in All Saints holidays, +31 % the week before, +32 % back to school; outdoor share 48 % → 62 %; ES spike on 12 Oct | Effect visible |
+| 100 | Claude | Added `.mailmap` for Robin's laptop email | Git shows his name; GitHub graph needs his `git config` fix |
 
