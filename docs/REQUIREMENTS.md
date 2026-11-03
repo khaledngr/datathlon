@@ -51,5 +51,5 @@ Collected on 2 Nov 2026 from: Granola notes of the course sessions (9, 21, 22, 2
 | Slides 1.2, grading C7 | Allowed **and denied** access check; prototype cost **and a projection** with assumptions; documented budget alert | Show the analyst role denied on BRONZE; a cost slide |
 | Slides 1.2, deliverables | Optional execution evidence: run IDs, dates, versions, checks, replay test, screenshots | Collect them in step 12 |
 | Slides 3 (cloud project) | "A budget alert is the first thing to create" | Build plan step 2 comes before anything that costs money |
-| Slides 4.2 | Orchestration can use Snowflake Tasks instead of an external tool | The jury may ask "why Airflow?": prepare the answer |
+| Slides 4.2 | Orchestration can use Snowflake Tasks instead of an external tool | Chosen: Snowflake Tasks, no Airflow (D-022): one tool less to run, secure and pay for |
 | Notion task "Snowflake resource monitor" | Last year students burned their free credits before the defense | Same as step 2 |

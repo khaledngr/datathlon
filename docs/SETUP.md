@@ -17,7 +17,7 @@ What you need on your laptop and in each account, and why. Done once.
 | Account | How you get it | Your role |
 | --- | --- | --- |
 | GitHub repo `khaledngr/datathlon` | Accept the invitation | write (Khaled admin) |
-| Snowflake `NVTLKDO-RP44213` | Robin or Khaled creates your user and gives you a temporary password privately; you change it at first sign-in and set up MFA | SYSADMIN for now, `DATATHLON_ENGINEER` after step 3 |
+| Snowflake `NVTLKDO-RP44213` | Robin or Khaled creates your user and gives you a temporary password privately; you change it at first sign-in and set up MFA | `DATATHLON_ENGINEER` (builds the pipeline); the dashboard reads as `DATATHLON_ANALYST` |
 | Google Cloud project `datathlon-513514` | Robin adds your `@albertschool.com` account | Editor (Khaled also Project IAM Admin) |
 
 ## 3. Your settings
@@ -28,11 +28,11 @@ cp .env.example .env
 
 Fill in your own `SNOWFLAKE_USER` and the path to your private key. The key itself stays outside the repo.
 
-### Key pair for scripts (TD 2)
+### Key pair for scripts
 
 Scripts connect to Snowflake with a key pair, never a password:
 
-1. Create the key on your laptop with the TD 2 script (`td2/onprem-to-snowflake/gen_key.py`), outside the repo, e.g. `~/.datathlon/rsa_key.p8`.
+1. Create the key on your laptop: `python snowflake/setup/gen_key.py YOUR_USER` writes it to `~/.snowflake/datathlon/`, outside the repo.
 2. An admin attaches your **public** key to your user: `ALTER USER <YOU> SET RSA_PUBLIC_KEY = '<public key>';`
 3. Put the path of the private key in `.env` (`SNOWFLAKE_PRIVATE_KEY_PATH`).
 
@@ -55,5 +55,5 @@ python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 ```
 
-`.venv/` is not committed. The local Postgres runs in Docker on port **5433** (5432 is often taken by the TD 2 Postgres); its password is a random value you put in your own `.env` (`PGPASSWORD`).
+`.venv/` is not committed. The local Postgres runs in Docker on port **5433** (5432 is often taken by another local Postgres); its password is a random value you put in your own `.env` (`PGPASSWORD`).
 

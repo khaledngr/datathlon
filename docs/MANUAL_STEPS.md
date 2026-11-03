@@ -15,4 +15,4 @@ The teacher's brief asks us to declare the infrastructure as code **and** list w
 | 9 | Terraform state bucket `datathlon-tfstate-513514` (versioned, private) | `gcloud storage buckets create` (D-031) | Terraform cannot store its state in a bucket it has not created yet |
 | 10 | Google sign-in for Terraform | Each person: `gcloud auth application-default login` | Personal credentials, never in the repo |
 | 11 | GitHub repo, collaborators, protection of `main` | Khaled on GitHub (D-027) | Repository settings, set once |
-| 12 | GitHub Actions secrets (for `terraform plan` on pull requests) | Later step, GitHub → Settings → Secrets | Secrets are typed in GitHub, never committed |
+| 12 | GitHub Actions secrets (for `terraform plan` on pull requests) Only if GitHub Actions is built (not yet): GitHub → Settings → Secrets | Secrets are typed in GitHub, never committed |

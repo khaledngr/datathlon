@@ -152,7 +152,7 @@ def text_offset(key, free_text):
 
 def label_at(pts):
     """Baseline position of an arrow label: beside a vertical arrow, above a horizontal one."""
-    (x0, y0), (x1, y1) = pts[0], pts[1]
+    (x0, y0), (x1, _) = pts[0], pts[1]
     if len(pts) > 2:
         return x0 + 48, y0 - 8
     if x0 == x1:
@@ -258,7 +258,7 @@ for key, x, y, w, h, text, kind, dashed, size in boxes:
     for slug, ix, iy in icon_slots(key, x, y, h, free):
         inner = logo_svg(slug).replace("<svg ", f'<svg x="{ix}" y="{iy}" width="{ICON}" height="{ICON}" ', 1)
         svg.append(inner)
-for key, pts, label, dashed in arrows:
+for _key, pts, label, dashed in arrows:
     dash = ' stroke-dasharray="6 5"' if dashed else ""
     d = " ".join(f"{px},{py}" for px, py in pts)
     svg.append(f'<polyline points="{d}" fill="none" stroke="{NIGHT}" stroke-width="2" marker-end="url(#h)"{dash}/>')
