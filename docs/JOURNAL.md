@@ -123,3 +123,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 115 | Claude | Reviewed Robin's PR #2 and ran it on Khaled's laptop as `DATATHLON_PIPELINE`: same-day re-run skipped, timeout demo exit 1 with nothing uploaded, backfill 2 Nov loaded 8 + 6 rows, `COPY` re-run 0 | All passed |
 | 116 | Claude | Found that a half-uploaded run was skipped forever; fixed (only the missing file is redone) on Robin's branch; tested on 1 Nov by deleting the holidays file | Re-run fetched only holidays; then skipped; `COPY` loaded each file once |
 | 117 | Khaled | Merged PR #2 (step 7b) after the fix | `main` has step 7b; BRONZE: 3 weather + 3 holiday files |
+| 118 | Claude | Read TD 2 Part A (`03_export_csv.sql`, `04_copy_into.sql`) and UC3; wrote `sources/stock/stock_export.py` (stock from real till + click & collect sales, Monday/Thursday deliveries, control file) | Dry run: 13,500 rows, 0 negative; FR/BE alerts 0.5 % normal → 8.1 % holidays |
+| 119 | Claude | Exported 63 days to `gs://…/stock/`; re-run exported 0 | |
+| 120 | Claude | Wrote `snowflake/stages/03_stock.sql`; COPY loaded 63 days / 13,500 rows; reconciliation 0 differences; re-run 0 | |
+| 121 | Claude | Broken-file test: a short CSV line was loaded with NULLs (COPY with SELECT does not check the column count). Added NOT NULL + two-way reconciliation, dropped and reloaded the two stock tables, retested: load aborted, file removed, all reconciled | D-037 |
+| 122 | Claude | Acceptance: 0 till sales without a stock row; weekly alert view from BRONZE peaks at 12 % (week of 19 Oct) | Step 7 ✅ (D-037) |
