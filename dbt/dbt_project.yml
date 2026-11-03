@@ -1,0 +1,39 @@
+# Datathlon · dbt project (steps 8-9): bronze -> silver / quarantine -> gold, adapted from TD 3.1-3.3 redgrave_dbt and
+# redgrave_kiosk_dbt. Runs as the service user DATATHLON_PIPELINE; the SQL runs in Snowflake (cloud processing, C5).
+name: datathlon
+version: "1.0.0"
+config-version: 2
+profile: datathlon
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+seed-paths: ["../sources/catalogue"]   # ONE catalogue for the generators and dbt: products, stores, holidays
+target-path: "target"
+clean-targets: ["target", "dbt_packages", "logs"]
+
+models:
+  datathlon:
+    staging:
+      +schema: SILVER
+      +materialized: view        # parse only: always reflects bronze
+    silver:
+      +schema: SILVER
+      +materialized: table
+    quarantine:
+      +schema: QUARANTINE
+      +materialized: table
+
+seeds:
+  datathlon:
+    +schema: SILVER
+    products:
+      +column_types: {price_eur: "number(8,2)"}
+    stores:
+      +column_types: {latitude: "float", longitude: "float"}
+    holidays:
+      +column_types: {start_date: "date", end_date: "date", share: "number(3,2)"}
+
+# After every dbt command: one row per model / test result in GOLD.DBT_RUN_RESULTS (run evidence, C5 / C6)
+on-run-end:
+  - "{{ log_run_results(results) }}"

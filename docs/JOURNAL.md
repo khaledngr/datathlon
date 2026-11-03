@@ -133,3 +133,8 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 125 | Claude | Fix 2: wrote `docs/CLEANUP.md` | C7 cleanup procedure |
 | 126 | Claude | Fix 3: `ROBINCCR` default warehouse → `DATATHLON_WH`, `COMPUTE_WH` auto-suspend 60 s | Snowflake shows MFA on for `ROBINCCR` |
 | 127 | Claude | Fix 4: README run order, `snowflake/README` setup row; re-ran all stage SQL in order | 0 new files loaded, all reconciled (D-038) |
+| 128 | Claude | Read TD 3.3 `redgrave_kiosk_dbt` and TD 3.1 profile; installed dbt-core 1.9.11 + dbt-snowflake 1.9.4; `dbt/` project, profile (env vars), `dbt.sh`, macros, sources; seeds from `sources/catalogue/` | `dbt debug` OK, 3 seeds |
+| 129 | Claude | Wrote staging, silver and quarantine models; fixed 2 Snowflake errors (subquery over FLATTEN, eager epoch cast) | 46,600 = 44,365 + 2,235; holidays = generator calendar |
+| 130 | Claude | Wrote schema and singular tests; `dbt build` 55 / 55; freshness 6 / 6; failure shown and cleared on the accounting test; docs generated | Step 8 ✅ (D-039) |
+| 131 | Claude | Pinned the new package versions; re-ran web loader, till COPY and API pull | All reconciled, nothing loaded twice |
+| 132 | Claude | Wrote `docs/HANDOVER.md` for Robin (steps 9-12) | |

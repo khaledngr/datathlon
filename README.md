@@ -25,9 +25,10 @@ Load the data, in this order (the stock follows the web and till sales):
 .venv/bin/python ingestion/api_pull/pull_apis.py                  # weather + holidays -> GCS
 .venv/bin/python sources/stock/stock_export.py                    # stock files -> GCS
 for f in snowflake/stages/0*.sql; do .venv/bin/python snowflake/run_sql.py "$f"; done  # GCS -> BRONZE
+dbt/dbt.sh build                                                   # BRONZE -> SILVER / QUARANTINE, tests
 ```
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md).
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (9-12): [docs/HANDOVER.md](docs/HANDOVER.md).
 
 ## Repository
 

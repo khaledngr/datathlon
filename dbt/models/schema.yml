@@ -1,0 +1,115 @@
+version: 2
+
+seeds:
+  - name: products
+    description: "Product catalogue (the required seed): the source of truth for SKUs, categories and prices."
+    columns:
+      - name: sku
+        data_tests: [unique, not_null]
+      - name: status
+        data_tests:
+          - accepted_values: {values: ['active', 'discontinued']}
+  - name: stores
+    description: "The 8 stores, with coordinates for the weather API."
+    columns:
+      - name: store_id
+        data_tests: [unique, not_null]
+  - name: holidays
+    description: "Holiday calendar the sales generators follow (fetch_holidays.py). Compared with the real API in a test."
+
+models:
+  - name: stg_till_sales
+    description: "Every raw till line, parsed into typed columns. Not filtered."
+  - name: stg_weather_days
+    description: "Every API call x day, flattened. Not deduplicated."
+
+  - name: quarantine_till_sales
+    description: "Till lines rejected by a quality rule, with the reason, or resent duplicates. Never deleted."
+    columns:
+      - name: reject_reason
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ['missing_sale_id', 'unknown_store', 'unparseable_timestamp', 'future_timestamp',
+                       'unknown_product', 'invalid_quantity', 'invalid_price', 'price_not_in_catalogue', 'duplicate']
+
+  - name: silver_till_sales
+    description: "Valid store till lines, one row per sale, prices in euros."
+    columns:
+      - name: sale_id
+        data_tests: [unique, not_null]
+      - name: store_id
+        data_tests:
+          - not_null
+          - relationships: {to: ref('stores'), field: store_id}
+      - name: sku
+        data_tests:
+          - not_null
+          - relationships: {to: ref('products'), field: sku}
+      - name: qty
+        data_tests: [not_null]
+      - name: unit_price_eur
+        data_tests: [not_null]
+      - name: payment
+        data_tests:
+          - accepted_values: {values: ['card', 'cash', 'contactless', 'unknown']}
+
+  - name: silver_web_orders
+    description: "Web shop orders, one row per order; test orders flagged (is_test)."
+    columns:
+      - name: order_id
+        data_tests: [unique, not_null]
+      - name: status
+        data_tests:
+          - accepted_values: {values: ['paid', 'cancelled', 'refunded']}
+      - name: fulfilment
+        data_tests:
+          - accepted_values: {values: ['home_delivery', 'click_collect']}
+      - name: country
+        data_tests:
+          - accepted_values: {values: ['FR', 'BE', 'ES']}
+      - name: store_id
+        data_tests:
+          - relationships: {to: ref('stores'), field: store_id}
+
+  - name: silver_web_order_lines
+    description: "Web order lines with order and product details."
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - relationships: {to: ref('silver_web_orders'), field: order_id}
+      - name: sku
+        data_tests:
+          - relationships: {to: ref('products'), field: sku}
+      - name: category
+        data_tests: [not_null]
+
+  - name: silver_stock_daily
+    description: "Night stock count, one row per day x store x product (UC3)."
+    columns:
+      - name: stock_key
+        data_tests: [unique, not_null]
+      - name: store_id
+        data_tests:
+          - relationships: {to: ref('stores'), field: store_id}
+      - name: category
+        data_tests: [not_null]          # null = a SKU missing from the catalogue
+
+  - name: silver_weather_daily
+    description: "Weather per store and day, latest run (measured past, 7-day forecast)."
+    columns:
+      - name: weather_key
+        data_tests: [unique, not_null]
+      - name: store_id
+        data_tests:
+          - relationships: {to: ref('stores'), field: store_id}
+
+  - name: silver_holidays
+    description: "School and public holidays FR, BE, ES, latest run, same rules as the generator calendar."
+    columns:
+      - name: holiday_key
+        data_tests: [unique, not_null]
+      - name: holiday_type
+        data_tests:
+          - accepted_values: {values: ['school', 'public']}

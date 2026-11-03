@@ -1,6 +1,8 @@
 # Python packages for the Datathlon scripts (pinned: same reflex as Docker and Terraform)
 psycopg2-binary==2.9.10            # Postgres (sources/postgres, ingestion step 5) - same as the resource pack
-snowflake-connector-python==3.12.4 # Snowflake (ingestion)
+snowflake-connector-python==3.18.1 # Snowflake (ingestion)
 cryptography==44.0.0               # key-pair sign-in (gen_key.py)
-python-dotenv==1.0.1               # reads .env
-google-cloud-storage==2.19.0     # upload till / stock / API files to the landing bucket
+python-dotenv==1.2.4               # reads .env
+google-cloud-storage==2.19.0       # upload till / stock / API files to the landing bucket
+dbt-core==1.9.11                   # transformations and tests (step 8), run with dbt/dbt.sh
+dbt-snowflake==1.9.4               # dbt adapter for Snowflake (same minor version as dbt-core)

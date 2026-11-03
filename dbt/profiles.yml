@@ -1,0 +1,16 @@
+# No secret here: everything comes from the repo's .env (loaded by dbt/dbt.sh), safe to commit.
+# Local dbt Core, as the service user DATATHLON_PIPELINE (key pair). The SQL itself runs in Snowflake.
+datathlon:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('PIPELINE_USER') }}"
+      private_key_path: "{{ env_var('PIPELINE_PRIVATE_KEY_PATH') }}"
+      role: DATATHLON_ENGINEER
+      warehouse: DATATHLON_WH
+      database: DATATHLON
+      schema: SILVER
+      threads: 4
+      query_tag: "datathlon:dbt"

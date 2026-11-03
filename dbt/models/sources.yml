@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: DATATHLON
+    schema: BRONZE
+    description: "Raw copies of the 5 sources, loaded by the ingestion jobs (steps 5-7b). Nothing is cleaned here."
+    loaded_at_field: _loaded_at
+    freshness:                       # daily pipeline: a source not loaded for a day is late, two days is an error
+      warn_after: {count: 26, period: hour}
+      error_after: {count: 50, period: hour}
+    tables:
+      - name: web_orders
+        description: "Web shop orders, incremental MERGE from Postgres (step 5)."
+      - name: web_order_lines
+        description: "Web shop order lines (step 5)."
+      - name: till_sales_raw
+        description: "Store till lines, one VARIANT per line as sent, with bad rows on purpose (step 6)."
+      - name: stock_snapshots
+        description: "Night stock count per store x product, one CSV per day (step 7)."
+      - name: stock_control
+        description: "Control file of each stock CSV: expected rows and units (step 7)."
+        freshness: null
+      - name: weather_raw
+        description: "Open-Meteo daily weather per store, one row per API call (step 7b)."
+      - name: holidays_raw
+        description: "OpenHolidays school and public holidays FR, BE, ES, one row per API call (step 7b)."
