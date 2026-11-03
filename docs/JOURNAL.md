@@ -120,3 +120,6 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 112 | Robin | Chose OpenHolidays instead of data.gouv.fr for the holidays | D-036 |
 | 113 | Claude | Wrote `ingestion/api_pull/pull_apis.py` and `snowflake/stages/04_api.sql` | |
 | 114 | Claude | Tests: run 1 → 2 files, COPY 8 + 6 rows; re-run → skipped, COPY 0; `--timeout 0.001` → 3 tries, exit 1, nothing uploaded | Step 7b ✅ (D-036) |
+| 115 | Claude | Reviewed Robin's PR #2 and ran it on Khaled's laptop as `DATATHLON_PIPELINE`: same-day re-run skipped, timeout demo exit 1 with nothing uploaded, backfill 2 Nov loaded 8 + 6 rows, `COPY` re-run 0 | All passed |
+| 116 | Claude | Found that a half-uploaded run was skipped forever; fixed (only the missing file is redone) on Robin's branch; tested on 1 Nov by deleting the holidays file | Re-run fetched only holidays; then skipped; `COPY` loaded each file once |
+| 117 | Khaled | Merged PR #2 (step 7b) after the fix | `main` has step 7b; BRONZE: 3 weather + 3 holiday files |
