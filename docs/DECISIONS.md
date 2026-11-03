@@ -290,3 +290,12 @@ Newest decisions at the bottom.
 - **Bug found by testing, fixed:** a broken CSV line (4 columns instead of 7) **was loaded** with NULLs: when `COPY` uses `SELECT $1..$7`, Snowflake does not reject short lines. Fix: `NOT NULL` columns (Snowflake enforces them, so the load aborts: "NULL result in a non-nullable column") and the reconciliation now also flags a day with no control file. Tables dropped and reloaded (bronze only, the files stay in the bucket).
 - **Re-run safe twice over:** the export skips days already in the bucket (a snapshot already loaded is never re-sent changed), and `COPY INTO` never loads a file twice.
 - **Tested 3 Nov:** 63 days, 13,500 rows, 512,797 units; reconciliation 0 differences; re-run 0 files; broken file → load aborted, nothing loaded; till sales without a stock row: 0 (UC3 acceptance test).
+
+### D-038 · Audit fixes before step 8: one date window for every source
+- **Date:** 2026-11-03 · **Status:** Done (Khaled: "Apply fixes 1 to 4", after the audit in journal #123)
+- **One window:** the history of every simulated source is **1 Sep → yesterday**; only the live demo writes today. The web orders had run to 4 Nov (two `--next-day` replays), the tills and stock stopped on 2 Nov, so 3–4 Nov would have shown web sales and no store sales. Reset: Postgres `--init`, BRONZE web tables emptied and reloaded (3,479 / 6,665, reconciled), the 3 live till test files of 3 Nov removed (bucket + 27 BRONZE rows), stock files and tables regenerated against the reset web orders (same 13,500 rows / 512,797 units, control files reconciled). `LOAD_RUNS` keeps its history.
+- **Guard:** `generate_orders.py --next-day` refuses a day after today (tested: "never writes a day after today").
+- **Cleanup procedure** for C7: [CLEANUP.md](CLEANUP.md) (stop, empty bucket, `terraform destroy`, then manual objects, then checks).
+- **Robin's user:** default warehouse `COMPUTE_WH` (outside Terraform) → `DATATHLON_WH`; `COMPUTE_WH` auto-suspend 300 s → 60 s. Snowflake now reports MFA on for `ROBINCCR` (off during the audit).
+- **Docs:** root README quick start gives the full run order (web → tills → APIs → stock → stage SQL); `snowflake/README` lists all setup files.
+- **Left for later, noted in the audit:** business day in UTC vs Paris time and "complete days only" in gold (step 9); checks that fail the scheduled run, rejected till lines in the data quality table (step 10); masking policy on customer codes (to check on the trial); cost projection (step 12).

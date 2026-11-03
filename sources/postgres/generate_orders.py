@@ -169,6 +169,8 @@ def main():
             if last is None:
                 raise SystemExit("No orders yet: run --init first.")
             days = [last + timedelta(1)]
+            if days[0] > date.today():  # the other sources stop at today: a future day would break the dashboard
+                raise SystemExit(f"Orders already go up to {last}: --next-day never writes a day after today.")
         products, stores = load_catalogue(cur)
         holidays = load_holidays()
         before = counts(cur)

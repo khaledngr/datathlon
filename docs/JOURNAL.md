@@ -129,3 +129,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 121 | Claude | Broken-file test: a short CSV line was loaded with NULLs (COPY with SELECT does not check the column count). Added NOT NULL + two-way reconciliation, dropped and reloaded the two stock tables, retested: load aborted, file removed, all reconciled | D-037 |
 | 122 | Claude | Acceptance: 0 till sales without a stock row; weekly alert view from BRONZE peaks at 12 % (week of 19 Oct) | Step 7 ✅ (D-037) |
 | 123 | Claude | Full audit before step 8 (Khaled asked): repo and secrets, Terraform drift, GCS, Snowflake objects / grants / credits, data per source, code, docs vs grading matrix | Healthy: no secrets, no drift, 0.33 / 20 credits. To fix: web orders run to 4 Nov (72 future orders) while tills / stock end 2 Nov; no cleanup procedure (C7); Robin admin without MFA; stale docs. Recommendations sent to the group |
+| 124 | Claude | Fix 1: `--next-day` guard; Postgres `--init`; BRONZE web tables emptied and reloaded; 3 Nov live till files and rows removed; stock regenerated and reloaded | Every source 1 Sep → 2 Nov; 0 future orders; web and stock reconciled |
+| 125 | Claude | Fix 2: wrote `docs/CLEANUP.md` | C7 cleanup procedure |
+| 126 | Claude | Fix 3: `ROBINCCR` default warehouse → `DATATHLON_WH`, `COMPUTE_WH` auto-suspend 60 s | Snowflake shows MFA on for `ROBINCCR` |
+| 127 | Claude | Fix 4: README run order, `snowflake/README` setup row; re-ran all stage SQL in order | 0 new files loaded, all reconciled (D-038) |

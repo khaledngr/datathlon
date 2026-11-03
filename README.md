@@ -14,11 +14,20 @@ Group 8 project, *Data Engineering & Cloud Infrastructure*, Albert School. Datat
 cp .env.example .env                                   # fill in your own values
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 docker compose --env-file .env -f sources/postgres/docker-compose.yml up -d
-.venv/bin/python sources/postgres/generate_orders.py --init
-.venv/bin/python ingestion/incremental_orders/load_web_orders.py
 ```
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md).
+Load the data, in this order (the stock follows the web and till sales):
+
+```bash
+.venv/bin/python sources/postgres/generate_orders.py --init       # web shop history
+.venv/bin/python ingestion/incremental_orders/load_web_orders.py  # Postgres -> BRONZE
+.venv/bin/python sources/tills/till_feed.py --history             # till files -> GCS
+.venv/bin/python ingestion/api_pull/pull_apis.py                  # weather + holidays -> GCS
+.venv/bin/python sources/stock/stock_export.py                    # stock files -> GCS
+for f in snowflake/stages/0*.sql; do .venv/bin/python snowflake/run_sql.py "$f"; done  # GCS -> BRONZE
+```
+
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md).
 
 ## Repository
 
