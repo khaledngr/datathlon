@@ -216,4 +216,8 @@ Newest decisions at the bottom.
 - **Sign-in for Terraform:** key pair on `KHALED` (no password, no MFA prompt). Script [snowflake/setup/gen_key.py](../snowflake/setup/gen_key.py), adapted from TD 2: the private key goes to `~/.snowflake/datathlon/`, outside the repo.
 - **State:** remote, in the bucket `datathlon-tfstate-513514` (Frankfurt, versioned, private), created once by hand (a manual step the teacher expects us to list). Locking is built in to the GCS backend.
 - **The Google budget stays manual** (Robin's billing account, out of Terraform's reach).
+- **Applied 3 Nov (3b):** `terraform apply`: 1 imported (resource monitor), 29 added (database `DATATHLON`, schemas BRONZE / SILVER / QUARANTINE / GOLD, warehouses `DATATHLON_WH` and `DATATHLON_BI_WH`, roles `DATATHLON_ENGINEER` and `DATATHLON_ANALYST`, grants). Second `terraform plan`: **No changes**. State: `gs://datathlon-tfstate-513514/platform/default.tfstate`.
+  - The import first wanted to clear the monitor's start date: we wrote the real date (`start_timestamp`) in the code, so the import changed nothing.
+  - **Access proven** ([snowflake/setup/02_access_test.sql](../snowflake/setup/02_access_test.sql)): analyst reads GOLD; denied on BRONZE, on INSERT and on the pipeline warehouse.
+  - **Found while testing:** Snowflake users have `DEFAULT_SECONDARY_ROLES = ALL`, so all of a person's roles are active at once and a member who is ACCOUNTADMIN passes every check whatever role is selected. The demo must start with `USE SECONDARY ROLES NONE`, and the future service user `DATATHLON_PIPELINE` gets `DEFAULT_SECONDARY_ROLES = ()` so it only ever has its own role.
 

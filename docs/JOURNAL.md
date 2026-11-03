@@ -80,4 +80,11 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 72 | Claude | Adapted TD 2 `gen_key.py` into `snowflake/setup/gen_key.py` (key saved outside the repo); generated Khaled's key; registered the public key on `KHALED` in Khaled's Snowsight session | Key-pair sign-in tested from the laptop: KHALED / SYSADMIN / GCP_EUROPE_WEST3 |
 | 73 | Claude | Created Khaled's local `.env` from `.env.example` (user + key path; git-ignored) | |
 | 74 | Claude | Tried to create the state bucket: `gcloud` session expired (school account re-authentication) | Khaled signs in again |
+| 75 | Khaled + Claude | Khaled signed in to `gcloud` again; Claude created the Terraform state bucket `gs://datathlon-tfstate-513514` (manual step, D-031) | europe-west3, versioning on, public access blocked, uniform access |
+| 76 | Khaled | Ran `gcloud auth application-default login` (Terraform's own Google sign-in) | Credentials saved; quota project datathlon-513514 |
+| 77 | Claude | Wrote the 3b Terraform code in `terraform/` (versions + GCS backend, 3 providers SYSADMIN / SECURITYADMIN / ACCOUNTADMIN, warehouse module from the pack, `main.tf`, `roles.tf`, import of the resource monitor); `init`, `fmt`, `validate` | Valid |
+| 78 | Claude | First plans: the provider needs `start_timestamp` with `frequency`, and the import would have cleared the monitor's start date; pinned the real date | Plan: 1 import, 29 add, 0 change, 0 destroy |
+| 79 | Group | Reviewed the plan and said apply | |
+| 80 | Claude | `terraform apply`; then `terraform plan` again | Apply complete (1 imported, 29 added); then **No changes** |
+| 81 | Claude | Access test: first run showed the analyst could do everything, because of default secondary roles (ALL); re-ran with `USE SECONDARY ROLES NONE` | Analyst: GOLD read OK; BRONZE, INSERT, pipeline warehouse denied. Test saved as `02_access_test.sql`; test tables dropped |
 

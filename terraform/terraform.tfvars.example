@@ -1,0 +1,3 @@
+# Copy to terraform.tfvars and fill in YOUR values. terraform.tfvars is NOT committed.
+user             = "KHALED"
+private_key_path = "/Users/YOU/.snowflake/datathlon/khaled_rsa_key.p8"
