@@ -17,8 +17,8 @@ Each run prints what it wrote, then counts the rows in Postgres: both must match
 Settings: PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD from the repo's .env.
 """
 import argparse
-import csv
 import random
+import sys
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
@@ -26,7 +26,9 @@ import psycopg2
 from dotenv import load_dotenv
 
 REPO = Path(__file__).resolve().parents[2]
-CATALOGUE = REPO / "sources" / "catalogue"
+sys.path.insert(0, str(REPO / "sources" / "catalogue"))
+from demand import demand, load_holidays, product_weights, read_csv  # noqa: E402  shared rules (D-033)
+
 FIRST_DAY = date(2026, 9, 1)  # a "normal" September baseline before the autumn holidays
 SEED = 2026
 
@@ -35,16 +37,6 @@ CLICK_COLLECT_SHARE = 0.30   # picked up in a store
 CANCELLED_SHARE = 0.03       # cancelled before payment went through
 REFUND_SHARE = 0.05          # refunded a few days later
 TEST_ORDERS_EVERY = 3        # one QA test order every 3 days
-
-
-HOLIDAY_CATEGORIES = {"Hiking": 2.5, "Cycling": 2.0, "Swimming": 2.0}   # outdoor and family trips
-BACK_TO_SCHOOL_CATEGORIES = {"Team sports": 2.5, "Swimming": 2.0}      # club sign-ups in September
-BASE_CATEGORY_WEIGHT = {"Running": 3, "Hiking": 3, "Fitness": 2}        # others 1
-
-
-def read_csv(name):
-    with open(CATALOGUE / name, newline="", encoding="utf-8") as fh:
-        return list(csv.DictReader(fh))
 
 
 def load_catalogue(cur):
@@ -60,30 +52,6 @@ def load_catalogue(cur):
     return products, stores
 
 
-def load_holidays():
-    return [{**h, "start": date.fromisoformat(h["start_date"]), "end": date.fromisoformat(h["end_date"]),
-             "share": float(h["share"])} for h in read_csv("holidays.csv")]
-
-
-def demand(day, country, holidays):
-    """How busy the web shop is for one country on one day, and which categories gain (the BI story)."""
-    factor = {5: 1.6, 6: 1.3}.get(day.weekday(), 1.0)
-    category_boost = {}
-    for h in (h for h in holidays if h["country"] == country):
-        if h["type"] == "school" and h["start"] <= day <= h["end"]:
-            factor *= 1 + 0.6 * h["share"]
-            category_boost = HOLIDAY_CATEGORIES
-        elif h["type"] == "school" and h["start"] - timedelta(days=7) <= day < h["start"]:
-            factor *= 1 + 0.3 * h["share"]
-            category_boost = HOLIDAY_CATEGORIES
-        elif h["type"] == "public" and day == h["start"]:
-            factor *= 1.4
-    if date(day.year, 9, 1) <= day <= date(day.year, 9, 14):
-        factor *= 1.3
-        category_boost = BACK_TO_SCHOOL_CATEGORIES
-    return factor, category_boost
-
-
 def day_orders(day, first_order_id, products, stores, holidays):
     """All orders of one day, the same every time for the same day (seed = SEED + day)."""
     rng = random.Random(SEED * 1000 + day.toordinal())
@@ -92,7 +60,7 @@ def day_orders(day, first_order_id, products, stores, holidays):
     plan = []  # (country, product weights) for each order of the day
     for country, base in ORDERS_PER_DAY.items():
         factor, boost = demand(day, country, holidays)
-        weights = [BASE_CATEGORY_WEIGHT.get(p["category"], 1) * boost.get(p["category"], 1) for p in sellable]
+        weights = product_weights(sellable, boost)
         n = max(0, round(rng.gauss(base * factor, base * 0.12)))
         plan += [(country, weights)] * n
     rng.shuffle(plan)

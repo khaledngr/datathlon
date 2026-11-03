@@ -14,17 +14,16 @@ Changes from TD 2 (D-034):
 Settings from the repo's .env: SNOWFLAKE_ACCOUNT, PIPELINE_USER, PIPELINE_PRIVATE_KEY_PATH, SNOWFLAKE_WAREHOUSE,
 SNOWFLAKE_DATABASE, and PGHOST / PGPORT / PGDATABASE / PGUSER / PGPASSWORD.
 """
-import os
+import sys
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
 import psycopg2
-import snowflake.connector
-from cryptography.hazmat.primitives import serialization
-from dotenv import load_dotenv
 
-REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from sf_connect import connect  # noqa: E402  service user DATATHLON_PIPELINE (also loads .env)
+
 LOOKBACK = "5 minutes"
 
 DDL = [
@@ -83,25 +82,9 @@ WHEN NOT MATCHED THEN INSERT (order_id, line_no, sku, qty, unit_price_eur, _load
 VALUES (s.order_id, s.line_no, s.sku, s.qty, s.unit_price_eur, CURRENT_TIMESTAMP(), %(run_id)s)"""
 
 
-def connect_snowflake():
-    key = serialization.load_pem_private_key(Path(os.environ["PIPELINE_PRIVATE_KEY_PATH"]).read_bytes(), password=None)
-    return snowflake.connector.connect(
-        account=os.environ["SNOWFLAKE_ACCOUNT"],
-        user=os.environ["PIPELINE_USER"],
-        private_key=key.private_bytes(serialization.Encoding.DER, serialization.PrivateFormat.PKCS8,
-                                      serialization.NoEncryption()),
-        role="DATATHLON_ENGINEER",
-        warehouse=os.environ.get("SNOWFLAKE_WAREHOUSE", "DATATHLON_WH"),
-        database=os.environ.get("SNOWFLAKE_DATABASE", "DATATHLON"),
-        schema="BRONZE",
-        session_parameters={"QUERY_TAG": "datathlon:step5:web_orders"},  # cost per job in QUERY_HISTORY
-    )
-
-
 def main():
-    load_dotenv(REPO / ".env")
     run_id, started = str(uuid.uuid4()), datetime.now(timezone.utc)
-    with connect_snowflake() as sf, sf.cursor() as cur:
+    with connect("step5:web_orders") as sf, sf.cursor() as cur:
         for ddl in DDL:
             cur.execute(ddl)
 

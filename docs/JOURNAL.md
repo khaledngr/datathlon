@@ -111,3 +111,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 103 | Claude | Wrote `load_web_orders.py` (from TD 2) and added `PIPELINE_USER` / `PIPELINE_PRIVATE_KEY_PATH` to `.env.example` | |
 | 104 | Claude | Tests: first load, re-run (0 merged), `--next-day` + load (45 inserted, 2 refunds updated), re-run (0); statuses compared Postgres vs BRONZE | All reconciled; step 5 ✅ (D-034) |
 | 105 | Claude | README rewritten short (what it is, diagram, quick start, folders, rules) at Khaled's request: 66 → 44 lines | Details stay in folder READMEs and docs/ |
+| 106 | Claude | Read TD 3.3 generator and loading SQL; moved the shared demand rules to `sources/catalogue/demand.py` (web generator output unchanged) | |
+| 107 | Claude | Wrote `sources/tills/till_feed.py`; first history had Sunday files for closed FR/BE stores (random noise), fixed, bucket folder and local copy deleted, regenerated | 450 files, 46,600 rows in `gs://…/tills/` |
+| 108 | Claude | Wrote `ingestion/sf_connect.py`, `snowflake/run_sql.py`, `snowflake/stages/01_landing_stage.sql` (stage `LANDING` + `NDJSON`), `02_tills.sql` (`TILL_SALES_RAW` + `COPY INTO`) | `LIST @LANDING` sees the files |
+| 109 | Claude | Tests: COPY 450 files / 46,600 rows / 0 errors; re-run 0; live 3 batches → COPY loads only those 3; Lyon 24 Oct prices in cents; web loader re-run reconciled | Step 6 ✅ (D-035) |
