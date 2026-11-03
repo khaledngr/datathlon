@@ -142,3 +142,6 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 134 | Claude | Wrote `gold_sales_daily`, `gold_stock_cover_daily`, `gold_data_quality_daily` and macro `last_complete_day`; fixed one error (numeric `order_id` and UUID `sale_id` in one column → cast to text) | GOLD: 2,087 / 11,424 / 450 rows |
 | 135 | Claude | Hand check from BRONZE, line by line: Belgium, 24 Oct, Cycling. Store 22 raw lines − 5 rejected = 17 lines, 22 units, €1,462.83; web 2 paid orders, 4 units, €69.96 | Equal to gold; frozen in `assert_gold_hand_checked_day` |
 | 136 | Claude | Tests: gold = silver (revenue and units), hand-checked day, All Saints alerts, quality lines add up, gold keys; failure shown (expected value + €0.01 → FAIL 1) then cleared; `dbt build` 73 / 73 (57 tests) | Step 9 ✅ (D-040) |
+| 137 | Claude | Reviewed Robin's PR #3 and ran it on Khaled's laptop: 73 / 73; started Docker and compared gold web sales with Postgres cell by cell | 1,019 cells, 0 differences |
+| 138 | Claude | Found 9 gold rows on 30-31 Aug (late till events); added `first_complete_day` on Robin's branch | Gold 1 Sep → 2 Nov, 73 / 73 |
+| 139 | Khaled | Merged PR #3 (step 9) after the fix (a journal commit pushed too early conflicted: reverted, merged, re-logged) | `main` has gold |
