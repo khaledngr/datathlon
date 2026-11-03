@@ -37,7 +37,7 @@ def arrow(key, points, label="", dashed=False):
 
 # ---- layout ---------------------------------------------------------------
 # No parentheses in labels (group request, 2 Nov): TD references are written "· TD2".
-box("title", 40, 0, 900, 40, "Datathlon · data pipeline · draft v4, 2 Nov 2026", "tool", size=26)
+box("title", 40, 0, 900, 40, "Data Pipeline of Datathlon", "tool", size=26)
 
 # containers first, so they sit behind the boxes
 box("snowflake", 680, 150, 700, 620, "", "snowflake", dashed=True)
