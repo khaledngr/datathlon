@@ -108,13 +108,16 @@ def main():
     gcs = storage.Client(project=os.environ["GCP_PROJECT_ID"]).bucket(os.environ["GCS_LANDING_BUCKET"])
     names = {k: f"api/{k.split('/')[0]}/{a.date:%Y/%m/%d}/{k.split('/')[1]}_{a.date:%Y%m%d}.json"
              for k in ("weather/stores", "holidays/calendar")}
-    existing = [n for n in names.values() if gcs.blob(n).exists()]
-    if existing and not a.force:
-        print(f"Run {a.date} already in the bucket ({len(existing)} files): nothing to do. --force replaces them.")
+    todo = [k for k, n in names.items() if a.force or not gcs.blob(n).exists()]  # a half-done run only redoes what is missing
+    if not todo:
+        print(f"Run {a.date} already in the bucket ({len(names)} files): nothing to do. --force replaces them.")
         return
 
-    print(f"API pull, run {a.date}")
-    files = {**weather(a.date, a.timeout), **holidays(a.date, a.timeout)}  # every call succeeds before any upload
+    print(f"API pull, run {a.date}" + ("" if len(todo) == len(names) else f", only {', '.join(todo)} (the rest is already in the bucket)"))
+    pulls = {"weather/stores": weather, "holidays/calendar": holidays}
+    files = {}
+    for key in todo:  # every call succeeds before any upload
+        files.update(pulls[key](a.date, a.timeout))
     for key, lines in files.items():
         path = LOCAL_DIR / names[key]
         path.parent.mkdir(parents=True, exist_ok=True)
