@@ -19,3 +19,15 @@ One folder, two clouds: one `terraform apply` builds the Snowflake side and the 
 4. `terraform init` · `terraform plan` (review it) · `terraform apply` · `terraform plan` again must say **No changes**
 
 `*.tfvars`, `*.tfstate` and `.terraform/` are never committed. `.terraform.lock.hcl` is committed: it pins the exact provider versions for the whole team.
+
+## Drift demo (for the defense, about 1 minute)
+
+Drift = someone changes the platform by hand and it no longer matches the code. `terraform plan` catches it.
+
+1. In Snowsight, as SYSADMIN: `ALTER WAREHOUSE DATATHLON_BI_WH SET AUTO_SUSPEND = 3600 WAREHOUSE_SIZE = 'SMALL';` (a "quick fix" that would cost 2x credits and run 1 h after each query)
+2. `terraform plan` → `~ auto_suspend = 3600 -> 60`, `~ warehouse_size = "SMALL" -> "XSMALL"`, `Plan: 0 to add, 1 to change`
+3. `terraform apply` → back to the code's values
+4. `terraform plan` → **No changes**
+
+Tested on 3 Nov 2026 with exactly these steps. What stays manual: [docs/MANUAL_STEPS.md](../docs/MANUAL_STEPS.md).
+

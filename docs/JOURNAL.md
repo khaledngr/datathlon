@@ -91,4 +91,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 83 | Group | Reviewed the plan and said apply | |
 | 84 | Claude | `terraform apply`; then `terraform plan` again | Apply complete (5 added); then **No changes** |
 | 85 | Claude | End-to-end test: uploaded a test CSV with `gcloud`, read it from Snowflake via a temporary stage on `DATATHLON_GCS_INT`; tried a stage on the state bucket | Read OK (1 row); other bucket refused; test file removed |
+| 86 | Claude | Drift demo: changed `DATATHLON_BI_WH` by hand (auto-suspend 3600, size SMALL) as SYSADMIN | `terraform plan`: 1 to change (`3600 -> 60`, `SMALL -> XSMALL`) |
+| 87 | Claude | `terraform apply` to restore, then `terraform plan` | Apply: 1 changed; then **No changes** |
+| 88 | Claude | Wrote `docs/MANUAL_STEPS.md` (12 manual steps and why) and the drift demo script in `terraform/README.md`; step 3 marked done | Step 3 ✅ |
 

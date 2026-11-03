@@ -54,6 +54,7 @@ Details and the reasons behind each choice: [docs/SETUP.md](docs/SETUP.md).
 | [docs/USE_CASES.md](docs/USE_CASES.md) | The use cases (decided first, tools follow) |
 | [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md) | The build, step by step, with owners and checks |
 | [docs/SETUP.md](docs/SETUP.md) | Accounts, tools and settings each member needs |
+| [docs/MANUAL_STEPS.md](docs/MANUAL_STEPS.md) | What is not in Terraform, and why |
 | [docs/TD_INVENTORY.md](docs/TD_INVENTORY.md) | What each TD already built and how we reuse it |
 | [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md) | Project rules and the grading matrix |
 
