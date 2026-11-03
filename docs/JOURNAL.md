@@ -154,3 +154,4 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 146 | Claude | `snowflake/tasks/01_daily_pipeline.sql` (fixed COMMENT order); 7 tasks owned by DATATHLON_ENGINEER; `EXECUTE TASK` → green in 38 s, counts unchanged | |
 | 147 | Claude | Forced failure (fake stock control line): stock task failed, 2 automatic retries, dbt skipped; finalizer bugs fixed (empty LISTAGG, e-mail error, one e-mail per run); line removed, `RETRY LAST` → green, BRONZE and gold identical | No double counting |
 | 148 | Robin + Claude | Full Disk Access for cron (Robin); cron `--check` test OK; daily line `30 5 * * *` installed; Robin added as e-mail recipient, failure e-mail sent once | Step 10 ✅ (D-041) |
+| 149 | Claude | Khaled and Rudy added to `OPS.ALERT_RECIPIENTS` (Robin's go); finalizer now sends one e-mail per address, tested with a fake address: it is refused and logged, Robin still gets the e-mail | D-041 |

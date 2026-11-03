@@ -194,7 +194,9 @@ DECLARE
     failed INTEGER;
     failed_names VARCHAR;
     error_text VARCHAR;
-    recipients VARCHAR;
+    recipients INTEGER;
+    address VARCHAR;
+    c_recipients CURSOR FOR SELECT DISTINCT email FROM DATATHLON.OPS.ALERT_RECIPIENTS WHERE email IS NOT NULL;
     sent INTEGER DEFAULT 0;
     email_error VARCHAR;
     attempt INTEGER;
@@ -215,21 +217,25 @@ BEGIN
     IF (failed > 0 AND attempt < 3) THEN
         email_error := 'attempt ' || attempt || ': waiting for the automatic retry before e-mailing';
     ELSEIF (failed > 0) THEN
-        SELECT NULLIF(LISTAGG(DISTINCT email, ','), '') INTO :recipients FROM DATATHLON.OPS.ALERT_RECIPIENTS;
-        IF (recipients IS NULL) THEN
+        SELECT COUNT(DISTINCT email) INTO :recipients FROM DATATHLON.OPS.ALERT_RECIPIENTS;
+        IF (recipients = 0) THEN
             email_error := 'no recipient in OPS.ALERT_RECIPIENTS';
         ELSE
-            -- a broken e-mail must never stop the run log below: catch the error and keep it
-            BEGIN
-                CALL SYSTEM$SEND_EMAIL('DATATHLON_ALERTS_EMAIL', :recipients,
-                    'Datathlon daily pipeline FAILED: ' || :failed_names,
-                    'Failed tasks: ' || :failed_names || '\nFirst error: ' || COALESCE(:error_text, '?') ||
-                    '\nRun: ' || :run_id || '\nDetails: snowflake/tasks/02_task_history.sql or Snowsight > Monitoring > Task History');
-                sent := ARRAY_SIZE(SPLIT(recipients, ','));
-            EXCEPTION
-                WHEN OTHER THEN
-                    email_error := LEFT(SQLERRM, 500);
-            END;
+            -- one e-mail per address: Snowflake refuses the whole send if one address is not verified, so one bad
+            -- address must not silence the others. A broken e-mail never stops the run log below: errors are kept.
+            FOR r IN c_recipients DO
+                address := r.email;
+                BEGIN
+                    CALL SYSTEM$SEND_EMAIL('DATATHLON_ALERTS_EMAIL', :address,
+                        'Datathlon daily pipeline FAILED: ' || :failed_names,
+                        'Failed tasks: ' || :failed_names || '\nFirst error: ' || COALESCE(:error_text, '?') ||
+                        '\nRun: ' || :run_id || '\nDetails: snowflake/tasks/02_task_history.sql or Snowsight > Monitoring > Task History');
+                    sent := sent + 1;
+                EXCEPTION
+                    WHEN OTHER THEN
+                        email_error := LEFT(COALESCE(email_error || '; ', '') || address || ': ' || SQLERRM, 500);
+                END;
+            END FOR;
         END IF;
     END IF;
 
