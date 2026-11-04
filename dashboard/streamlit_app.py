@@ -21,7 +21,7 @@ import streamlit as st
 
 HERE = Path(__file__).resolve().parent
 GOLD = "DATATHLON.GOLD"
-INK, MUTED, BLUE, LINE, SOFT = "#0B0D1F", "#3E4362", "#3946C0", "#E6E8F0", "#F6F7FA"  # brand/brand-sheet.html
+INK, MUTED, BLUE, LINE, SOFT = "#0B0D1F", "#3E4362", "#3946C0", "#E6E8F0", "#F6F7FA"  # Datathlon colors, same as .streamlit/config.toml
 HOLIDAY = BLUE  # school holidays: the brand blue, very light behind the charts
 RED, GREEN = "#C0392B", "#1F8A5B"
 # categorical colours, all from the brand: blues, ink and greys (no rainbow)

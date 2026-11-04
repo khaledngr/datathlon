@@ -15,7 +15,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 random.seed(8)  # group 8: stable ids, so re-running gives the same file
 
-# Datathlon brand colors (brand/brand-sheet.html) + layer colors
+# Datathlon colors (same as the dashboard) + layer colors
 BLUE, NIGHT = "#3946C0", "#101A4E"
 FILL = {
     "source": "#E8ECFF", "ingest": "#D0EBFF", "bronze": "#FFD8A8", "silver": "#E9ECEF",
