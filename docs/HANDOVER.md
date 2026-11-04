@@ -56,7 +56,9 @@ Evidence: `GOLD.DBT_RUN_RESULTS`, `BRONZE.LOAD_RUNS`, `COPY_HISTORY`, query tags
 
 ## 7. Before the demo (6 Nov): bring all sources to yesterday
 
-Run once per missing day, in this order: `generate_orders.py --next-day` (it refuses days after today), the web loader, `till_feed.py --history` (rewrites identical old files, `COPY INTO` skips them), `pull_apis.py`, `stock_export.py` (skips days already exported), the stage SQL, `dbt/dbt.sh build`.
+Since step 10 (D-043, D-044) this is automatic and no laptop is involved: Cloud Scheduler starts the Cloud Run job `datathlon-morning-job` at 05:30 (web shop Postgres on Cloud SQL), Snowflake Tasks load and run dbt at 06:00. By hand: `gcloud run jobs execute datathlon-morning-job --region europe-west3 --wait` then `EXECUTE TASK DATATHLON.OPS.T_START;`. The manual order below is what the job does.
+
+Run once per missing day, in this order: `generate_orders.py --next-day` (it refuses days after today), the web loader, `till_feed.py --history` (since step 10 it uploads only the files missing from the bucket), `pull_apis.py`, `stock_export.py` (skips days already exported), the stage SQL, `dbt/dbt.sh build`.
 
 ## 8. Traps we already hit
 

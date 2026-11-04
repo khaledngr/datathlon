@@ -9,7 +9,7 @@
         failures number, execution_seconds number(10,2))') %}
     {% set rows = [] %}
     {% for r in results %}
-      {% do rows.append("('" ~ invocation_id ~ "', current_timestamp(), '" ~ flags.WHICH ~ "', '" ~ target.user ~ "', '"
+      {% do rows.append("('" ~ invocation_id ~ "', current_timestamp(), '" ~ flags.WHICH ~ "', current_user(), '"
           ~ r.node.unique_id ~ "', '" ~ r.node.resource_type ~ "', '" ~ r.status ~ "', "
           ~ (r.failures if r.failures is not none else 'null') ~ ", " ~ (r.execution_time | round(2)) ~ ")") %}
     {% endfor %}

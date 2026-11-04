@@ -37,3 +37,9 @@ variable "gcp_region" {
   type        = string
   default     = "europe-west3"
 }
+
+variable "morning_job_image_tag" {
+  description = "Version of the morning job image in Artifact Registry (orchestration/Dockerfile); a new tag = a new deploy"
+  type        = string
+  default     = "1.1.0"
+}

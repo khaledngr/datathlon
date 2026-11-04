@@ -28,7 +28,9 @@ for f in snowflake/stages/0*.sql; do .venv/bin/python snowflake/run_sql.py "$f";
 dbt/dbt.sh build                                                   # BRONZE -> SILVER / QUARANTINE -> GOLD, tests
 ```
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (10-12): [docs/HANDOVER.md](docs/HANDOVER.md).
+Every day after that, nothing to type (step 10, D-043): at **05:30** Cloud Scheduler starts the morning job on Cloud Run (web orders from Postgres on Cloud SQL, till, API and stock files, see [orchestration/](orchestration/), D-044), at **06:00** Snowflake Tasks load the files, check them and run dbt inside Snowflake ([snowflake/tasks/](snowflake/tasks/)).
+
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (11-12): [docs/HANDOVER.md](docs/HANDOVER.md).
 
 ## Repository
 
@@ -36,6 +38,7 @@ Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everythin
 | --- | --- |
 | [sources/](sources/) | Simulated company systems and the shared catalogue |
 | [ingestion/](ingestion/) | Python jobs that load data into Snowflake |
+| [orchestration/](orchestration/) | Morning job: Docker image on Cloud Run + Cloud Scheduler (outside Snowflake) |
 | [snowflake/](snowflake/) | SQL run in Snowflake (setup, stages, Tasks) |
 | [dbt/](dbt/) | Transformations and tests |
 | [terraform/](terraform/) | Infrastructure as code (Snowflake + Google Cloud) |

@@ -1,0 +1,6 @@
+# Only what the morning job needs (no dbt: it runs in Snowflake). Same pinned versions as ../requirements.txt.
+psycopg2-binary==2.9.10
+snowflake-connector-python==3.18.1
+cryptography==44.0.0
+python-dotenv==1.2.4
+google-cloud-storage==2.19.0

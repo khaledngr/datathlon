@@ -1,0 +1,10 @@
+# Docker build context = the repo root, but the image only needs the jobs (orchestration/Dockerfile).
+# Allow-list: everything is left out (.env, keys, .venv, data, terraform) except what is listed below.
+*
+!orchestration/morning_job.py
+!orchestration/requirements.txt
+!sources/
+!ingestion/
+**/__pycache__
+**/*.md
+sources/postgres/docker-compose.yml

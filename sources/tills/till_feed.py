@@ -1,7 +1,7 @@
 """Datathlon · store till feed (step 6). Adapted from TD 3.3 kiosk_sales_generator.py: same NDJSON files and the
 same deliberate defects, now for 8 Datathlon stores, the shared catalogue and the shared demand rules (D-033).
 
-  python sources/tills/till_feed.py --history            # one file per store per day, 1 Sep -> yesterday
+  python sources/tills/till_feed.py --history            # one file per store per day, 1 Sep -> yesterday (uploads the missing ones)
   python sources/tills/till_feed.py --live               # today: a batch every 5 s from all stores (Ctrl+C)
   python sources/tills/till_feed.py --live --batches 12  # stop after 12 batches (the live incident demo)
 
@@ -154,9 +154,13 @@ def history(products, stores, holidays):
             if rows:  # closed on Sunday (France, Belgium): no file
                 paths.append(write_local(f"tills/{day:%Y/%m/%d}/{store['store_id']}_{day:%Y%m%d}.json", rows))
                 rows_total += len(rows)
-    upload(bucket(), paths)
+    # Only the files not yet in the bucket (the daily run sends yesterday's files, not the whole history again).
+    gcs = bucket()
+    in_bucket = {b.name for b in gcs.client.list_blobs(gcs, prefix="tills/")}
+    new = [p for p in paths if str(p.relative_to(LOCAL_DIR)) not in in_bucket]
+    upload(gcs, new)
     print(f"History: {len(paths)} files, {rows_total} rows, {FIRST_DAY} -> {date.today() - timedelta(1)}, "
-          f"uploaded to gs://{os.environ['GCS_LANDING_BUCKET']}/tills/")
+          f"{len(new)} new uploaded to gs://{os.environ['GCS_LANDING_BUCKET']}/tills/")
 
 
 def live(products, stores, interval, batches, rows_per_batch):

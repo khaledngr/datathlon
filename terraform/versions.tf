@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 6.0" # same as the resource pack 09-iac/gcp
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.6" # the Cloud SQL password (D-044)
+    }
   }
 
   # Remote state: bucket created once by hand (D-031), versioned, private. Locking is built in.

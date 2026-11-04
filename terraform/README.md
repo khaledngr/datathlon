@@ -4,10 +4,11 @@ One folder, two clouds: one `terraform apply` builds the Snowflake side and the 
 
 | File | What it declares | Snowflake role used |
 | --- | --- | --- |
-| `versions.tf` | Providers pinned (`snowflake ~> 2.22`, `google ~> 6.0`), remote state in `gs://datathlon-tfstate-513514` | — |
+| `versions.tf` | Providers pinned (`snowflake ~> 2.22`, `google ~> 6.0`, `random ~> 3.6`), remote state in `gs://datathlon-tfstate-513514` | — |
 | `providers.tf` | 3 Snowflake connections (SYSADMIN, SECURITYADMIN, ACCOUNTADMIN) with a key pair; Google with your own sign-in | — |
-| `main.tf` | Database `DATATHLON`, schemas BRONZE / SILVER / QUARANTINE / GOLD, warehouses `DATATHLON_WH` and `DATATHLON_BI_WH` (module), resource monitor (imported from step 2) | SYSADMIN, ACCOUNTADMIN |
-| `roles.tf` | Roles `DATATHLON_ENGINEER` (builds) and `DATATHLON_ANALYST` (reads GOLD only), grants to the 3 members | SECURITYADMIN |
+| `main.tf` | Database `DATATHLON`, schemas BRONZE / SILVER / QUARANTINE / GOLD + `OPS` (tasks, dbt project, step 10), warehouses `DATATHLON_WH` and `DATATHLON_BI_WH` (module), resource monitor (imported from step 2) | SYSADMIN, ACCOUNTADMIN |
+| `roles.tf` | Roles `DATATHLON_ENGINEER` (builds) and `DATATHLON_ANALYST` (reads GOLD only), grants to the 3 members; step 10: `EXECUTE TASK` for the engineer, e-mail integration `DATATHLON_ALERTS_EMAIL` | SECURITYADMIN |
+| `morning_job.tf` | Step 10 (D-044): the morning job on Google Cloud. Postgres 16 on Cloud SQL (web shop database), Artifact Registry, Secret Manager (Postgres password, Snowflake key of the job), service accounts with least privilege, Cloud Run job `datathlon-morning-job`, Cloud Scheduler 05:30 Paris | — (Google) |
 | `storage.tf` | Landing bucket `datathlon-landing-513514` (90-day lifecycle), storage integration `DATATHLON_GCS_INT`, read-only access for Snowflake's Google account | ACCOUNTADMIN, SECURITYADMIN |
 | `modules/warehouse/` | One warehouse with our cost rules (XSMALL, auto-suspend 60 s), from the resource pack | — |
 
