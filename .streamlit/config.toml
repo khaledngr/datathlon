@@ -1,4 +1,4 @@
-# Datathlon dashboard theme (brand/brand-sheet.html), read when Streamlit starts from the repo root. Not a secret.
+# Datathlon dashboard theme, read when Streamlit starts from the repo root. Not a secret.
 [theme]
 base = "light"            # also inside Snowsight, whose dark mode would hide the ink store line
 primaryColor = "#3946C0"
