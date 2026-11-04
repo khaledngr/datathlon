@@ -10,7 +10,9 @@ with checked as (
             when s.sale_id is null                                         then 'missing_sale_id'
             when st.store_id is null                                       then 'unknown_store'
             when s.sold_at_utc is null                                     then 'unparseable_timestamp'
-            when s.sold_at_utc > dateadd(minute, 5, s._loaded_at)          then 'future_timestamp'
+            -- _loaded_at is TIMESTAMP_TZ in the account zone (Los Angeles): compare in UTC, or every sale of the
+            -- last 8 hours looks "future" (found by the live incident, step 12)
+            when s.sold_at_utc > dateadd(minute, 5, convert_timezone('UTC', s._loaded_at)::timestamp_ntz) then 'future_timestamp'
             when p.sku is null                                             then 'unknown_product'
             when s.qty is null or s.qty not between 1 and 20               then 'invalid_quantity'
             when s.price_number is null                                    then 'invalid_price'
