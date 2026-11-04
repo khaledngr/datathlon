@@ -67,7 +67,7 @@ def main():
             cur.execute(f"PUT 'file://{f.as_posix()}' '{target}' AUTO_COMPRESS = FALSE OVERWRITE = TRUE")
         print(f"Uploaded {len(files)} files to @{STAGE}/{version}")
 
-        cur.execute(f"SHOW DBT PROJECTS LIKE 'DATATHLON_DBT' IN SCHEMA DATATHLON.OPS")
+        cur.execute("SHOW DBT PROJECTS LIKE 'DATATHLON_DBT' IN SCHEMA DATATHLON.OPS")
         if cur.fetchall():
             cur.execute(f"ALTER DBT PROJECT {PROJECT} ADD VERSION FROM '@{STAGE}/{version}'")
         else:
