@@ -27,6 +27,7 @@ models:
     description: "Till lines rejected by a quality rule, with the reason, or resent duplicates. Never deleted."
     columns:
       - name: reject_reason
+        description: "First quality rule the line breaks, or duplicate for a resent sale."
         data_tests:
           - not_null
           - accepted_values:
@@ -37,6 +38,7 @@ models:
     description: "Valid store till lines, one row per sale, prices in euros."
     columns:
       - name: sale_id
+        description: "Sale ID sent by the till; the first copy is kept, resends go to quarantine."
         data_tests: [unique, not_null]
       - name: store_id
         data_tests:
@@ -49,8 +51,10 @@ models:
       - name: qty
         data_tests: [not_null]
       - name: unit_price_eur
+        description: "Unit price in euros; a price sent in cents is divided by 100."
         data_tests: [not_null]
       - name: payment
+        description: "Payment method, spellings normalised: CARD or Card -> card, apple pay -> contactless, missing or other -> unknown."
         data_tests:
           - accepted_values: {values: ['card', 'cash', 'contactless', 'unknown']}
 
@@ -63,6 +67,7 @@ models:
         data_tests:
           - accepted_values: {values: ['paid', 'cancelled', 'refunded']}
       - name: fulfilment
+        description: "home_delivery, or click_collect (picked up in a store: counted in that store's stock)."
         data_tests:
           - accepted_values: {values: ['home_delivery', 'click_collect']}
       - name: country
@@ -89,6 +94,7 @@ models:
     description: "Night stock count, one row per day x store x product (UC2)."
     columns:
       - name: stock_key
+        description: "Row key: snapshot_date|store_id|sku."
         data_tests: [unique, not_null]
       - name: store_id
         data_tests:
@@ -114,42 +120,129 @@ models:
         data_tests:
           - accepted_values: {values: ['school', 'public']}
 
+  # GOLD: what the dashboard and the analyst role read. Every column described: the descriptions are also written
+  # to Snowflake as table and column comments (persist_docs), so Snowsight shows them.
   - name: gold_sales_daily
     description: "UC1: units and paid revenue (EUR) per day x channel x country x category. Complete days only (D-040)."
     columns:
       - name: sales_key
+        description: "Row key: sales_date|channel|country|category."
         data_tests: [unique, not_null]
+      - name: sales_date
+        description: "Day of the sale (UTC). A late till event counts on the day it happened, not the day it arrived."
       - name: channel
+        description: "store (till lines) or web (paid web orders, click & collect included: it is ordered online)."
         data_tests:
           - accepted_values: {values: ['store', 'web']}
       - name: country
+        description: "Country of the store (store) or of the order (web)."
         data_tests:
           - accepted_values: {values: ['FR', 'BE', 'ES']}
+      - name: category
+        description: "Product category from the catalogue seed (running, hiking, cycling, ...)."
+      - name: units
+        description: "Units sold."
       - name: revenue_eur
+        description: "Revenue in euros = SUM(qty x unit price). Prices sent in cents are already fixed in silver."
         data_tests: [not_null]
+      - name: orders_or_tickets
+        description: "Distinct web orders (web) or till sales (store)."
+      - name: lines
+        description: "Order lines or till lines behind the row."
 
   - name: gold_stock_cover_daily
     description: "UC2: days of cover per day x store x product, alert under 3 days. Discontinued products excluded."
     columns:
       - name: stock_key
+        description: "Row key: snapshot_date|store_id|sku."
         data_tests: [unique, not_null]
-      - name: on_hand
-        data_tests: [not_null]
-      - name: is_alert
-        data_tests: [not_null]
-      - name: product_name
-        data_tests: [not_null]
+      - name: snapshot_date
+        description: "Day of the night stock count. A store closed that day (Sunday in FR and BE) has no row."
+      - name: store_id
+        description: "Store code (PAR-01, LYO-01, ...), from the stores seed."
       - name: store_city
+        description: "City of the store, for the restock list."
+        data_tests: [not_null]
+      - name: country
+        description: "Country of the store."
+      - name: sku
+        description: "Product code from the catalogue."
+      - name: product_name
+        description: "Product name, for the restock list."
+        data_tests: [not_null]
+      - name: category
+        description: "Product category."
+      - name: on_hand
+        description: "Units on the shelf at the night count."
+        data_tests: [not_null]
+      - name: received
+        description: "Units received that day (deliveries Monday and Thursday)."
+      - name: emergency
+        description: "Units of a same-day emergency transfer (the shelf would have gone negative)."
+      - name: units_sold_7d
+        description: "Units sold in this store over the last 7 calendar days, that day included: tills + click & collect picked up here."
+      - name: avg_daily_units_7d
+        description: "units_sold_7d / 7."
+      - name: days_of_cover
+        description: "on_hand / avg_daily_units_7d: how many days the shelf lasts at the current pace. Null when nothing sold."
+      - name: is_alert
+        description: "True when days_of_cover < 3: restock before it runs out (UC2)."
         data_tests: [not_null]
 
   - name: gold_holidays
     description: "Holidays copied from silver for the dashboard shading: the analyst role reads GOLD only (step 11)."
     columns:
       - name: holiday_key
+        description: "Row key: country|holiday_type|start_date|end_date."
         data_tests: [unique, not_null]
+      - name: country
+        description: "FR, BE or ES."
+      - name: holiday_type
+        description: "school or public."
+      - name: start_date
+        description: "First day of the holiday."
+      - name: end_date
+        description: "Last day of the holiday."
+      - name: holiday_name
+        description: "Name from the OpenHolidays API."
+      - name: share
+        description: "Share of the country on holiday: 0.5 for Belgium's autumn breaks (French- and Dutch-speaking communities differ), else 1."
 
   - name: gold_data_quality_daily
     description: "Till feed quality per file day x store: raw, silver and quarantined lines (by reason), prices fixed."
     columns:
       - name: quality_key
+        description: "Row key: file_date|store_id."
         data_tests: [unique, not_null]
+      - name: file_date
+        description: "Day of the till file (its folder in the bucket), i.e. the day the lines were sent."
+      - name: store_id
+        description: "Store code, or UNKNOWN when the store could not be recognised."
+      - name: raw_lines
+        description: "Lines received. raw_lines = silver_lines + quarantine_lines (test assert_gold_quality_lines_add_up)."
+      - name: silver_lines
+        description: "Lines kept in silver (valid, possibly repaired)."
+      - name: quarantine_lines
+        description: "Lines set aside in QUARANTINE_TILL_SALES, all reasons."
+      - name: quarantine_pct
+        description: "100 x quarantine_lines / raw_lines."
+      - name: price_fixed_from_cents
+        description: "Silver lines whose price was sent in cents and divided by 100 (Lyon, 24 Oct)."
+      - name: q_duplicate
+        description: "Quarantined: the same sale sent again (till retry)."
+      - name: q_missing_sale_id
+        description: "Quarantined: no sale ID."
+      - name: q_unknown_store
+        description: "Quarantined: store name not recognised even after normalising."
+      - name: q_unparseable_timestamp
+        description: "Quarantined: sale time in no known format."
+      - name: q_future_timestamp
+        description: "Quarantined: sale time after the load time, compared in UTC (e.g. year 2099)."
+      - name: q_unknown_product
+        description: "Quarantined: SKU not in the catalogue."
+      - name: q_invalid_quantity
+        description: "Quarantined: quantity missing, not a number or outside 1-20."
+      - name: q_invalid_price
+        description: "Quarantined: price missing or not a number."
+      - name: q_price_not_in_catalogue
+        description: "Quarantined: price matches neither the catalogue price nor 100x it."

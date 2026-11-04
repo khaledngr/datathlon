@@ -56,7 +56,7 @@ Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exis
 
 Evidence: `GOLD.DBT_RUN_RESULTS`, `BRONZE.LOAD_RUNS`, `COPY_HISTORY`, query tags `datathlon:*` in query history, screenshots.
 
-**Done 4 Nov (D-047):** both incidents rehearsed, runbook and IDs in [INCIDENTS.md](INCIDENTS.md). Incident 1 found a time-zone bug in the `future_timestamp` rule, fixed and deployed. Left: screenshots for the slides, README and dbt docs.
+**Done 4 Nov (D-047):** both incidents rehearsed, runbook and IDs in [INCIDENTS.md](INCIDENTS.md). Incident 1 found a time-zone bug in the `future_timestamp` rule, fixed and deployed. dbt docs: every gold column described, written to Snowflake as comments (`persist_docs`); README has a "See the results" section. Left: screenshots for the slides.
 
 ## 7. Before the demo (6 Nov): bring all sources to yesterday
 

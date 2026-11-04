@@ -14,6 +14,7 @@ clean-targets: ["target", "dbt_packages", "logs"]
 
 models:
   datathlon:
+    +persist_docs: {relation: true, columns: true}   # descriptions -> Snowflake comments, visible in Snowsight
     staging:
       +schema: SILVER
       +materialized: view        # parse only: always reflects bronze
