@@ -1,6 +1,6 @@
 # Governance · tags, masking of personal data, showback and budgets
 
-Who sees what is in [slides/access_map.png](slides/access_map.png) and [OWNERSHIP.md](OWNERSHIP.md); what it costs in [COSTS.md](COSTS.md). This page covers the rules that run inside Snowflake. Everything is declared as code ([terraform/governance.tf](../terraform/governance.tf), dbt) except the budgets ([snowflake/setup/04_budgets.sql](../snowflake/setup/04_budgets.sql)), which Terraform cannot declare yet. Live demo: [snowflake/setup/05_governance_check.sql](../snowflake/setup/05_governance_check.sql).
+Who owns what is in [OWNERSHIP.md](OWNERSHIP.md); what it costs in [COSTS.md](COSTS.md). This page covers the rules that run inside Snowflake. Everything is declared as code ([terraform/governance.tf](../terraform/governance.tf), dbt) except the budgets ([snowflake/setup/04_budgets.sql](../snowflake/setup/04_budgets.sql)), which Terraform cannot declare yet. Live demo: [snowflake/setup/05_governance_check.sql](../snowflake/setup/05_governance_check.sql).
 
 ## 1. Tags on every object
 
