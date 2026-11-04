@@ -4,7 +4,8 @@ A silent screen recording (about 7 minutes) of one real run: the sources, the ba
 
 ## Before recording (10 min)
 
-1. **Sign in** to Snowsight and to the Google Cloud console (`rcacarie@albertschool.com`) in the browser you record, and check that both are signed in.
+1. **Sign in** with your own accounts in the browser you record: Snowsight (your user has the engineer role) and the Google Cloud console with your school account (Editor on `datathlon-513514`, enough for Force run and the logs).
+   On the laptop: `git pull` on `main`, `.venv` installed, `.env` filled, `gcloud auth application-default login` done (the two terminal commands write to the bucket with it).
 2. **Open these tabs, in this order** (zoom 125 %, bookmarks bar hidden):
 
 | # | Tab | URL |
