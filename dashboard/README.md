@@ -4,11 +4,18 @@ A Streamlit app that reads **only** the GOLD tables, with the read-only role `DA
 
 | Tab | The question (= the chart title) | Gold tables |
 | --- | --- | --- |
-| UC1 · Sales | Which categories and channels should next week's promotions push? Revenue per day (store, web) with school holidays shaded; units per day in holidays vs other days, per category; last 7 days by category × channel | `GOLD_SALES_DAILY`, `GOLD_HOLIDAYS` |
-| UC2 · Stock alerts | What should we restock, in which store, before it runs out? Restock list of a night count (latest first); alerts per night count and category | `GOLD_STOCK_COVER_DAILY`, `GOLD_HOLIDAYS` |
-| Data quality | Can we trust the store sales figures? % quarantined, quarantined lines per day by reason, prices sent in cents per store, incident list | `GOLD_DATA_QUALITY_DAILY` |
+| UC1 · Sales | Which categories and channels should next week's promotions push? Revenue / units toggle (charts and titles follow it); KPIs with the change vs the previous week; **Push** (top 3 rising category × channel) and **Watch** (top 3 falling) boxes; next school holidays per country; revenue per day (store, web) with school holidays shaded; per day in holidays vs other days, per category; last 7 days by category × channel with the change vs the week before | `GOLD_SALES_DAILY`, `GOLD_HOLIDAYS` |
+| UC2 · Stock alerts | What should we restock, in which store, before it runs out? Alert threshold slider (default 3 days = the UC2 rule) and store filter; alerts, share of shelves and emergency transfers vs the previous night count (same stores); restock list of a night count (latest first); alerts per night count and category, deliveries as dashed lines | `GOLD_STOCK_COVER_DAILY`, `GOLD_HOLIDAYS` |
+| Data quality | Can we trust the store sales figures? Red / green box with the incidents of the period; % quarantined (change vs the previous week), quarantined lines per day by reason, a store × day grid of the share of each day's prices sent in cents (pale: none or the usual stray lines, red: over 10 % = incident), incident list | `GOLD_DATA_QUALITY_DAILY` |
+
+The sidebar shows **This morning** on every tab: alerts of the latest night count (UC2 rule) and any price incident in the latest till file. Click a legend entry on the stacked bars to keep one category, reason or store (shift-click for more).
 
 Rules from the teacher's README: each title is the use case's question; freshness ("data up to …", when gold was built) and source tables shown; queries cached 10 minutes (`st.cache_data(ttl=600)`) so the dashboard does not burn credits.
+
+Three choices to know:
+- **Week-on-week deltas** compare the last 7 days of the selected dates with the 7 days before, and only show when the selection holds 14 days: a half-empty week is never compared with a full one. Stock deltas compare with the previous night count *on the same stores* (on Sunday only the Spanish stores count).
+- **The threshold slider** computes the cover with the same formula as `is_alert` in gold (`on_hand / (units_sold_7d / 7)`), not from the rounded `days_of_cover` (2.96 shows 3.0 but is an alert): at 3 days the dashboard gives exactly gold's alerts. Other values are a what-if; the sidebar keeps the rule.
+- No average basket: a till line is one product, so gold has no store ticket to divide revenue by.
 
 ## Run it
 
