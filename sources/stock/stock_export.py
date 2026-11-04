@@ -3,15 +3,15 @@ per day (TD 2 Part A: export -> stage -> COPY INTO), plus a small control file w
 
   python sources/stock/stock_export.py      # every missing day, 1 Sep -> yesterday, to gs://<bucket>/stock/
 
-Stock follows the REAL sales of the other sources, so UC3's days of cover is consistent with UC1:
+Stock follows the REAL sales of the other sources, so UC2's days of cover is consistent with UC1:
   units sold = store till lines (same generator, seed and clean-up rules as silver: duplicates, bad quantities and
   unknown SKUs left out) + paid click & collect web orders picked up in that store (Postgres).
   night count = yesterday's count - units sold + units received.
 Replenishment (assumption): the warehouse delivers every Monday and Thursday up to 10 days of the store's average
 sales over the last 28 days. That average lags behind a holiday rush, so outdoor products run low in the holidays
-(D-033 story: UC3 alerts below 3 days of cover). If a shelf would go below zero, an emergency transfer from another
+(D-033 story: UC2 alerts below 3 days of cover). If a shelf would go below zero, an emergency transfer from another
 store arrives the same day (column `emergency`), so the count never goes negative.
-Discontinued products keep their last units and are never restocked (UC3 excludes them). Stores closed on Sunday
+Discontinued products keep their last units and are never restocked (UC2 excludes them). Stores closed on Sunday
 (France, Belgium) are not counted that night: no rows.
 """
 import csv

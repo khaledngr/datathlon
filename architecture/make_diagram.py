@@ -58,9 +58,9 @@ box("tasks", 680, 60, 700, 56,
 # 5 sources + the seed. 3 simulated OLTP systems, 2 real public APIs
 box("s_orders", 40, 170, 260, 88, "Web orders · Postgres\nOLTP · web shop database\non Cloud SQL · simulated\nUC1 · web channel", "source")
 box("s_tills", 40, 274, 260, 88, "Store tills · Python feed\nOLTP · JSON files, live every 5 s\nUC1 · store channel\nsends bad rows on purpose", "source")
-box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\n+ control file · simulated · UC3", "source")
-box("s_weather", 40, 482, 260, 88, "Weather · Open-Meteo API\nREAL · free, no key\nforecast + history per store city\nUC1 + UC3 context", "source")
-box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · OpenHolidays API, free\nFR, BE, ES calendars\nUC1 + UC3 context", "source")
+box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\n+ control file · simulated · UC2", "source")
+box("s_weather", 40, 482, 260, 88, "Weather · Open-Meteo API\nREAL · free, no key\nforecast + history per store city\nUC1 + UC2 context", "source")
+box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · OpenHolidays API, free\nFR, BE, ES calendars\nUC1 + UC2 context", "source")
 box("s_seed", 40, 690, 260, 64, "Catalogue · dbt seed\nproducts · stores · holidays", "source")
 
 # ingestion: four methods
@@ -74,10 +74,10 @@ box("dbt", 920, 200, 430, 50, "dbt Projects on Snowflake · tests · seed · doc
 box("bronze", 710, 200, 180, 480, "BRONZE\nraw, as received\n\nweb_orders\nweb_order_lines\ntill_sales_raw\nstock_snapshots\nweather_raw\nholidays_raw", "bronze")
 box("silver", 920, 270, 200, 250, "SILVER\ncleaned, typed,\ndeduplicated\n\norders · till sales\nstock · products\nweather · holidays", "silver")
 box("quarantine", 920, 560, 200, 120, "QUARANTINE\nbad rows + reason:\nduplicate, unknown\nproduct, 2099 date…", "quarantine")
-box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC3\n\ngold_data_quality_daily", "gold")
+box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC2\n\ngold_data_quality_daily", "gold")
 
 # outputs
-box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nreads GOLD only\nUC1 revenue · UC3 alerts\n% rows quarantined", "output")
+box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only ANALYST · BI_WH\nUC1 sales vs holidays\nUC2 restock · quality", "output")
 box("html", 1440, 450, 240, 100, "HTML presentation\nshows the dashboard\nnot sure we keep it here", "output", dashed=True)
 
 # platform on Google Cloud

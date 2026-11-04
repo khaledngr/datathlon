@@ -26,6 +26,14 @@ resource "snowflake_schema" "ops" {
   comment  = "Pipeline objects: Snowflake Tasks, load procedures, dbt project, run log - managed by Terraform"
 }
 
+# ---------- Dashboard app (step 11, D-046): the Streamlit in Snowflake app and its files ----------
+# Not a data layer: no table here. The analyst publishes the app here; GOLD stays read-only for it.
+resource "snowflake_schema" "apps" {
+  database = snowflake_database.datathlon.name
+  name     = "APPS"
+  comment  = "Streamlit in Snowflake dashboard and its source stage - managed by Terraform"
+}
+
 # ---------- Warehouses (same module, two jobs: credits split by use) ----------
 module "pipeline_warehouse" {
   source  = "./modules/warehouse"

@@ -17,10 +17,10 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 9 | Claude | Created the Drive folder `Datathlon · Group 8 project/Brand` and copied the brand files into it (via Google Drive for desktop) | Khaled shares it with Robin and Rudy (D-012) |
 | 10 | Claude | Created this project folder `datathlon/` with README, REQUIREMENTS, DECISIONS, JOURNAL, TD_INVENTORY, USE_CASES. Moved `brand/` inside it | This folder |
 | 11 | Claude | Listed what each TD built and which files we can adapt | [TD_INVENTORY.md](TD_INVENTORY.md) |
-| 12 | Claude | Drafted three use cases, each mapped to TD pieces | [USE_CASES.md](USE_CASES.md), waiting for the group vote (D-013) |
+| 12 | Claude | Drafted the use cases, each mapped to TD pieces | [USE_CASES.md](USE_CASES.md), waiting for the group vote (D-013) |
 | 13 | Claude | Copied `README.md` and `docs/` to the Drive folder `Datathlon · Group 8 project/` so Robin and Rudy can read them | Drive copy; the local `datathlon/` folder stays the master until the Git repo exists |
-| 14 | Group | Voted on the use cases: kept UC1 (daily omnichannel sales) and UC3 (stock cover alert), dropped UC2 | D-013 decided; [USE_CASES.md](USE_CASES.md) updated (UC2 struck through, UC3 no longer optional, rules table redone) |
-| 15 | Claude | Checked the rules against the new scope: dropping UC2 removes the live corrupted-row demo, one ingestion method and one source. Wrote two options to cover them | D-014 proposed, waiting for the group |
+| 14 | Group | Voted on the use cases: UC1 (daily omnichannel sales) and UC2 (stock cover alert) | D-013 decided; [USE_CASES.md](USE_CASES.md) updated (rules table redone) |
+| 15 | Claude | Checked the rules against the chosen scope: the live corrupted-row demo, a third ingestion method and a third source are still missing. Wrote two options to cover them | D-014 proposed, waiting for the group |
 | 16 | Claude | Re-copied `docs/` to the Drive folder | Drive copy in sync |
 | 17 | Group | Chose option A for the incident demo: store sales of UC1 come from the TD 3.3 till feed | D-014 decided |
 | 18 | Group | Decided the final presentation will be an HTML page simulating the pipeline (details later) | D-015 |
@@ -123,7 +123,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 115 | Claude | Reviewed Robin's PR #2 and ran it on Khaled's laptop as `DATATHLON_PIPELINE`: same-day re-run skipped, timeout demo exit 1 with nothing uploaded, backfill 2 Nov loaded 8 + 6 rows, `COPY` re-run 0 | All passed |
 | 116 | Claude | Found that a half-uploaded run was skipped forever; fixed (only the missing file is redone) on Robin's branch; tested on 1 Nov by deleting the holidays file | Re-run fetched only holidays; then skipped; `COPY` loaded each file once |
 | 117 | Khaled | Merged PR #2 (step 7b) after the fix | `main` has step 7b; BRONZE: 3 weather + 3 holiday files |
-| 118 | Claude | Read TD 2 Part A (`03_export_csv.sql`, `04_copy_into.sql`) and UC3; wrote `sources/stock/stock_export.py` (stock from real till + click & collect sales, Monday/Thursday deliveries, control file) | Dry run: 13,500 rows, 0 negative; FR/BE alerts 0.5 % normal → 8.1 % holidays |
+| 118 | Claude | Read TD 2 Part A (`03_export_csv.sql`, `04_copy_into.sql`) and UC2; wrote `sources/stock/stock_export.py` (stock from real till + click & collect sales, Monday/Thursday deliveries, control file) | Dry run: 13,500 rows, 0 negative; FR/BE alerts 0.5 % normal → 8.1 % holidays |
 | 119 | Claude | Exported 63 days to `gs://…/stock/`; re-run exported 0 | |
 | 120 | Claude | Wrote `snowflake/stages/03_stock.sql`; COPY loaded 63 days / 13,500 rows; reconciliation 0 differences; re-run 0 | |
 | 121 | Claude | Broken-file test: a short CSV line was loaded with NULLs (COPY with SELECT does not check the column count). Added NOT NULL + two-way reconciliation, dropped and reloaded the two stock tables, retested: load aborted, file removed, all reconciled | D-037 |
@@ -170,3 +170,9 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 162 | Robin + Claude | Apply phase 1 (network cut during Cloud SQL creation → `terraform import`); Robin put the private key in Secret Manager, local copy deleted; phase 2 refused on IAM → Robin gave Owner to his school account; last 6 resources applied | |
 | 163 | Claude | 06:00 run had failed (laptop off): e-mail to Robin + Khaled, Rudy's address refused and logged. Cloud: `--init-db` 3,520 orders; daily run reconciled; `EXECUTE TASK T_START` green, gold to 3 Nov; Scheduler force-run → run by the scheduler account, adds nothing; laptop cron removed | Step 10 ✅ (D-044) |
 | 164 | Robin + Claude | Robin removed his personal Google account from the project IAM; checked: only Owner `rcacarie@albertschool.com`, Scheduler enabled (next run 5 Nov 05:30 Paris), `terraform plan` → No changes | D-028, D-044 |
+| 165 | Claude | Step 11: `GOLD_HOLIDAYS` + product and city names in stock cover (dbt 36 / 36 green); `dashboard/check_access.py`: analyst reads the 4 GOLD tables, refused elsewhere and on writes | D-045 |
+| 166 | Claude | Streamlit app, 3 tabs, opened in the browser and checked against gold (€3,017,326, 46 alerts on 24 Oct, Lyon 205/223 in cents); fixed: web line flattened by store scale, noisy alert share, incident buried in daily noise; late Aug till events explained | Step 11 ✅ (D-045) |
+| 167 | Robin + Claude | Use case labels made consistent: UC1 sales, UC2 stock cover, everywhere (code comments, dbt descriptions, dashboard, diagram, docs, the BRONZE table comment). Loop: dbt 78 / 78, access check, app reloaded | |
+| 168 | Claude | Khaled merged #3 and deleted `step-9-gold`, which closed #5: merged `main` into steps 10 and 11, step 10 decisions renumbered D-043 / D-044, step 11 D-045, journal #147+; new PR #7 for step 10; dbt redeployed in Snowflake from the merged code (78 / 78) | |
+| 169 | Claude | Dashboard published inside Snowflake (D-046): schema `APPS` + analyst rights in Terraform, `dashboard/deploy_to_snowflake.py`, `environment.yml` with the laptop's versions; Streamlit Community Cloud rejected (key in a third party, public app) | D-046 |
+| 170 | Robin + Claude | Robin applied Terraform (schema `APPS` + analyst rights). App deployed; Snowflake had picked the container runtime (compute pool outside the resource monitor) → redeployed on the warehouse runtime, light brand theme shipped; opened in Snowsight: 3 tabs run, figures = laptop | D-046 |

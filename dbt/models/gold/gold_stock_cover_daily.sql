@@ -1,4 +1,4 @@
--- UC3 · Stock cover alert. Grain: day x store x product.
+-- UC2 · Stock cover alert. Grain: day x store x product.
 -- Days of cover = night stock count of the day / average daily units sold over the last 7 days (that day included,
 -- calendar days, a closed Sunday counts as 0 sales). Alert when below 3 days.
 -- Units sold = till units + paid click & collect units picked up in that store (the same sales the stock follows).
@@ -36,8 +36,10 @@ select
     s.stock_key,
     s.snapshot_date,
     s.store_id,
+    s.store_city,
     s.country,
     s.sku,
+    s.product_name,
     s.category,
     s.on_hand,
     s.received,

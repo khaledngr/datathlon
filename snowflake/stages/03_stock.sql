@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS DATATHLON.BRONZE.STOCK_SNAPSHOTS (
     _file         VARCHAR,         -- METADATA$FILENAME (lineage)
     _file_row     NUMBER,
     _loaded_at    TIMESTAMP_TZ
-) COMMENT = 'Night stock count per store x product, one CSV per day (step 7, UC3)';
+) COMMENT = 'Night stock count per store x product, one CSV per day (step 7, UC2)';
 
 CREATE TABLE IF NOT EXISTS DATATHLON.BRONZE.STOCK_CONTROL (
     snapshot_date DATE,
