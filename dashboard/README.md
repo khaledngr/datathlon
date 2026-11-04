@@ -5,7 +5,7 @@ A Streamlit app that reads **only** the GOLD tables, with the read-only role `DA
 | Tab | The question (= the chart title) | Gold tables |
 | --- | --- | --- |
 | UC1 · Sales | Which categories and channels should next week's promotions push? Revenue per day (store, web) with school holidays shaded; units per day in holidays vs other days, per category; last 7 days by category × channel | `GOLD_SALES_DAILY`, `GOLD_HOLIDAYS` |
-| UC3 · Stock alerts | What should we restock, in which store, before it runs out? Restock list of a night count (latest first); alerts per night count and category | `GOLD_STOCK_COVER_DAILY`, `GOLD_HOLIDAYS` |
+| UC2 · Stock alerts | What should we restock, in which store, before it runs out? Restock list of a night count (latest first); alerts per night count and category | `GOLD_STOCK_COVER_DAILY`, `GOLD_HOLIDAYS` |
 | Data quality | Can we trust the store sales figures? % quarantined, quarantined lines per day by reason, prices sent in cents per store, incident list | `GOLD_DATA_QUALITY_DAILY` |
 
 Rules from the teacher's README: each title is the use case's question; freshness ("data up to …", when gold was built) and source tables shown; queries cached 10 minutes (`st.cache_data(ttl=600)`) so the dashboard does not burn credits.

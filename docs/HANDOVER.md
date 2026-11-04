@@ -27,7 +27,7 @@ Put the models in `dbt/models/gold/` and add `gold: {+schema: GOLD, +materialize
 | Model | Grain and formula | Exclusions / rules |
 | --- | --- | --- |
 | `gold_sales_daily` (UC1) | day × channel (`store` / `web`) × country × category: units, `SUM(qty × unit_price)` | web: `status = 'paid'` and `not is_test`; click & collect counts as **web**; tills from `silver_till_sales` |
-| `gold_stock_cover_daily` (UC3) | day × store × product: `on_hand ÷ average daily units sold over the last 7 days`; `is_alert` when < 3 days | `is_discontinued`; no row = store closed; units sold = till units + paid click & collect units of that store |
+| `gold_stock_cover_daily` (UC2) | day × store × product: `on_hand ÷ average daily units sold over the last 7 days`; `is_alert` when < 3 days | `is_discontinued`; no row = store closed; units sold = till units + paid click & collect units of that store |
 | `gold_data_quality_daily` | file day × store: raw lines, quarantine by `reject_reason`, silver lines, `price_fixed_from_cents` | from `stg_till_sales`, `quarantine_till_sales`, `silver_till_sales` |
 
 Rules to decide and log (D-040): **business day = the UTC date** (all generators stamp UTC; simplest and consistent, state it as an assumption) and **gold shows complete days only** (days every source has reached). Tests to add: gold revenue = silver revenue (copy TD 3.1 `assert_gold_matches_silver.sql`), one hand-checked day, alerts exist in the All Saints holidays (expected ~8 % of FR/BE shelves, ~1 % normally).
@@ -42,7 +42,7 @@ Open choices, see D-022 points 1 and 2: who starts the jobs that run outside Sno
 
 ## 5. Step 11 · Streamlit
 
-Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exist). Pages: UC1 sales by day × channel × category with holidays shaded (`silver_holidays` → copy to gold if the analyst must read it); UC3 alerts table; data quality. The story to show: sales and stock alerts jump in the All Saints holidays (FR +74 % web orders, hiking alerts 22 %), Lyon's 24 Oct cents incident caught and fixed.
+Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exist). Pages: UC1 sales by day × channel × category with holidays shaded (`silver_holidays` → copy to gold if the analyst must read it); UC2 alerts table; data quality. The story to show: sales and stock alerts jump in the All Saints holidays (FR +74 % web orders, hiking alerts 22 %), Lyon's 24 Oct cents incident caught and fixed.
 
 **Done 4 Nov (D-043):** [dashboard/](../dashboard/) — 3 tabs, holidays copied to `GOLD_HOLIDAYS`, product and city names in `GOLD_STOCK_COVER_DAILY`, access test `dashboard/check_access.py` green.
 

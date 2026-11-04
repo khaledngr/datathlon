@@ -17,10 +17,10 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 9 | Claude | Created the Drive folder `Datathlon · Group 8 project/Brand` and copied the brand files into it (via Google Drive for desktop) | Khaled shares it with Robin and Rudy (D-012) |
 | 10 | Claude | Created this project folder `datathlon/` with README, REQUIREMENTS, DECISIONS, JOURNAL, TD_INVENTORY, USE_CASES. Moved `brand/` inside it | This folder |
 | 11 | Claude | Listed what each TD built and which files we can adapt | [TD_INVENTORY.md](TD_INVENTORY.md) |
-| 12 | Claude | Drafted three use cases, each mapped to TD pieces | [USE_CASES.md](USE_CASES.md), waiting for the group vote (D-013) |
+| 12 | Claude | Drafted the use cases, each mapped to TD pieces | [USE_CASES.md](USE_CASES.md), waiting for the group vote (D-013) |
 | 13 | Claude | Copied `README.md` and `docs/` to the Drive folder `Datathlon · Group 8 project/` so Robin and Rudy can read them | Drive copy; the local `datathlon/` folder stays the master until the Git repo exists |
-| 14 | Group | Voted on the use cases: kept UC1 (daily omnichannel sales) and UC3 (stock cover alert), dropped UC2 | D-013 decided; [USE_CASES.md](USE_CASES.md) updated (UC2 struck through, UC3 no longer optional, rules table redone) |
-| 15 | Claude | Checked the rules against the new scope: dropping UC2 removes the live corrupted-row demo, one ingestion method and one source. Wrote two options to cover them | D-014 proposed, waiting for the group |
+| 14 | Group | Voted on the use cases: UC1 (daily omnichannel sales) and UC2 (stock cover alert) | D-013 decided; [USE_CASES.md](USE_CASES.md) updated (rules table redone) |
+| 15 | Claude | Checked the rules against the chosen scope: the live corrupted-row demo, a third ingestion method and a third source are still missing. Wrote two options to cover them | D-014 proposed, waiting for the group |
 | 16 | Claude | Re-copied `docs/` to the Drive folder | Drive copy in sync |
 | 17 | Group | Chose option A for the incident demo: store sales of UC1 come from the TD 3.3 till feed | D-014 decided |
 | 18 | Group | Decided the final presentation will be an HTML page simulating the pipeline (details later) | D-015 |
@@ -123,7 +123,7 @@ Every action, in order. Who did it, what, and where the result is. Decisions the
 | 115 | Claude | Reviewed Robin's PR #2 and ran it on Khaled's laptop as `DATATHLON_PIPELINE`: same-day re-run skipped, timeout demo exit 1 with nothing uploaded, backfill 2 Nov loaded 8 + 6 rows, `COPY` re-run 0 | All passed |
 | 116 | Claude | Found that a half-uploaded run was skipped forever; fixed (only the missing file is redone) on Robin's branch; tested on 1 Nov by deleting the holidays file | Re-run fetched only holidays; then skipped; `COPY` loaded each file once |
 | 117 | Khaled | Merged PR #2 (step 7b) after the fix | `main` has step 7b; BRONZE: 3 weather + 3 holiday files |
-| 118 | Claude | Read TD 2 Part A (`03_export_csv.sql`, `04_copy_into.sql`) and UC3; wrote `sources/stock/stock_export.py` (stock from real till + click & collect sales, Monday/Thursday deliveries, control file) | Dry run: 13,500 rows, 0 negative; FR/BE alerts 0.5 % normal → 8.1 % holidays |
+| 118 | Claude | Read TD 2 Part A (`03_export_csv.sql`, `04_copy_into.sql`) and UC2; wrote `sources/stock/stock_export.py` (stock from real till + click & collect sales, Monday/Thursday deliveries, control file) | Dry run: 13,500 rows, 0 negative; FR/BE alerts 0.5 % normal → 8.1 % holidays |
 | 119 | Claude | Exported 63 days to `gs://…/stock/`; re-run exported 0 | |
 | 120 | Claude | Wrote `snowflake/stages/03_stock.sql`; COPY loaded 63 days / 13,500 rows; reconciliation 0 differences; re-run 0 | |
 | 121 | Claude | Broken-file test: a short CSV line was loaded with NULLs (COPY with SELECT does not check the column count). Added NOT NULL + two-way reconciliation, dropped and reloaded the two stock tables, retested: load aborted, file removed, all reconciled | D-037 |

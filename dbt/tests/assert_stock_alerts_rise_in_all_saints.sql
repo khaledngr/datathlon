@@ -1,4 +1,4 @@
--- UC3 story check (D-033, D-037): in France and Belgium, the share of shelves under 3 days of cover must rise in the
+-- UC2 story check (D-033, D-037): in France and Belgium, the share of shelves under 3 days of cover must rise in the
 -- All Saints school holidays (measured ~8 %) well above the other days (~2 %). If it does not, the cover formula or
 -- the joins are wrong. FAILS (returns a row) if the holiday share is below 5 % or not at least twice the normal share.
 with flagged as (

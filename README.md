@@ -6,7 +6,7 @@ Group 8 project, *Data Engineering & Cloud Infrastructure*, Albert School. Datat
 
 ![Architecture](architecture/datathlon-architecture.svg)
 
-**Use cases:** daily omnichannel sales (UC1) and stock cover alert (UC3), see [docs/USE_CASES.md](docs/USE_CASES.md).
+**Use cases:** daily omnichannel sales (UC1) and stock cover alert (UC2), see [docs/USE_CASES.md](docs/USE_CASES.md).
 
 ## Quick start
 

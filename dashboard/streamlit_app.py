@@ -6,6 +6,7 @@ Reads GOLD only, as the read-only role DATATHLON_ANALYST on the warehouse DATATH
 Same rules as the pack's README: each title is the use case's question, freshness and source table shown, queries
 cached 10 minutes so the dashboard does not burn credits. Inside Snowflake (Streamlit in Snowflake) the same file uses
 the session Snowflake gives it.
+Inside Snowflake: app DATATHLON.APPS.DATATHLON_DASHBOARD, deployed by dashboard/deploy_to_snowflake.py (D-044).
 """
 from datetime import timedelta
 from pathlib import Path
@@ -73,7 +74,9 @@ h1, h2, h3 { font-family: "Barlow Condensed", sans-serif !important; font-style:
 
 sales = load(f"SELECT sales_date, channel, country, category, units, revenue_eur FROM {GOLD}.GOLD_SALES_DAILY")
 holidays_all = load(f"SELECT country, holiday_type, start_date, end_date, holiday_name, share FROM {GOLD}.GOLD_HOLIDAYS")
-built = load("""SELECT MAX(last_altered) AS built FROM DATATHLON.INFORMATION_SCHEMA.TABLES
+# converted in SQL: the laptop connector and Snowpark return time zones differently
+built = load("""SELECT CONVERT_TIMEZONE('Europe/Paris', MAX(last_altered))::TIMESTAMP_NTZ AS built
+                FROM DATATHLON.INFORMATION_SCHEMA.TABLES
                 WHERE table_schema = 'GOLD' AND table_name LIKE 'GOLD_%'""")
 for df, cols in ((sales, ["sales_date"]), (holidays_all, ["start_date", "end_date"])):
     for c in cols:
@@ -96,11 +99,11 @@ if not countries:
 
 holidays = holidays_all[holidays_all.country.isin(countries) & (holidays_all.holiday_type == "school")]
 st.title("Datathlon · daily sales and stock")
-built_at = pd.Timestamp(built.built.iloc[0]).tz_convert("Europe/Paris")
+built_at = pd.Timestamp(built.built.iloc[0])
 st.caption(f"Data up to **{last_day:%a %d %b %Y}** (complete days only) · gold tables built "
            f"{built_at:%d %b %H:%M} Paris · read-only role `DATATHLON_ANALYST`, warehouse `DATATHLON_BI_WH`")
 
-tab_sales, tab_stock, tab_quality = st.tabs(["UC1 · Sales", "UC3 · Stock alerts", "Data quality"])
+tab_sales, tab_stock, tab_quality = st.tabs(["UC1 · Sales", "UC2 · Stock alerts", "Data quality"])
 
 # ---------- UC1 ----------
 with tab_sales:
@@ -160,7 +163,7 @@ with tab_sales:
     st.dataframe(table.sort_values("total", ascending=False).style.format("€{:,.0f}"), width="stretch")
     source("GOLD_SALES_DAILY", "GOLD_HOLIDAYS")
 
-# ---------- UC3 ----------
+# ---------- UC2 ----------
 with tab_stock:
     st.header("What should we restock, in which store, before it runs out?")
     stock = load(f"""SELECT snapshot_date, store_id, store_city, country, sku, product_name, category, on_hand,

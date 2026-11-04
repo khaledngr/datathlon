@@ -86,7 +86,7 @@ models:
         data_tests: [not_null]
 
   - name: silver_stock_daily
-    description: "Night stock count, one row per day x store x product (UC3)."
+    description: "Night stock count, one row per day x store x product (UC2)."
     columns:
       - name: stock_key
         data_tests: [unique, not_null]
@@ -129,7 +129,7 @@ models:
         data_tests: [not_null]
 
   - name: gold_stock_cover_daily
-    description: "UC3: days of cover per day x store x product, alert under 3 days. Discontinued products excluded."
+    description: "UC2: days of cover per day x store x product, alert under 3 days. Discontinued products excluded."
     columns:
       - name: stock_key
         data_tests: [unique, not_null]

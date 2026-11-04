@@ -27,7 +27,7 @@ Each run ends with a table *generator vs postgres* and `Counts match.` (the "don
 | --- | --- |
 | ~5 % refunded, ~3 % cancelled, 1 test order every 3 days (`is_test`) | UC1 excludes them: the data must contain them to show the exclusion works |
 | 30 % click & collect (`store_id` = pick-up store) | omnichannel: ordered online, collected in store |
-| 2 discontinued products, never sold | UC3 exclusion |
+| 2 discontinued products, never sold | UC2 exclusion |
 | `customer_ref` is a code (`C00042`), no name, email or address | GDPR: no personal data in the pipeline (C7) |
 | Same seed → same data on every laptop | `--init` twice gives the same 6,665 lines and €348,406.43 (run on 3 Nov) |
 | Orders follow each country's holidays ([holidays.csv](../catalogue/holidays.csv)) | the dashboard must show the effect of school holidays (D-033) |

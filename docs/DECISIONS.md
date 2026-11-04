@@ -72,18 +72,18 @@ Newest decisions at the bottom.
 - **What:** the group folder is `Data Engineering & Cloud Infrastructure/Datathlon · Group 8 project` in Khaled's school Drive. Khaled shares it with Robin and Rudy himself.
 - **Why:** one place for slides, diagram and video before the 4 Nov upload.
 
-### D-013 · Use cases: UC1 + UC3
+### D-013 · Use cases: UC1 + UC2
 - **Date:** 2026-11-02 · **Status:** Decided (group vote)
-- **What:** we keep **UC1 · Daily omnichannel sales and revenue** and **UC3 · Stock cover alert**. Details in [USE_CASES.md](USE_CASES.md).
-- **Rejected:** UC2 · Live store-till sales with quality control, as a use case of its own. Claude had recommended UC1 + UC2 because UC2 was almost all TD code; the group preferred UC3's business value (stockouts are a real pain point: ~4 % of sales lost).
-- **Consequence:** UC2 carried three things the rules require: the live corrupted-row demo, the micro-batch ingestion method and the till feed source. Without it, we must cover the incident demo another way: see D-014.
+- **What:** we keep **UC1 · Daily omnichannel sales and revenue** and **UC2 · Stock cover alert**. Details in [USE_CASES.md](USE_CASES.md).
+- **Why UC2:** business value: stockouts are a real pain point (~4 % of sales lost), and it builds on UC1's units sold.
+- **Still to cover:** the rules also require a live corrupted-row demo, a micro-batch ingestion method and a third source: see D-014.
 
 ### D-014 · Where the live incident demo comes from: option A
 - **Date:** 2026-11-02 · **Status:** Decided (group chose option A)
-- **Problem:** the rules require a live demo where a corrupted row enters the pipeline and the pipeline reacts. It was planned in UC2, which was dropped (D-013).
+- **Problem:** the rules require a live demo where a corrupted row enters the pipeline and the pipeline reacts. Neither use case has one on its own (D-013).
 - **Option A (Claude's recommendation): the store channel of UC1 comes from the till feed.** UC1 already splits revenue by channel (store / web). Web orders come from Postgres; store sales come from the TD 3.3 till feed generator (micro-batch files), which already sends corrupted rows that dbt sends to quarantine. It reuses TD 3.3 code as planned, and gives us a third source and a third ingestion method for free. UC1 stays one use case; the till feed is its store-side input, not a separate use case.
-- **Option B: a corrupted stock row in UC3.** We inject a bad row into the daily stock snapshot (negative stock, unknown product, wrong store). A dbt test catches it and the row goes to quarantine. Simpler data flow, but we write the quarantine logic ourselves and the demo is a batch load, less visual.
-- **Either way:** the product catalogue stays the dbt **seed** (used by both UC1 categories and UC3 products), and the second incident (Airflow task crash, retry without double counting, TD 4.2) stays in UC1.
+- **Option B: a corrupted stock row in UC2.** We inject a bad row into the daily stock snapshot (negative stock, unknown product, wrong store). A dbt test catches it and the row goes to quarantine. Simpler data flow, but we write the quarantine logic ourselves and the demo is a batch load, less visual.
+- **Either way:** the product catalogue stays the dbt **seed** (used by both UC1 categories and UC2 products), and the second incident (Airflow task crash, retry without double counting, TD 4.2) stays in UC1.
 
 ### D-015 · Final presentation as an HTML page
 - **Date:** 2026-11-02 · **Status:** Decided (principle); content to be specified by the group later
@@ -100,8 +100,8 @@ Newest decisions at the bottom.
 
 ### D-017 · Team split by use case
 - **Date:** 2026-11-02 · **Status:** Proposed by the group, Claude agrees with one addition
-- **What:** one person per story: **UC1** daily sales (Postgres incremental load, dbt sales models, Airflow), **UC3** stock cover (stock file via GCS, days-of-cover model), **data quality** (till feed, quarantine, dbt tests, both live incidents).
-- **Addition:** the shared platform also needs an owner, because the jury grades it on its own (C5 cloud + IaC, C7 security and cost). Proposal: UC3 owner also takes Terraform, GCS and costs (UC3 already uses the GCS bucket); data-quality owner also takes the Streamlit dashboard (it shows the % quarantined). UC1 is the heaviest part, so its owner takes nothing extra.
+- **What:** one person per story: **UC1** daily sales (Postgres incremental load, dbt sales models, Airflow), **UC2** stock cover (stock file via GCS, days-of-cover model), **data quality** (till feed, quarantine, dbt tests, both live incidents).
+- **Addition:** the shared platform also needs an owner, because the jury grades it on its own (C5 cloud + IaC, C7 security and cost). Proposal: UC2 owner also takes Terraform, GCS and costs (UC2 already uses the GCS bucket); data-quality owner also takes the Streamlit dashboard (it shows the % quarantined). UC1 is the heaviest part, so its owner takes nothing extra.
 - **Earlier proposal (Claude), replaced:** split by layer (ingestion / dbt / cloud). The group's split tells the story better: each person defends one business question end to end.
 
 ### D-018 · Architecture diagram, draft v1
@@ -228,7 +228,7 @@ Newest decisions at the bottom.
 ### D-032 · Web shop source (step 4)
 - **Date:** 2026-11-03 · **Status:** Done (group: "move on")
 - **Built on TD 2 and the resource pack, in the Datathlon repo** (the TD folders are not touched): schema and `updated_at` trigger from TD 2 `01_create_merch_db.sql`; Docker Compose from pack `04-source-databases` (Postgres 16.4 only); psycopg2 loading style from the pack. New: a small generator, because TD 2's 240 fixed August orders cannot feed a daily dashboard.
-- **Shared catalogue** `sources/catalogue/`: 30 sports products in 6 categories (€, 2 discontinued for UC3) and 8 stores (FR, BE, ES) with coordinates for the weather API. Used by every source, so web and store sales and stock join on the same codes.
+- **Shared catalogue** `sources/catalogue/`: 30 sports products in 6 categories (€, 2 discontinued for UC2) and 8 stores (FR, BE, ES) with coordinates for the weather API. Used by every source, so web and store sales and stock join on the same codes.
 - **Database:** Docker `datathlon-postgres`, `localhost:5433` only (5432 is Khaled's TD Postgres), password random in each person's `.env`. Schema `datathlon`: `products`, `stores`, `orders` (fulfilment home delivery / click & collect with `store_id`, status paid / cancelled / refunded, `is_test`), `order_lines`. No personal data: customers are codes (GDPR, C7).
 - **Generator** `generate_orders.py`, fixed seed per day: `--init` = 1 Oct to yesterday (1,502 orders, 2,956 lines, 62 refunds on 3 Nov); `--next-day` = one more day + ~2 refunds of orders 2-14 days old. Prints generator vs Postgres counts.
 - **Two watermark bugs found and fixed while testing** (good material for the defense):
@@ -283,13 +283,13 @@ Newest decisions at the bottom.
 ### D-037 · Warehouse stock, daily CSV → GCS → `COPY INTO` (step 7)
 - **Date:** 2026-11-03 · **Status:** Done (group: "Start step 7")
 - **Generator** [sources/stock/stock_export.py](../sources/stock/stock_export.py): the store stock system's night count, one CSV per day (store × product: `on_hand`, `received`, `emergency`, `counted_at`) **plus a control file** with the expected row count and units (classic batch control). Same pattern as TD 2 Part A (export → stage → `COPY INTO` → reconcile).
-- **Stock follows the real sales** of the other sources, so UC3 agrees with UC1: units sold = till lines (same generator and seed, cleaned like silver will: duplicates once, bad quantities and unknown SKUs out) + paid click & collect web orders of that store (Postgres). Night count = yesterday − sold + received.
+- **Stock follows the real sales** of the other sources, so UC2 agrees with UC1: units sold = till lines (same generator and seed, cleaned like silver will: duplicates once, bad quantities and unknown SKUs out) + paid click & collect web orders of that store (Postgres). Night count = yesterday − sold + received.
 - **Replenishment (assumption, shaped for the dashboard, D-033):** deliveries Monday and Thursday up to 10 days of the store's 28-day average sales. The average lags behind a rush, so outdoor products run low in the holidays. A shelf that would go negative gets a same-day emergency transfer (count never negative). Discontinued products keep 6 units, never restocked. FR/BE stores closed on Sunday: no count, no rows.
 - **Measured** (FR + BE shelves under 3 days of cover): 0.5 % on normal days, 5.5 % the week before All Saints, 8.1 % in the holidays (hiking 22 %, cycling 14 %, swimming 11 %); Spain flat (~1 %, no national school holidays). The weekly view from BRONZE peaks at 12 % in the week of 19 Oct.
 - **Snowflake** [snowflake/stages/03_stock.sql](../snowflake/stages/03_stock.sql): file format `CSV_HEADER`, typed tables `BRONZE.STOCK_SNAPSHOTS` and `STOCK_CONTROL` with `METADATA$FILENAME`, `ON_ERROR = ABORT_STATEMENT` (half a snapshot = wrong stock), and a **two-way reconciliation** (each control file = its snapshot; no snapshot without a control file).
 - **Bug found by testing, fixed:** a broken CSV line (4 columns instead of 7) **was loaded** with NULLs: when `COPY` uses `SELECT $1..$7`, Snowflake does not reject short lines. Fix: `NOT NULL` columns (Snowflake enforces them, so the load aborts: "NULL result in a non-nullable column") and the reconciliation now also flags a day with no control file. Tables dropped and reloaded (bronze only, the files stay in the bucket).
 - **Re-run safe twice over:** the export skips days already in the bucket (a snapshot already loaded is never re-sent changed), and `COPY INTO` never loads a file twice.
-- **Tested 3 Nov:** 63 days, 13,500 rows, 512,797 units; reconciliation 0 differences; re-run 0 files; broken file → load aborted, nothing loaded; till sales without a stock row: 0 (UC3 acceptance test).
+- **Tested 3 Nov:** 63 days, 13,500 rows, 512,797 units; reconciliation 0 differences; re-run 0 files; broken file → load aborted, nothing loaded; till sales without a stock row: 0 (UC2 acceptance test).
 
 ### D-038 · Audit fixes before step 8: one date window for every source
 - **Date:** 2026-11-03 · **Status:** Done (Khaled: "Apply fixes 1 to 4", after the audit in journal #123)
@@ -309,13 +309,13 @@ Newest decisions at the bottom.
 - **Other sources:** web orders and lines (clean source, test orders flagged for gold), stock (adds category and `is_discontinued`), weather (latest run per store and day, `is_forecast`), holidays (latest run, same filters as `fetch_holidays.py`: equal to the generator calendar, 16 / 16, checked by a test).
 - **Tests:** 55 pass (build green). Freshness 26 h warn / 50 h error, all pass. **Failure shown:** one extra raw row without a rebuild → `assert_till_rows_accounted_for` FAIL 1; row removed → PASS.
 - **Versions:** dbt pulled `snowflake-connector-python` 3.18.1 and `python-dotenv` 1.2.4; `requirements.txt` updated, loaders re-tested (reconciled, 0 new files).
-- **Known small gap:** the stock export (step 7) counts a quantity sent as text ("1 ") as invalid, silver accepts it as 1: a few units of difference between stock movements and silver sales. Not visible at UC3's grain; to align if the stock is regenerated.
+- **Known small gap:** the stock export (step 7) counts a quantity sent as text ("1 ") as invalid, silver accepts it as 1: a few units of difference between stock movements and silver sales. Not visible at UC2's grain; to align if the stock is regenerated.
 
-### D-040 · dbt gold: UC1 sales, UC3 stock cover, data quality (step 9)
+### D-040 · dbt gold: UC1 sales, UC2 stock cover, data quality (step 9)
 - **Date:** 2026-11-03 · **Status:** Done (Robin: "Go étape 9")
 - **Two rules (assumptions, state them on the slides):** **business day = the UTC date** (every source stamps UTC; a sale at 23:30 Paris time in summer counts on that UTC day). **Gold shows complete days only:** macro [`last_complete_day`](../dbt/macros/last_complete_day.sql) = the earliest of the last web order day, last till file day and last night stock count, so a late source never shows a half day (e.g. web sales without store sales). Data today: 1 Sep → 2 Nov for all three.
 - **`gold_sales_daily` (UC1)**, day × channel × country × category: units, revenue `SUM(qty × unit_price)` in EUR, orders or tickets, lines. Web = paid and not test orders (cancelled, refunded and 21 test orders out); click & collect counts as web (ordered online). Store = `silver_till_sales` (quarantined lines out, cents fixed). Late till events count on the day of the sale (466 lines, a few before 1 Sep). Total: 71,306 units, €2,978,000.82 (store €2,653,297.07, web €324,703.75).
-- **`gold_stock_cover_daily` (UC3)**, day × store × product: days of cover = night count (end of that day) ÷ (units sold over the 7 calendar days up to that day ÷ 7); alert under 3 days. Units sold = till units + paid click & collect units of that store. Discontinued products out; a closed store has no count, so no row (FR/BE Sundays); a closed Sunday counts as 0 sales in the average. Starts on 7 Sep (first full 7-day window). Days of cover null = nothing sold in 7 days, no alert. **Measured:** alerts FR 7.6 % in the All Saints holidays vs 2.1 % on other days, BE 5.5 % vs 1.7 %, ES 1.1 % (no national school break).
+- **`gold_stock_cover_daily` (UC2)**, day × store × product: days of cover = night count (end of that day) ÷ (units sold over the 7 calendar days up to that day ÷ 7); alert under 3 days. Units sold = till units + paid click & collect units of that store. Discontinued products out; a closed store has no count, so no row (FR/BE Sundays); a closed Sunday counts as 0 sales in the average. Starts on 7 Sep (first full 7-day window). Days of cover null = nothing sold in 7 days, no alert. **Measured:** alerts FR 7.6 % in the All Saints holidays vs 2.1 % on other days, BE 5.5 % vs 1.7 %, ES 1.1 % (no national school break).
 - **`gold_data_quality_daily`**, file day × store (`UNKNOWN` when the store cannot be recognised): raw, silver and quarantined lines, quarantine % and one column per reason, prices fixed from cents. 46,600 = 44,365 + 2,235; 745 prices fixed. Lyon 24 Oct: 223 lines, 205 prices fixed from cents, 18 quarantined (8.1 %).
 - **Tests added (15):** `assert_gold_sales_match_silver` (TD 3.1, revenue **and** units); `assert_gold_hand_checked_day` (Belgium, 24 Oct, Cycling, counted by hand from BRONZE, journal #135); `assert_stock_alerts_rise_in_all_saints` (FR/BE holiday share ≥ 5 % and ≥ 2 × the normal share); `assert_gold_quality_lines_add_up`; unique / not null keys and accepted values on the 3 models. `dbt build` 73 / 73. Failure shown: hand-checked value + €0.01 → FAIL 1, then put back.
 - **Access:** the 3 tables are in GOLD, so `DATATHLON_ANALYST` reads them through the Terraform future grant (to check in step 11 with `USE SECONDARY ROLES NONE`). Holidays for the dashboard shading stay in SILVER for now: copy to gold in step 11 if the analyst needs them.
@@ -345,7 +345,7 @@ Newest decisions at the bottom.
 
 ### D-043 · Streamlit dashboard on GOLD (step 11)
 - **Date:** 2026-11-04 · **Status:** Built (Robin: "Go étape 11"); applies D-016
-- **What:** [dashboard/streamlit_app.py](../dashboard/streamlit_app.py), from the pack `08-visualisation/streamlit`: 3 tabs titled with the use-case questions. UC1: revenue per day store and web (two scales: stores sell ~9x the web), school holidays shaded in mint, units per day in holidays vs other days per category, last 7 days table. UC3: restock list of a chosen night count (latest first), alerts per count and category. Data quality: % quarantined, reasons per day, prices sent in cents per store, incident list (a store-day with more than 10 % of its lines in cents). Freshness line (data up to, gold build time), source tables under each tab, queries cached 10 min, Datathlon brand colours and fonts.
+- **What:** [dashboard/streamlit_app.py](../dashboard/streamlit_app.py), from the pack `08-visualisation/streamlit`: 3 tabs titled with the use-case questions. UC1: revenue per day store and web (two scales: stores sell ~9x the web), school holidays shaded in mint, units per day in holidays vs other days per category, last 7 days table. UC2: restock list of a chosen night count (latest first), alerts per count and category. Data quality: % quarantined, reasons per day, prices sent in cents per store, incident list (a store-day with more than 10 % of its lines in cents). Freshness line (data up to, gold build time), source tables under each tab, queries cached 10 min, Datathlon brand colours and fonts.
 - **Access:** role `DATATHLON_ANALYST`, warehouse `DATATHLON_BI_WH`, `USE SECONDARY ROLES NONE` at sign-in. [dashboard/check_access.py](../dashboard/check_access.py) (4 Nov): the 4 GOLD tables readable; BRONZE, SILVER, QUARANTINE, OPS refused; DELETE and CREATE TABLE in GOLD refused.
 - **dbt changes:** `GOLD_HOLIDAYS` (copy of `silver_holidays`: the analyst reads GOLD only); `product_name` and `store_city` added to `silver_stock_daily` and `GOLD_STOCK_COVER_DAILY` so the restock list is readable without SILVER. Tests added (unique key, names not null).
 - **Checked:** dashboard revenue €3,017,326 = gold from 1 Sep (3,017,326.05); 46 stock alerts on 24 Oct in the app and in SQL; Lyon 24 Oct = the only incident (205 of 223 prices in cents, every other store-day 0 to 7).

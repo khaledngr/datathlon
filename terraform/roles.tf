@@ -115,6 +115,17 @@ resource "snowflake_grant_privileges_to_account_role" "analyst_gold_schema" {
   }
 }
 
+# The analyst owns the dashboard app (D-044): a Streamlit in Snowflake app runs with its OWNER's rights, so owned by
+# the analyst it can read GOLD and nothing else. Rights in APPS only: create the app and the stage of its files.
+resource "snowflake_grant_privileges_to_account_role" "analyst_apps_schema" {
+  provider          = snowflake.security
+  account_role_name = snowflake_account_role.analyst.name
+  privileges        = ["USAGE", "CREATE STREAMLIT", "CREATE STAGE"]
+  on_schema {
+    schema_name = snowflake_schema.apps.fully_qualified_name
+  }
+}
+
 # Tables and views that dbt will create later in GOLD are readable automatically
 resource "snowflake_grant_privileges_to_account_role" "analyst_gold_future" {
   for_each          = toset(["TABLES", "VIEWS"])
