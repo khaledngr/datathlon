@@ -7,6 +7,9 @@ then CREATE OR REPLACE STREAMLIT points the app at that folder. Signs in like th
 role DATATHLON_ANALYST, secondary roles off. The app is OWNED by the analyst role and runs with its owner's rights, so
 inside Snowflake it reads GOLD and nothing else, on the BI warehouse. Every member has the analyst role: they open it
 in Snowsight > Projects > Streamlit.
+Warehouse runtime on purpose: Snowflake's default is now a container on a system compute pool, which the resource
+monitor does not cap and which ignores environment.yml. The warehouse runtime runs on DATATHLON_BI_WH (auto-suspend
+60 s, inside the 20-credit monitor) with the package versions of environment.yml.
 """
 import subprocess
 import sys
@@ -19,7 +22,8 @@ from snowflake_session import WAREHOUSE, connect  # noqa: E402
 
 APP = "DATATHLON.APPS.DATATHLON_DASHBOARD"
 STAGE = "DATATHLON.APPS.DASHBOARD_SOURCE"
-FILES = ["streamlit_app.py", "environment.yml", "assets/datathlon-logo.png", "assets/datathlon-mark.png"]
+FILES = ["streamlit_app.py", "environment.yml", "assets/datathlon-logo.png", "assets/datathlon-mark.png",
+         "../.streamlit/config.toml"]  # the brand theme, at .streamlit/ of the app like on the laptop
 SNOWSIGHT = "https://app.snowflake.com/nvtlkdo/rp44213/#/streamlit-apps/" + APP
 
 
@@ -34,19 +38,23 @@ def main():
     with connect() as sf, sf.cursor() as cur:
         cur.execute(f"CREATE STAGE IF NOT EXISTS {STAGE} COMMENT = 'Dashboard files, one folder per version (D-046)'")
         for rel in FILES:
-            folder = f"@{STAGE}/{version}" + (f"/{Path(rel).parent.as_posix()}" if "/" in rel else "")
+            sub = Path(rel.replace("../", "")).parent.as_posix()
+            folder = f"@{STAGE}/{version}" + ("" if sub == "." else f"/{sub}")
             cur.execute(f"PUT 'file://{(HERE / rel).as_posix()}' '{folder}' AUTO_COMPRESS = FALSE OVERWRITE = TRUE")
         print(f"Uploaded {len(FILES)} files to @{STAGE}/{version}")
         cur.execute(f"""CREATE OR REPLACE STREAMLIT {APP}
                         FROM '@{STAGE}/{version}'
                         MAIN_FILE = 'streamlit_app.py'
                         QUERY_WAREHOUSE = {WAREHOUSE}
+                        RUNTIME_NAME = 'SYSTEM$WAREHOUSE_RUNTIME'
                         TITLE = 'Datathlon · sales and stock'
                         COMMENT = 'GOLD dashboard, version {version}, deployed by dashboard/deploy_to_snowflake.py (D-046)'""")
         cur.execute(f"SHOW STREAMLITS LIKE 'DATATHLON_DASHBOARD' IN SCHEMA DATATHLON.APPS")
         cols = [d[0] for d in cur.description]
         row = dict(zip(cols, cur.fetchone()))
-        print(f"{APP}: owner {row['owner']}, warehouse {row['query_warehouse']}")
+        cur.execute(f"DESCRIBE STREAMLIT {APP}")
+        desc = dict(zip([d[0] for d in cur.description], cur.fetchone()))
+        print(f"{APP}: owner {row['owner']}, warehouse {row['query_warehouse']}, runtime {desc.get('runtime_name')}")
         print(f"Open it: {SNOWSIGHT}")
 
 
