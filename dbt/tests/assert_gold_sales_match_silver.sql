@@ -9,10 +9,10 @@ silver as (
     select sum(revenue_eur) as revenue_eur, sum(qty) as units
     from (
         select revenue_eur, qty from {{ ref('silver_till_sales') }}
-        where sale_date <= {{ last_complete_day() }}
+        where sale_date between {{ first_complete_day() }} and {{ last_complete_day() }}
         union all
         select revenue_eur, qty from {{ ref('silver_web_order_lines') }}
-        where status = 'paid' and not is_test and order_date <= {{ last_complete_day() }}
+        where status = 'paid' and not is_test and order_date between {{ first_complete_day() }} and {{ last_complete_day() }}
     )
 )
 

@@ -27,4 +27,4 @@ Inside Snowflake (Streamlit in Snowflake) the same file uses the session Snowfla
 - **Sales:** €3,017,326 paid revenue = `SUM(revenue_eur)` of `GOLD_SALES_DAILY` from 1 Sep (3,017,326.05). In school holidays, units per day: hiking +62 %, cycling +38 %, swimming +12 %; team sports and fitness fall (they peak at back to school).
 - **Stock:** alerts build up towards Wednesday and Saturday (deliveries Monday and Thursday) and jump in the All Saints holidays: 46 on Sat 24 Oct (21 % of shelves), 0 on 3 Nov after the holidays.
 - **Quality:** 4.8 % of 47,241 till lines quarantined; **Lyon, 24 Oct: 205 of 223 prices sent in cents**, fixed by dbt; every other store-day sends 0 to 7.
-- The day slider starts on 1 Sep: 12 late till events (`is_late_event`, a TD 3.3 defect kept on purpose) are dated 30–31 Aug.
+- Gold starts on 1 Sep: the 12 late till events dated 30–31 Aug (`is_late_event`) are left out by `first_complete_day` (Khaled's fix on step 9, D-040).

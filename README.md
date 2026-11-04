@@ -1,6 +1,6 @@
 # Datathlon · data pipeline
 
-Group 8 project, *Data Engineering & Cloud Infrastructure*, Albert School. Datathlon is a fictional omnichannel sports retailer; this is its data platform.
+Project for *Data Engineering & Cloud Infrastructure*, Albert School. Datathlon is a fictional omnichannel sports retailer; this is its data platform.
 
 **Sources** (web shop, store tills, stock, weather, holidays) → **Google Cloud Storage** → **Snowflake** (bronze → silver → gold, with **dbt**) → **Streamlit** dashboard. Infrastructure in **Terraform**, everything in Frankfurt (`europe-west3`).
 
@@ -30,7 +30,7 @@ dbt/dbt.sh build                                                   # BRONZE -> S
 
 Every day after that, nothing to type (step 10, D-043): at **05:30** Cloud Scheduler starts the morning job on Cloud Run (web orders from Postgres on Cloud SQL, till, API and stock files, see [orchestration/](orchestration/), D-044), at **06:00** Snowflake Tasks load the files, check them and run dbt inside Snowflake ([snowflake/tasks/](snowflake/tasks/)).
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (9-12): [docs/HANDOVER.md](docs/HANDOVER.md).
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (11-12): [docs/HANDOVER.md](docs/HANDOVER.md).
 
 ## Repository
 
@@ -51,5 +51,3 @@ Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everythin
 - **One login per person**; scripts use key pairs.
 - **Changes go through a pull request** on `main`.
 - **Every decision** goes in [docs/DECISIONS.md](docs/DECISIONS.md), every action in [docs/JOURNAL.md](docs/JOURNAL.md).
-
-**Team:** Khaled Elnagar, Robin Cacarié, Rudy.

@@ -55,7 +55,7 @@ def get_json(url, params, timeout):
                 return full_url, json.load(r)
         except urllib.error.HTTPError as e:
             if e.code < 500 and e.code != 429:
-                raise SystemExit(f"FAILED {full_url}: HTTP {e.code}, not retried")
+                raise SystemExit(f"FAILED {full_url}: HTTP {e.code}, not retried") from e
             error = f"HTTP {e.code}"
         except (urllib.error.URLError, TimeoutError) as e:
             error = str(getattr(e, "reason", e))

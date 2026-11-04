@@ -7,3 +7,12 @@
         (select max(file_date) from {{ ref('stg_till_sales') }}),
         (select max(snapshot_date) from {{ ref('silver_stock_daily') }})))
 {% endmacro %}
+
+-- The first day EVERY source has: late till events can be dated before the first file (30-31 Aug), which would show
+-- days with a handful of store sales and no web sales. Gold starts here.
+{% macro first_complete_day() %}
+    (select greatest(
+        (select min(order_date) from {{ ref('silver_web_orders') }}),
+        (select min(file_date) from {{ ref('stg_till_sales') }}),
+        (select min(snapshot_date) from {{ ref('silver_stock_daily') }})))
+{% endmacro %}

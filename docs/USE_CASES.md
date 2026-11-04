@@ -22,7 +22,7 @@ All numbers about the company are assumptions, to be stated as such on the slide
 | --- | --- |
 | **Decision** | Which categories and channels to push or cut in next week's promotions |
 | **User** | Category managers, CFO |
-| **Metric** | Paid revenue and units sold. **Grain:** day × channel (store / web) × category. **Formula:** `SUM(quantity × unit_price)` over order lines of paid orders. **Exclusions:** cancelled and refunded orders, test orders |
+| **Metric** | Paid revenue and units sold. **Grain:** day × channel (store / web) × country × category. **Formula:** `SUM(quantity × unit_price)` over order lines of paid orders. **Exclusions:** cancelled and refunded orders, test orders |
 | **Frequency** | Daily at 06:00 for the day before (D-1). Managers decide weekly; real time would cost more without changing the decision |
 | **Acceptance test** | Gold revenue = silver revenue (dbt reconciliation test) and matches the source totals extracted from Postgres for the same day |
 | **Sources** | Postgres "web orders" database (OLTP): orders, order lines, products. Till feed for the store channel (D-014). Weather and holidays as context (D-021) |
@@ -39,8 +39,8 @@ All numbers about the company are assumptions, to be stated as such on the slide
 | **Metric** | **Days of cover** = stock on hand ÷ average daily units sold over the last 7 days. **Grain:** store × product × day. Alert when below 3 days. **Exclusions:** products discontinued, stores closed that day |
 | **Frequency** | Daily, after the night inventory count |
 | **Acceptance test** | Stock on hand in gold = warehouse snapshot total; no product with sales but no stock row |
-| **Sources** | Warehouse system (MySQL or CSV export, OLTP) daily stock snapshot, plus units sold from UC1 |
-| **Ingestion** | Daily **batch** (`COPY INTO` of the snapshot file) |
+| **Sources** | Warehouse system (OLTP): daily stock CSV export after the night count, with a control file; plus units sold from UC1 (tills + paid click & collect) |
+| **Ingestion** | Daily **batch** (`COPY INTO` of the snapshot file, reconciled against the control file on every run) |
 | **Reused from** | TD 2 Part A (export → stage → `COPY INTO`), dbt patterns from TD 3 |
 | **New work** | The stock dataset and the days-of-cover model (not in any TD) |
 
@@ -54,7 +54,7 @@ All numbers about the company are assumptions, to be stated as such on the slide
 | Several ingestion methods | Incremental `MERGE` and micro-batch files (UC1), daily `COPY INTO` batch (UC2) | Incremental `MERGE` (UC1), daily `COPY INTO` batch (UC2) |
 | dbt with tests and a seed | Both; the seed is the product catalogue | Same |
 | Corrupted row shown live | Bad till row → quarantine (UC1, TD 3.3 code) | Bad stock row → quarantine (UC2, new code) |
-| Two incident scenarios | Bad till data; Airflow task crash and retry without double counting (TD 4.2) | Bad stock row; same Airflow crash |
+| Two incident scenarios | Bad till data (quarantine); broken stock file, load aborted with nothing half-loaded (D-037); a Snowflake Task failure and retry without double counting comes with step 10 (D-022) | Bad stock row; a task failure |
 
 ## Choice
 

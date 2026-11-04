@@ -36,7 +36,8 @@ def arrow(key, points, label="", dashed=False):
 
 
 # ---- layout ---------------------------------------------------------------
-# No parentheses in labels (group request, 2 Nov): TD references are written "· TD2".
+# No parentheses in labels (group request, 2 Nov). No TD numbers: the diagram shows Datathlon's architecture;
+# where each part comes from is in docs/TD_INVENTORY.md (D-041).
 box("title", 40, 0, 900, 40, "Data Pipeline of Datathlon", "tool", size=26)
 
 # containers first, so they sit behind the boxes
@@ -49,28 +50,28 @@ box("cloud_label", 60, 818, 700, 30, "GOOGLE CLOUD · our one cloud provider · 
 # Snowflake Tasks take over at 06:00
 box("morning", 40, 60, 590, 56,
     "Morning job · Docker image on Cloud Run · Cloud Scheduler 05:30\n"
-    "web orders → BRONZE · till, stock, API files → GCS · TD4.1 + resource pack", "tasks", size=15)
+    "web orders → BRONZE · till, stock, API files → GCS", "tasks", size=15)
 box("tasks", 680, 60, 700, 56,
     "Snowflake Tasks · every day 06:00: COPY INTO + checks → dbt build → gold\n"
     "a failed check stops the run · 2 automatic retries · a finalizer logs every run", "tasks", size=15)
 
 # 5 sources + the seed. 3 simulated OLTP systems, 2 real public APIs
 box("s_orders", 40, 170, 260, 88, "Web orders · Postgres\nOLTP · web shop database\non Cloud SQL · simulated\nUC1 · web channel", "source")
-box("s_tills", 40, 274, 260, 88, "Store tills · Python feed · TD3.3\nOLTP · a JSON file every 5 s\nUC1 · store channel\nsends bad rows on purpose", "source")
-box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\nsimulated · UC2", "source")
+box("s_tills", 40, 274, 260, 88, "Store tills · Python feed\nOLTP · JSON files, live every 5 s\nUC1 · store channel\nsends bad rows on purpose", "source")
+box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\n+ control file · simulated · UC2", "source")
 box("s_weather", 40, 482, 260, 88, "Weather · Open-Meteo API\nREAL · free, no key\nforecast + history per store city\nUC1 + UC2 context", "source")
 box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · OpenHolidays API, free\nFR, BE, ES calendars\nUC1 + UC2 context", "source")
-box("s_seed", 40, 690, 260, 64, "Product catalogue · CSV seed\nin the dbt repo · UC1 + UC2", "source")
+box("s_seed", 40, 690, 260, 64, "Catalogue · dbt seed\nproducts · stores · holidays", "source")
 
 # ingestion: four methods
-box("i_incr", 360, 170, 270, 88, "Incremental load · TD2\nPython · watermark + MERGE\npulls new rows once a day\nin the 05:30 Cloud Run job", "ingest")
-box("i_micro", 360, 274, 270, 88, "Micro-batch · TD3.3\nfiles → GCS bucket → COPY INTO\ndaily · live demo every 5 s", "ingest")
-box("i_batch", 360, 378, 270, 88, "Daily batch · TD2\nCSV → GCS bucket → COPY INTO\nonce a day", "ingest")
-box("i_api", 360, 482, 270, 192, "API pull · resource pack\n05-ingestion-methods\n\nPython · JSON files\n→ GCS → COPY INTO\nonce a day\ntimeout, retry, fail loudly", "ingest")
+box("i_incr", 360, 170, 270, 88, "Incremental load\nPython · watermark + MERGE\nin the 05:30 Cloud Run job\nreconciled on every run", "ingest")
+box("i_micro", 360, 274, 270, 88, "Micro-batch\nfiles → GCS bucket → COPY INTO\nevery few minutes", "ingest")
+box("i_batch", 360, 378, 270, 88, "Daily batch\nCSV → GCS bucket → COPY INTO\nchecked against the control file", "ingest")
+box("i_api", 360, 482, 270, 192, "API pull\n\nPython · JSON files\n→ GCS → COPY INTO\nonce a day\ntimeout, retry, fail loudly", "ingest")
 
 # inside Snowflake
-box("dbt", 920, 200, 430, 50, "dbt Projects on Snowflake · TD3.2 · tests · seed", "tool")
-box("bronze", 710, 200, 180, 480, "BRONZE\nraw, as received\n\nweb_orders\ntill_sales\nstock_snapshot\nweather\nholidays", "bronze")
+box("dbt", 920, 200, 430, 50, "dbt Projects on Snowflake · tests · seed · docs", "tool")
+box("bronze", 710, 200, 180, 480, "BRONZE\nraw, as received\n\nweb_orders\nweb_order_lines\ntill_sales_raw\nstock_snapshots\nweather_raw\nholidays_raw", "bronze")
 box("silver", 920, 270, 200, 250, "SILVER\ncleaned, typed,\ndeduplicated\n\norders · till sales\nstock · products\nweather · holidays", "silver")
 box("quarantine", 920, 560, 200, 120, "QUARANTINE\nbad rows + reason:\nduplicate, unknown\nproduct, 2099 date…", "quarantine")
 box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC2\n\ngold_data_quality_daily", "gold")
@@ -80,7 +81,7 @@ box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only ANALYST ·
 box("html", 1440, 450, 240, 100, "HTML presentation\nshows the dashboard\nnot sure we keep it here", "output", dashed=True)
 
 # platform on Google Cloud
-box("terraform", 60, 860, 380, 84, "Terraform · TD4.2 + resource pack\nSnowflake database, warehouses, roles, task rights\nbucket · Cloud Run · Cloud SQL · secrets · state", "tool")
+box("terraform", 60, 860, 380, 84, "Terraform\nSnowflake database, warehouses, roles, task rights\nbucket · Cloud Run · Cloud SQL · secrets · state", "tool")
 box("gha", 460, 860, 300, 84, "GitHub Actions\nterraform plan on every pull request", "tool")
 box("gcs", 780, 860, 340, 84, "GCS bucket\nlanding zone for till, stock, API files\n+ Terraform state", "tool")
 box("cost", 1140, 860, 520, 84, "Costs & security\nSnowflake resource monitor: alert 80 %, stop 100 %\nGCP budget alert · key-pair login · read-only role on GOLD", "tool")
@@ -157,7 +158,7 @@ def text_offset(key, free_text):
 
 def label_at(pts):
     """Baseline position of an arrow label: beside a vertical arrow, above a horizontal one."""
-    (x0, y0), (x1, y1) = pts[0], pts[1]
+    (x0, y0), (x1, _) = pts[0], pts[1]
     if len(pts) > 2:
         return x0 + 48, y0 - 8
     if x0 == x1:
@@ -263,7 +264,7 @@ for key, x, y, w, h, text, kind, dashed, size in boxes:
     for slug, ix, iy in icon_slots(key, x, y, h, free):
         inner = logo_svg(slug).replace("<svg ", f'<svg x="{ix}" y="{iy}" width="{ICON}" height="{ICON}" ', 1)
         svg.append(inner)
-for key, pts, label, dashed in arrows:
+for _key, pts, label, dashed in arrows:
     dash = ' stroke-dasharray="6 5"' if dashed else ""
     d = " ".join(f"{px},{py}" for px, py in pts)
     svg.append(f'<polyline points="{d}" fill="none" stroke="{NIGHT}" stroke-width="2" marker-end="url(#h)"{dash}/>')

@@ -82,9 +82,7 @@ for df, cols in ((sales, ["sales_date"]), (holidays_all, ["start_date", "end_dat
     for c in cols:
         df[c] = pd.to_datetime(df[c]).dt.date
 
-# both channels from the first web order: a few late till events (is_late_event) are dated 30-31 Aug, kept in gold
-first_day = sales[sales.channel == "web"].sales_date.min()
-last_day = sales.sales_date.max()
+first_day, last_day = sales.sales_date.min(), sales.sales_date.max()  # gold holds complete days only (D-040)
 
 with st.sidebar:
     st.image(str(HERE / "assets" / "datathlon-logo.png"), width="stretch")

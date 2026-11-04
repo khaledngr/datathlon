@@ -93,14 +93,14 @@ def day_orders(day, first_order_id, products, stores, holidays):
                       "unit_price_eur": sellable[0]["price_eur"]})
     # the weighted draw can pick the same sku twice in one order: keep one line per sku, then renumber
     seen, unique_lines = set(), []
-    for l in lines:
-        if (l["order_id"], l["sku"]) not in seen:
-            seen.add((l["order_id"], l["sku"]))
-            unique_lines.append(l)
+    for line in lines:
+        if (line["order_id"], line["sku"]) not in seen:
+            seen.add((line["order_id"], line["sku"]))
+            unique_lines.append(line)
     for o in orders:
-        own = [l for l in unique_lines if l["order_id"] == o["order_id"]]
-        for k, l in enumerate(own, start=1):
-            l["line_no"] = k
+        own = [line for line in unique_lines if line["order_id"] == o["order_id"]]
+        for k, line in enumerate(own, start=1):
+            line["line_no"] = k
     return orders, unique_lines
 
 
@@ -147,7 +147,7 @@ def counts(cur):
         SELECT (SELECT count(*) FROM datathlon.products), (SELECT count(*) FROM datathlon.stores),
                (SELECT count(*) FROM datathlon.orders), (SELECT count(*) FROM datathlon.order_lines),
                (SELECT count(*) FROM datathlon.orders WHERE status = 'refunded')""")
-    return dict(zip(["products", "stores", "orders", "order_lines", "refunded"], cur.fetchone()))
+    return dict(zip(["products", "stores", "orders", "order_lines", "refunded"], cur.fetchone(), strict=True))
 
 
 def main():
@@ -175,9 +175,9 @@ def main():
         holidays = load_holidays()
         before = counts(cur)
         for day in days:
-            o, l = insert_day(cur, day, products, stores, holidays, simulate_time=a.init)
-            written["orders"] += o
-            written["order_lines"] += l
+            n_orders, n_lines = insert_day(cur, day, products, stores, holidays, simulate_time=a.init)
+            written["orders"] += n_orders
+            written["order_lines"] += n_lines
             written["refunded"] += refund_some(cur, day, simulate_time=a.init)
         after = counts(cur)
 
