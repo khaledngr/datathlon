@@ -246,3 +246,29 @@ models:
         description: "Quarantined: price missing or not a number."
       - name: q_price_not_in_catalogue
         description: "Quarantined: price matches neither the catalogue price nor 100x it."
+
+  - name: gold_cost_showback_daily
+    description: "Showback / chargeback: Snowflake credits of our warehouses per day and team, idle time shared out so the total equals the bill (docs/GOVERNANCE.md)."
+    columns:
+      - name: showback_key
+        description: "Row key: usage_date|warehouse_name|cost_center."
+        data_tests: [unique, not_null]
+      - name: usage_date
+        description: "UTC day of the usage."
+        data_tests: [not_null]
+      - name: warehouse_name
+        description: "DATATHLON_WH (pipeline) or DATATHLON_BI_WH (dashboard)."
+      - name: cost_center
+        description: "Team that pays: ingestion, transformation, bi, or platform (shared, unattributed work)."
+        data_tests:
+          - accepted_values: {values: ["ingestion", "transformation", "bi", "platform"]}
+      - name: owner
+        description: "Team member who answers for that cost (docs/OWNERSHIP.md)."
+      - name: query_credits
+        description: "Credits of the team's queries (QUERY_ATTRIBUTION_HISTORY)."
+      - name: idle_credits
+        description: "The team's share of warehouse time with no query running (start-up, 60 s before auto-suspend)."
+      - name: total_credits
+        description: "query_credits + idle_credits: what the team is charged."
+      - name: total_usd
+        description: "total_credits x the account's price per credit (var credit_price_usd)."

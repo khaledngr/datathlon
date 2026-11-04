@@ -71,7 +71,7 @@ def check():
     from google.cloud import storage
     import os
     log(f"Postgres: last web order day {last_order_day()}")
-    with connect("morning_job:check") as sf, sf.cursor() as cur:
+    with connect("ingestion:morning_job_check") as sf, sf.cursor() as cur:
         cur.execute("SELECT CURRENT_USER(), CURRENT_ROLE(), (SELECT MAX(order_ts)::DATE FROM WEB_ORDERS)")
         log("Snowflake: user %s, role %s, last web order day in BRONZE %s" % cur.fetchone())
     gcs = storage.Client(project=os.environ["GCP_PROJECT_ID"]).bucket(os.environ["GCS_LANDING_BUCKET"])

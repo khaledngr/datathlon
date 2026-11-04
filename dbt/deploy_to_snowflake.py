@@ -57,7 +57,7 @@ def main():
     a = ap.parse_args()
 
     version = version_name()
-    with tempfile.TemporaryDirectory() as tmp, connect("deploy:dbt", schema="OPS") as sf, sf.cursor() as cur:
+    with tempfile.TemporaryDirectory() as tmp, connect("transformation:deploy_dbt", schema="OPS") as sf, sf.cursor() as cur:
         root = Path(tmp)
         files = bundle(root)
         cur.execute(f"CREATE STAGE IF NOT EXISTS {STAGE} COMMENT = 'Uploaded dbt project files, one folder per version'")

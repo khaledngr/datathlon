@@ -15,21 +15,42 @@ clean-targets: ["target", "dbt_packages", "logs"]
 models:
   datathlon:
     +persist_docs: {relation: true, columns: true}   # descriptions -> Snowflake comments, visible in Snowsight
+    +post-hook: "{{ apply_governance_tags() }}"      # domain, source, confidentiality tags (docs/GOVERNANCE.md)
+    +meta: {confidentiality: internal}
     staging:
       +schema: SILVER
       +materialized: view        # parse only: always reflects bronze
+      stg_till_sales: {+meta: {data_domain: sales, source_system: store_tills, confidentiality: confidential}}
+      stg_weather_days: {+meta: {data_domain: context, source_system: open_meteo_api, confidentiality: public}}
     silver:
       +schema: SILVER
       +materialized: table
+      silver_till_sales: {+meta: {data_domain: sales, source_system: store_tills, confidentiality: confidential}}
+      silver_web_orders: {+meta: {data_domain: web_orders, source_system: web_shop_postgres, confidentiality: confidential}}
+      silver_web_order_lines: {+meta: {data_domain: web_orders, source_system: web_shop_postgres}}
+      silver_stock_daily: {+meta: {data_domain: stock, source_system: store_stock_export}}
+      silver_weather_daily: {+meta: {data_domain: context, source_system: open_meteo_api, confidentiality: public}}
+      silver_holidays: {+meta: {data_domain: context, source_system: openholidays_api, confidentiality: public}}
     quarantine:
       +schema: QUARANTINE
       +materialized: table
+      +meta: {data_domain: quality, source_system: store_tills, confidentiality: confidential}
     gold:
       +schema: GOLD              # the analyst role reads GOLD only (Terraform future grant)
       +materialized: table
+      gold_sales_daily: {+meta: {data_domain: sales}}
+      gold_stock_cover_daily: {+meta: {data_domain: stock}}
+      gold_data_quality_daily: {+meta: {data_domain: quality}}
+      gold_holidays: {+meta: {data_domain: context, confidentiality: public}}
+      gold_cost_showback_daily: {+meta: {data_domain: cost, source_system: snowflake_metering}}
+
+vars:
+  credit_price_usd: 3.90         # our account's price per credit (ORGANIZATION_USAGE.USAGE_IN_CURRENCY_DAILY, docs/COSTS.md)
 
 seeds:
   datathlon:
+    +post-hook: "{{ apply_governance_tags() }}"
+    +meta: {data_domain: catalogue, source_system: catalogue_seed, confidentiality: internal}
     +schema: SILVER
     products:
       +column_types: {price_eur: "number(8,2)"}

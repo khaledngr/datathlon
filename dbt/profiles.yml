@@ -13,7 +13,7 @@ datathlon:
       database: DATATHLON
       schema: SILVER
       threads: 4
-      query_tag: "datathlon:dbt"
+      query_tag: "datathlon:transformation:dbt"
     # dbt Projects on Snowflake (production, D-043): runs as the session or task owner, no account, user or key
     # needed (Snowflake ignores them), started by the task OPS.T_DBT_BUILD with --target prod.
     prod:
@@ -25,4 +25,4 @@ datathlon:
       database: DATATHLON
       schema: SILVER
       threads: 4
-      query_tag: "datathlon:dbt-snowflake"
+      query_tag: "datathlon:transformation:dbt_snowflake"

@@ -25,3 +25,13 @@ sources:
         description: "Open-Meteo daily weather per store, one row per API call (step 7b)."
       - name: holidays_raw
         description: "OpenHolidays school and public holidays FR, BE, ES, one row per API call (step 7b)."
+
+  - name: snowflake_usage
+    database: SNOWFLAKE
+    schema: ACCOUNT_USAGE
+    description: "Snowflake's own metering (up to 8 h late), read for showback / chargeback. Needs SNOWFLAKE.USAGE_VIEWER and GOVERNANCE_VIEWER (terraform/governance.tf)."
+    tables:
+      - name: query_attribution_history
+        description: "Credits used by each query, with its query tag and warehouse (idle time not included)."
+      - name: warehouse_metering_history
+        description: "Credits billed per warehouse and hour, idle time included."

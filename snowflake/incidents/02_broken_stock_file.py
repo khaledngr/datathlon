@@ -38,7 +38,7 @@ def main():
     from google.cloud import storage  # Google sign-in: gcloud auth application-default login
     gcs = storage.Client(project=os.environ["GCP_PROJECT_ID"]).bucket(os.environ["GCS_LANDING_BUCKET"])
     blob = gcs.blob("stock/2026/08/31/stock_20260831.csv")
-    with connect("incident:stock", schema="OPS") as sf, sf.cursor() as c:
+    with connect("ingestion:incident_stock", schema="OPS") as sf, sf.cursor() as c:
         def counts(label):
             c.execute(COUNTS)
             rows, units, controls, last = c.fetchone()
