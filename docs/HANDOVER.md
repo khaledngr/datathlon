@@ -47,7 +47,7 @@ Open choices, see D-022 points 1 and 2: who starts the jobs that run outside Sno
 
 Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exist). Pages: UC1 sales by day × channel × category with holidays shaded (`silver_holidays` → copy to gold if the analyst must read it); UC2 alerts table; data quality. The story to show: sales and stock alerts jump in the All Saints holidays (FR +74 % web orders, hiking alerts 22 %), Lyon's 24 Oct cents incident caught and fixed.
 
-**Done 4 Nov (D-045):** [dashboard/](../dashboard/) — 3 tabs, holidays copied to `GOLD_HOLIDAYS`, product and city names in `GOLD_STOCK_COVER_DAILY`, access test `dashboard/check_access.py` green.
+**Done 4 Nov (D-045):** [dashboard/](../dashboard/) — 3 tabs, holidays copied to `GOLD_HOLIDAYS`, product and city names in `GOLD_STOCK_COVER_DAILY`, access test `dashboard/check_access.py` green. Published inside Snowflake as `APPS.DATATHLON_DASHBOARD` (D-046).
 
 ## 6. Step 12 · Incidents and evidence
 

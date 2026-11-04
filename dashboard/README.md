@@ -20,7 +20,13 @@ Rules from the teacher's README: each title is the use case's question; freshnes
 
 Opens at http://localhost:8501. Sign-in (`snowflake_session.py`): your own user and key from `.env` (or `DASHBOARD_USER` / `DASHBOARD_PRIVATE_KEY_PATH`), role `DATATHLON_ANALYST`, then `USE SECONDARY ROLES NONE`: our users have `DEFAULT_SECONDARY_ROLES = ALL`, which would add the engineer's rights and hide a missing grant. No `secrets.toml`: the key path comes from `.env` like every other script.
 
-Inside Snowflake (Streamlit in Snowflake) the same file uses the session Snowflake gives it.
+## Inside Snowflake (the web app, D-046)
+
+```bash
+.venv/bin/python dashboard/deploy_to_snowflake.py    # files -> stage APPS.DASHBOARD_SOURCE, then CREATE OR REPLACE STREAMLIT
+```
+
+The app `DATATHLON.APPS.DATATHLON_DASHBOARD` opens in Snowsight > Projects > Streamlit (the script prints its URL). It is owned by `DATATHLON_ANALYST` and runs with its owner's rights: GOLD only, on `DATATHLON_BI_WH`. Every member has the analyst role. Packages: `environment.yml`, same versions as the laptop. Redeploy after each change of the app.
 
 ## What it shows (data 1 Sep → 3 Nov, checked 4 Nov)
 
