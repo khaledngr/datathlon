@@ -36,8 +36,7 @@ def arrow(key, points, label="", dashed=False):
 
 
 # ---- layout ---------------------------------------------------------------
-# No parentheses in labels (group request, 2 Nov). No TD numbers: the diagram shows Datathlon's architecture;
-# where each part comes from is in docs/TD_INVENTORY.md (D-041).
+# No parentheses in labels (group request, 2 Nov). No TD numbers: the diagram shows Datathlon's architecture (D-041).
 box("title", 40, 0, 900, 40, "Data Pipeline of Datathlon", "tool", size=26)
 
 # containers first, so they sit behind the boxes

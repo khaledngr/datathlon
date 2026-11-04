@@ -49,7 +49,7 @@ def main():
                         RUNTIME_NAME = 'SYSTEM$WAREHOUSE_RUNTIME'
                         TITLE = 'Datathlon · sales and stock'
                         COMMENT = 'GOLD dashboard, version {version}, deployed by dashboard/deploy_to_snowflake.py (D-046)'""")
-        cur.execute(f"SHOW STREAMLITS LIKE 'DATATHLON_DASHBOARD' IN SCHEMA DATATHLON.APPS")
+        cur.execute("SHOW STREAMLITS LIKE 'DATATHLON_DASHBOARD' IN SCHEMA DATATHLON.APPS")
         cols = [d[0] for d in cur.description]
         row = dict(zip(cols, cur.fetchone()))
         cur.execute(f"DESCRIBE STREAMLIT {APP}")
