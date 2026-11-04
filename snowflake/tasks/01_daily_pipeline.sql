@@ -1,7 +1,7 @@
 -- Datathlon · the daily pipeline inside Snowflake (step 10, D-043). Adapted from the resource pack
 -- 06-orchestration-and-docker/snowflake-tasks/daily_pipeline_tasks.sql and TD 3.2 (dbt project started by a task).
 --
---   05:30 Paris  laptop cron -> Docker morning job: web orders -> BRONZE, till / stock / API files -> GCS
+--   05:30 Paris  Cloud Scheduler -> Cloud Run morning job: web orders -> BRONZE, till / stock / API files -> GCS
 --   06:00 Paris  T_START ──┬─> T_LOAD_TILLS ──┐
 --                          ├─> T_LOAD_STOCK ──┤ (stock reconciliation must pass, or the task FAILS)
 --                          ├─> T_LOAD_API ────┼─> T_DBT_BUILD (EXECUTE DBT PROJECT: build = models + tests)
