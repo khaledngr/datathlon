@@ -19,6 +19,6 @@ dbt/dbt.sh docs generate && dbt/dbt.sh docs serve   # lineage graph
 | quarantine | `quarantine_till_sales`: rejected or duplicate till lines with `reject_reason` | QUARANTINE |
 | gold | `gold_sales_daily` (UC1), `gold_stock_cover_daily` (UC2), `gold_data_quality_daily`: tables, complete days only (macro `last_complete_day`) | GOLD |
 
-**Tests (57):** keys unique / not null, relationships to the seeds, accepted values, and singular tests in `tests/`: every raw till line is in silver or quarantine (fails the build), stock never negative, sold products have stock (UC2 acceptance), prices match the catalogue, real holidays = generator calendar, weather plausible (warnings); gold = silver (revenue and units), one hand-checked day (Belgium, 24 Oct, Cycling), stock alerts rise in the All Saints holidays, quality lines add up.
+**Tests (62):** keys unique / not null, relationships to the seeds, accepted values, and singular tests in `tests/`: every raw till line is in silver or quarantine (fails the build), stock never negative, sold products have stock (UC2 acceptance), prices match the catalogue, real holidays = generator calendar, weather plausible (warnings); gold = silver (revenue and units), one hand-checked day (Belgium, 24 Oct, Cycling), stock alerts rise in the All Saints holidays, quality lines add up.
 
 Every run writes one row per model / test into `GOLD.DBT_RUN_RESULTS` (run evidence).

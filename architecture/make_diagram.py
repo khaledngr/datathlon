@@ -64,7 +64,7 @@ box("s_seed", 40, 690, 260, 64, "Catalogue · dbt seed\nproducts · stores · ho
 
 # ingestion: four methods
 box("i_incr", 360, 170, 270, 88, "Incremental load\nPython · watermark + MERGE\nin the 05:30 Cloud Run job\nreconciled on every run", "ingest")
-box("i_micro", 360, 274, 270, 88, "Micro-batch\nfiles → GCS bucket → COPY INTO\nevery few minutes", "ingest")
+box("i_micro", 360, 274, 270, 88, "Micro-batch\nsmall files → GCS bucket\nlive every 5 s · COPY INTO 06:00", "ingest")
 box("i_batch", 360, 378, 270, 88, "Daily batch\nCSV → GCS bucket → COPY INTO\nchecked against the control file", "ingest")
 box("i_api", 360, 482, 270, 192, "API pull\n\nPython · JSON files\n→ GCS → COPY INTO\nonce a day\ntimeout, retry, fail loudly", "ingest")
 
@@ -76,16 +76,14 @@ box("quarantine", 920, 560, 200, 120, "QUARANTINE\nbad rows + reason:\nduplicate
 box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC2\n\ngold_data_quality_daily", "gold")
 
 # outputs
-box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only ANALYST · BI_WH\nUC1 sales vs holidays\nUC2 restock · quality", "output")
-box("html", 1440, 450, 240, 100, "HTML presentation\nshows the dashboard\nnot sure we keep it here", "output", dashed=True)
+box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only · GOLD only\nUC1 sales vs holidays\nUC2 restock · quality", "output")
 
 # platform on Google Cloud
-box("terraform", 60, 860, 380, 84, "Terraform\nSnowflake database, warehouses, roles, task rights\nbucket · Cloud Run · Cloud SQL · secrets · state", "tool")
-box("gha", 460, 860, 300, 84, "GitHub Actions\nterraform plan on every pull request", "tool")
+box("terraform", 60, 860, 700, 84, "Terraform\nSnowflake database, warehouses, roles, task rights\nbucket · Cloud Run · Cloud SQL · secrets · state", "tool")
 box("gcs", 780, 860, 340, 84, "GCS bucket\nlanding zone for till, stock, API files\n+ Terraform state", "tool")
 box("cost", 1140, 860, 520, 84, "Costs & security\nSnowflake resource monitor: alert 80 %, stop 100 %\nGCP budget alert · key-pair login · read-only role on GOLD", "tool")
 
-FADED = {"html": 40}   # opacity in %: the group is not sure the HTML page stays on the diagram
+FADED = {}   # box -> opacity in %, for a box shown as optional
 HEIGHT = 980
 
 # ---- arrows ----------------------------------------------------------------
@@ -100,9 +98,8 @@ arrow("b2s", [(890, 330), (920, 330)])
 arrow("s2q", [(1020, 520), (1020, 560)], "fails a check")
 arrow("s2g", [(1120, 400), (1150, 400)])
 arrow("g2d", [(1350, 335), (1440, 335)])
-arrow("d2h", [(1560, 400), (1560, 450)], dashed=True)
 arrow("m1", [(495, 116), (495, 170)], "starts", dashed=True)
-arrow("t1", [(800, 116), (800, 200)], "COPY INTO", dashed=True)
+arrow("t1", [(860, 116), (860, 200)], "COPY INTO", dashed=True)
 arrow("t2", [(1135, 116), (1135, 200)], "dbt build", dashed=True)
 
 
@@ -111,15 +108,15 @@ arrow("t2", [(1135, 116), (1135, 200)], "dbt build", dashed=True)
 LOGO_COLOR = {
     "postgresql": "#4169E1", "python": "#3776AB", "dbt": "#FF694B", "googlecloudstorage": "#4285F4",
     "docker": "#2496ED", "snowflake": "#29B5E8", "googlecloud": "#4285F4", "microsoftexcel": "#217346",
-    "streamlit": "#FF4B4B", "html5": "#E34F26", "terraform": "#844FBA", "githubactions": "#2088FF",
+    "streamlit": "#FF4B4B", "terraform": "#844FBA",
 }
 ICONS = {  # box -> logos shown on its left side
     "s_orders": ["postgresql", "googlecloud"], "s_tills": ["python"], "s_stock": ["microsoftexcel"], "s_seed": ["dbt"],
     "i_incr": ["python"], "i_micro": ["googlecloudstorage"], "i_batch": ["googlecloudstorage"],
     "i_api": ["python", "googlecloudstorage"],
     "morning": ["docker", "googlecloud"], "tasks": ["snowflake"], "dbt": ["dbt"],
-    "dashboard": ["streamlit"], "html": ["html5"],
-    "terraform": ["terraform"], "gha": ["githubactions"], "gcs": ["googlecloudstorage"], "cost": ["googlecloud"],
+    "dashboard": ["streamlit"],
+    "terraform": ["terraform"], "gcs": ["googlecloudstorage"], "cost": ["googlecloud"],
     "snowflake_label": ["snowflake"], "cloud_label": ["googlecloud"],
 }
 ICON, GAP = 28, 6
