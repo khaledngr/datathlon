@@ -30,7 +30,14 @@ dbt/dbt.sh build                                                   # BRONZE -> S
 
 Every day after that, nothing to type (step 10, D-043): at **05:30** Cloud Scheduler starts the morning job on Cloud Run (web orders from Postgres on Cloud SQL, till, API and stock files, see [orchestration/](orchestration/), D-044), at **06:00** Snowflake Tasks load the files, check them and run dbt inside Snowflake ([snowflake/tasks/](snowflake/tasks/)).
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). Next steps (11-12): [docs/HANDOVER.md](docs/HANDOVER.md).
+## See the results
+
+- **Dashboard:** Snowsight > Projects > Streamlit > *Datathlon · sales and stock* (`DATATHLON.APPS.DATATHLON_DASHBOARD`, read-only analyst role, GOLD only, D-046). On the laptop: `.venv/bin/streamlit run dashboard/streamlit_app.py`. See [dashboard/](dashboard/).
+- **Data documentation:** `dbt/dbt.sh docs generate && dbt/dbt.sh docs serve` (lineage graph, every gold column described). The same descriptions are table and column comments in Snowflake.
+- **Did last night's run work?** [snowflake/tasks/02_task_history.sql](snowflake/tasks/02_task_history.sql): one row per run in `OPS.PIPELINE_RUNS`, every task and retry, every dbt run in `GOLD.DBT_RUN_RESULTS`. A failed run e-mails the team.
+- **Quality:** 62 dbt tests on every build (keys, accepted values, relationships, every raw till line in silver or quarantine exactly once, stock reconciled against its control file). Rejected till lines stay in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason.
+
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). What happens when data goes wrong (2 incidents, rehearsed): [docs/INCIDENTS.md](docs/INCIDENTS.md). Handover: [docs/HANDOVER.md](docs/HANDOVER.md).
 
 ## Repository
 
@@ -39,7 +46,7 @@ Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everythin
 | [sources/](sources/) | Simulated company systems and the shared catalogue |
 | [ingestion/](ingestion/) | Python jobs that load data into Snowflake |
 | [orchestration/](orchestration/) | Morning job: Docker image on Cloud Run + Cloud Scheduler (outside Snowflake) |
-| [snowflake/](snowflake/) | SQL run in Snowflake (setup, stages, Tasks) |
+| [snowflake/](snowflake/) | SQL run in Snowflake (setup, stages, Tasks, incident scripts) |
 | [dbt/](dbt/) | Transformations and tests |
 | [terraform/](terraform/) | Infrastructure as code (Snowflake + Google Cloud) |
 | [dashboard/](dashboard/) | Streamlit app |
