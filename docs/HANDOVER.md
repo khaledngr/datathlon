@@ -1,6 +1,6 @@
 # Handover to Robin: steps 9 to 12
 
-Written 3 Nov 2026 after step 8. Everything below is on `main`; decisions in [DECISIONS.md](DECISIONS.md) (next: **D-040**), actions in [JOURNAL.md](JOURNAL.md) (next: **#133**). You now own both files: log as you go.
+Written 3 Nov 2026 after step 8, facts refreshed after step 9 (audit D-042). Everything below is on `main`; decisions in [DECISIONS.md](DECISIONS.md) (next: **D-043**), actions in [JOURNAL.md](JOURNAL.md) (next: **#146**). You now own both files: log as you go.
 
 ## 1. Where things stand
 
@@ -9,10 +9,10 @@ Written 3 Nov 2026 after step 8. Everything below is on `main`; decisions in [DE
 | Sources | Postgres web shop (Docker, port 5433), till files, stock CSV + control files, weather + holidays APIs | generator counts, control files |
 | GCS `datathlon-landing-513514` | `tills/` 450 files, `stock/` 126, `api/` 6 | — |
 | BRONZE | `WEB_ORDERS` 3,479, `WEB_ORDER_LINES` 6,665, `TILL_SALES_RAW` 46,600, `STOCK_SNAPSHOTS` 13,500, `WEATHER_RAW`, `HOLIDAYS_RAW`, `LOAD_RUNS` | reconciliation in every loader |
-| SILVER / QUARANTINE | dbt step 8: 6 silver tables, `quarantine_till_sales` (2,235 rows with a reason) | `dbt/dbt.sh build`: 55 tests green |
-| GOLD | empty except `DBT_RUN_RESULTS` (dbt run log) | — |
+| SILVER / QUARANTINE | dbt step 8: 6 silver tables, `quarantine_till_sales` (2,235 rows with a reason) | `dbt/dbt.sh build`: 73 / 73 green (57 tests) |
+| GOLD | step 9 ✅: `GOLD_SALES_DAILY`, `GOLD_STOCK_COVER_DAILY`, `GOLD_DATA_QUALITY_DAILY` (1 Sep → 2 Nov), `DBT_RUN_RESULTS` (run log) | gold = silver, hand-checked day, web = Postgres (1,019 cells) |
 
-Cost so far: 0.33 of 20 Snowflake credits this month. Terraform: no drift.
+Cost so far: about 0.8 of 20 Snowflake credits this month. Terraform: no drift.
 
 ## 2. Run it on your laptop
 
@@ -20,7 +20,10 @@ Your `.env` has `PIPELINE_USER=ROBINCCR` and your own key: every script and `dbt
 
 Daily order (the stock reads the web and till sales, so it comes after them): see the README quick start, then `dbt/dbt.sh build`.
 
-## 3. Step 9 · dbt gold (build plan step 9)
+## 3. Step 9 · dbt gold ✅ (PR #3, D-040)
+
+Done; kept for the record.
+
 
 Put the models in `dbt/models/gold/` and add `gold: {+schema: GOLD, +materialized: table}` in `dbt_project.yml`. The analyst role already gets SELECT on every new GOLD table (Terraform future grant).
 
@@ -59,6 +62,7 @@ Run once per missing day, in this order: `generate_orders.py --next-day` (it ref
 
 ## 8. Traps we already hit
 
+- **Terraform while step 10 is unmerged:** schema `OPS` and the `EXECUTE TASK` grant exist in Snowflake but not yet in `main`. A `terraform apply` from `main` would delete them: apply only from the step 10 branch until it is merged.
 - **Secondary roles:** our users have `DEFAULT_SECONDARY_ROLES = ALL`, so every role is active at once. Run `USE SECONDARY ROLES NONE` before any access test, or the analyst seems to see everything.
 - **Never `--init` Postgres alone:** it resets the web orders, so BRONZE must be emptied and reloaded too, or the loader stops with NOT RECONCILED (on purpose).
 - **`COPY INTO` remembers files for 64 days:** a changed file under the same name is loaded again. Never re-send a corrected file with the same name; drop and reload the table instead.

@@ -29,7 +29,9 @@ Drive `Oral defense/Oral-defense-resource-pack.zip`, found on 2 Nov 2026. Ready-
 
 ## What the TDs do not cover yet
 
-| Gap | Needed for | Options to decide later |
+All closed since: Streamlit (D-016), five sources with stock CSV and two APIs (D-021, D-036, D-037), GCP (D-026), cost guard (D-029), state in GCS (D-031).
+
+| Gap | Needed for | Options considered |
 | --- | --- | --- |
 | A dashboard | Demo step 3 "visualize" | Streamlit, proposed in D-016 (from the resource pack) |
 | A third logical source beyond orders and the live feed | "At least 3 sources" | Inventory CSV / MySQL, an external API (weather), a seed |

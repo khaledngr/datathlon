@@ -1,13 +1,13 @@
 # Build plan
 
-**Status: Proposed (D-020), waiting for the group.** We build one step at a time. After each step: Claude reports what was done and how it was checked, the group reviews, and we only move on once the group says so.
+**Status (3 Nov): steps 0 to 9 done; steps 10 to 12 in progress ([HANDOVER.md](HANDOVER.md)).** We build one step at a time. After each step: Claude reports what was done and how it was checked, the group reviews, and we only move on once the group says so.
 
 Each step says where its code comes from (TD or the teacher's resource pack, see [TD_INVENTORY.md](TD_INVENTORY.md)), who should own it (D-017), and how we check it is done.
 
 | # | Step | Reuses | Owner (D-017) | Done when |
 | --- | --- | --- | --- | --- |
 | 0 ✅ | **Accounts and checks** (done 2 Nov for Khaled and Robin; Rudy's password and GitHub invite, Robin's billing activation and Khaled's MFA carry over): Snowflake account `NVTLKDO-RP44213` on GCP Frankfurt (done: region checked); GCP project `datathlon-513514` (Robin's); Google Cloud CLI on the laptop; GitHub repo; own access for each member | — | all | `gcloud config list` shows the project; each member signs in to Snowflake with their own user; everyone can push to the repo |
-| 1 ✅ | **Repo skeleton** (done 2 Nov, waiting for the group's review): folders, README, `.gitignore`, `.env.example`, where secrets live (never in Git) | TD 4.2 repo layout | all | Repo pushed; `git status` shows no secret files |
+| 1 ✅ | **Repo skeleton** (done 2 Nov): folders, README, `.gitignore`, `.env.example`, where secrets live (never in Git) | TD 4.2 repo layout | all | Repo pushed; `git status` shows no secret files |
 | 2 ✅ | **Cost guard first** (done 2 Nov, D-029): Snowflake resource monitor `DATATHLON_ACCOUNT_MONITOR` (20 credits/month: email 50 % and 80 %, stop 100 %, hard stop 110 %) and GCP budget `datathlon-cost-guard` (€10/month, before credits, emails 50/90/100 % + forecast 100 %) | pack `09-iac/`, TD 4.2 | UC3 owner | Alert visible in Snowflake and GCP consoles |
 | 3 ✅ | **Terraform base** (done 3 Nov: 3a keys + state bucket, 3b Snowflake base, 3c bucket + storage integration, 3d drift demo + [manual steps](MANUAL_STEPS.md)): Snowflake database, schemas (BRONZE, SILVER, GOLD, QUARANTINE), warehouses, roles; GCS bucket in `europe-west3` + Snowflake storage integration (Snowflake's service account gets read access to the bucket); Terraform state in GCS | TD 4.2 `terraform/`, pack `09-iac/gcp` (bucket part only) + `09-iac/snowflake` | UC3 owner | `terraform plan` shows no changes after `apply` |
 | 4 ✅ | **Source 1, web orders** (done 3 Nov, D-032): local Postgres in Docker with Datathlon orders, order lines, products | TD 2, pack `04-source-databases` | UC1 owner | Row counts in Postgres match the generator |
