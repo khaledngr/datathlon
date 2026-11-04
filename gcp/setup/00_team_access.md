@@ -10,7 +10,7 @@ Robin is the only **Owner**. Khaled and Rudy get their own access with their `@a
 
 | Principal | Roles | Why |
 | --- | --- | --- |
-| `kelnagar@albertschool.com` | **Editor** + **Project IAM Admin** | Runs the setup and Terraform: creates the bucket, the Terraform service account and its permissions |
+| `kelnagar@albertschool.com` | **Editor** + **Project IAM Admin** | Runs the setup and Terraform: creates the buckets, service accounts and their permissions |
 | `rcausel@albertschool.com` | **Editor** | Builds and tests the pipeline pieces |
 
 Editor is broad. It is acceptable for a 3-person prototype; in production each person would get only the roles of their part (e.g. Storage Admin for ingestion). We say this in the security slide (C7).
@@ -38,8 +38,6 @@ gcloud config set project datathlon-513514
 gcloud projects get-iam-policy datathlon-513514 --format="table(bindings.role, bindings.members)"
 ```
 
-## Later, in step 3 (Terraform, not now)
+## What came after
 
-- Service account `datathlon-terraform` with only the roles Terraform needs; its key never goes in Git.
-- GCS bucket in `europe-west3` for landing files, a second one for Terraform state (created once by hand, listed as a manual step).
-- Snowflake storage integration: Snowflake gives us a Google service account; we grant it read access on the landing bucket only.
+Buckets, service accounts and the Snowflake storage integration are in [terraform/](../../terraform/). Terraform uses each person's own Google sign-in (`gcloud auth application-default login`), so there is no service account key to store.

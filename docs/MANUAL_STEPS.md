@@ -15,7 +15,7 @@ The teacher's brief asks us to declare the infrastructure as code **and** list w
 | 9 | Terraform state bucket `datathlon-tfstate-513514` (versioned, private) | `gcloud storage buckets create` (D-031) | Terraform cannot store its state in a bucket it has not created yet |
 | 10 | Google sign-in for Terraform | Each person: `gcloud auth application-default login` | Personal credentials, never in the repo |
 | 11 | GitHub repo, collaborators, protection of `main` | Khaled on GitHub (D-027) | Repository settings, set once |
-| 12 | GitHub Actions secrets (for `terraform plan` on pull requests) Only if GitHub Actions is built (not yet): GitHub → Settings → Secrets | Secrets are typed in GitHub, never committed |
+| 12 | Snowflake budgets: account 20 credits, `BUDGET_PIPELINE` 12, `BUDGET_DASHBOARD` 5 ([GOVERNANCE.md](GOVERNANCE.md)) | ACCOUNTADMIN, [snowflake/setup/04_budgets.sql](../snowflake/setup/04_budgets.sql) | The Terraform provider cannot declare budgets yet |
 | 13 | Tasks, procedures and the dbt project in schema `OPS` (step 10) | `dbt/deploy_to_snowflake.py`, then [snowflake/tasks/01_daily_pipeline.sql](../snowflake/tasks/01_daily_pipeline.sql) | Pipeline code, versioned in Git and redeployed with each change; Terraform owns the schema and the rights (`EXECUTE TASK`, e-mail integration) |
 | 13b | The dashboard app inside Snowflake, schema `APPS` (step 11, D-046) | `dashboard/deploy_to_snowflake.py` | App code, versioned in Git and redeployed with each change; Terraform owns the schema and the analyst's rights |
 | 14 | Failure e-mail recipients `OPS.ALERT_RECIPIENTS` | One `INSERT ... SELECT email FROM SNOWFLAKE.ACCOUNT_USAGE.USERS` in Snowflake | E-mail addresses are personal data: not in Git |

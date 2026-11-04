@@ -4,6 +4,6 @@ Things done by hand in the Google Cloud console (Terraform cannot do them, or th
 
 | File | What | Status |
 | --- | --- | --- |
-| `setup/00_team_access.md` | IAM roles for the team, billing, checks | Roles done 2 Nov; billing linked, not active yet |
+| `setup/00_team_access.md` | IAM roles for the team, billing, checks | Roles done 2 Nov, billing and budget active |
 
 Project `datathlon-513514` (owner Robin), region `europe-west3`.

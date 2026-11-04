@@ -112,5 +112,10 @@ Every important choice, with the reason and the credible alternative we weighed.
 ### D-047 · Incidents rehearsed on the real platform
 - Two incidents (bad till data live, truncated stock file) run on the real pipeline, with their evidence: [INCIDENTS.md](INCIDENTS.md). They found a real time-zone bug, now fixed and tested.
 
+### D-048 · Personal data masked by tag, costs shown per team
+- **Choice:** a `PII` tag carries the masking policies: anyone but `DATATHLON_PII_READER` sees a SHA-256 of the customer code and loyalty card. Query tags give every credit to a team (`GOLD_COST_SHOWBACK_DAILY`), with a budget per warehouse. Details in [GOVERNANCE.md](GOVERNANCE.md).
+- **Why:** a new personal column is masked by tagging it, with no new policy. Showback, not chargeback: there is no internal billing between three students, but the table is what a chargeback would bill.
+- **Alternatives:** a masking policy per column (one more policy to forget for each new column); hashing in dbt only (bronze would still hold clear values); cost split by warehouse only (cannot separate ingestion from transformation, which share one).
+
 ### D-041 · The architecture diagram shows only what is built
 - Every box on [architecture/](../architecture/) can be shown running; nothing decorative.
