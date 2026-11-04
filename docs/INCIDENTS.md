@@ -69,3 +69,11 @@ In the scheduled run the same failure makes `T_LOAD_STOCK` fail, dbt is skipped 
 | Every file loaded | `COPY_HISTORY` (query 5 of [01_bad_tills_live.sql](../snowflake/incidents/01_bad_tills_live.sql)), `_file` / `_file_row` on every BRONZE row |
 | Who ran what | query tags `datathlon:*` in Query History (`datathlon:sql:02_tills`, `datathlon:dbt`, `datathlon:incident:stock`, ...) |
 | Quarantined lines and why | `QUARANTINE.QUARANTINE_TILL_SALES.reject_reason`, Data quality tab of the dashboard (from the day after, when the day is complete) |
+
+## Screenshots (4 Nov, in [evidence/](evidence/))
+
+| File | What it shows |
+| --- | --- |
+| [incident2_terminal.png](evidence/incident2_terminal.png) | Incident 2 run: load fails twice (file, line 42, `ON_HAND`), file removed, load OK, BRONZE unchanged (output of the 13:21 run, query IDs inside) |
+| [dbt_lineage.png](evidence/dbt_lineage.png) | dbt lineage without tests: bronze sources and seeds → staging → silver / quarantine → the 4 gold tables |
+| [dbt_gold_stock_columns.png](evidence/dbt_gold_stock_columns.png) | `gold_stock_cover_daily` in dbt docs: every column described, tests per column |
