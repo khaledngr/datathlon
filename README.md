@@ -50,7 +50,7 @@ Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everythin
 | [dbt/](dbt/) | Transformations and tests |
 | [terraform/](terraform/) | Infrastructure as code (Snowflake + Google Cloud) |
 | [dashboard/](dashboard/) | Streamlit app |
-| [docs/](docs/) | Use cases, setup, incidents, costs, switching off |
+| [docs/](docs/) | Use cases, setup, incidents, costs, switching off; slide visuals in [docs/slides/](docs/slides/) |
 
 ## Rules
 
