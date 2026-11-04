@@ -19,6 +19,6 @@ Each step says where its code comes from (TD or the teacher's resource pack, see
 | 9 ✅ | **dbt gold** (done 3 Nov, D-040): UC1 sales by day × channel × category; UC2 days of cover; data quality table; reconciliation test | TD 3.2 gold models | UC1 / UC2 owners | Gold = silver test passes; numbers match a hand-checked day |
 | 10 ✅ | **Docker + Snowflake Tasks** (done 3 Nov, D-043; moved to Cloud Run + Cloud Scheduler + Cloud SQL on 4 Nov, D-044): Python ingestion job in Docker; task graph 06:00 → COPY INTO → MERGE → dbt build → gold, with retries, finalizer and email alert | TD 4.1, pack `06-orchestration-and-docker/snowflake-tasks`, `07-` | UC1 owner | Task history green; a forced failure retries without double counting |
 | 11 ✅ | **Streamlit dashboard** on GOLD (done 4 Nov, D-045) | pack `08-visualisation` | data-quality owner | Opens on the laptop; numbers match gold |
-| 12 | **Rehearse the 2 incidents, collect evidence, finish README and dbt docs** | — | all | Both incidents run live; run IDs and screenshots saved |
+| 12 | **Rehearse the 2 incidents, collect evidence, finish README and dbt docs** (incidents done 4 Nov, D-047, [INCIDENTS.md](INCIDENTS.md)) | — | all | Both incidents run live; run IDs and screenshots saved |
 
 Steps 4 to 7 can run in parallel once step 3 is done.

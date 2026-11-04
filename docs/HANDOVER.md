@@ -56,6 +56,8 @@ Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exis
 
 Evidence: `GOLD.DBT_RUN_RESULTS`, `BRONZE.LOAD_RUNS`, `COPY_HISTORY`, query tags `datathlon:*` in query history, screenshots.
 
+**Done 4 Nov (D-047):** both incidents rehearsed, runbook and IDs in [INCIDENTS.md](INCIDENTS.md). Incident 1 found a time-zone bug in the `future_timestamp` rule, fixed and deployed. Left: screenshots for the slides, README and dbt docs.
+
 ## 7. Before the demo (6 Nov): bring all sources to yesterday
 
 Since step 10 (D-043, D-044) this is automatic and no laptop is involved: Cloud Scheduler starts the Cloud Run job `datathlon-morning-job` at 05:30 (web shop Postgres on Cloud SQL), Snowflake Tasks load and run dbt at 06:00. By hand: `gcloud run jobs execute datathlon-morning-job --region europe-west3 --wait` then `EXECUTE TASK DATATHLON.OPS.T_START;`. The manual order below is what the job does.
