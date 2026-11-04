@@ -1,4 +1,4 @@
-"""Datathlon · publish the dashboard INSIDE Snowflake (Streamlit in Snowflake, step 11, D-044).
+"""Datathlon · publish the dashboard INSIDE Snowflake (Streamlit in Snowflake, step 11, D-046).
 
   .venv/bin/python dashboard/deploy_to_snowflake.py
 
@@ -32,7 +32,7 @@ def version_name():
 def main():
     version = version_name()
     with connect() as sf, sf.cursor() as cur:
-        cur.execute(f"CREATE STAGE IF NOT EXISTS {STAGE} COMMENT = 'Dashboard files, one folder per version (D-044)'")
+        cur.execute(f"CREATE STAGE IF NOT EXISTS {STAGE} COMMENT = 'Dashboard files, one folder per version (D-046)'")
         for rel in FILES:
             folder = f"@{STAGE}/{version}" + (f"/{Path(rel).parent.as_posix()}" if "/" in rel else "")
             cur.execute(f"PUT 'file://{(HERE / rel).as_posix()}' '{folder}' AUTO_COMPRESS = FALSE OVERWRITE = TRUE")
@@ -42,7 +42,7 @@ def main():
                         MAIN_FILE = 'streamlit_app.py'
                         QUERY_WAREHOUSE = {WAREHOUSE}
                         TITLE = 'Datathlon · sales and stock'
-                        COMMENT = 'GOLD dashboard, version {version}, deployed by dashboard/deploy_to_snowflake.py (D-044)'""")
+                        COMMENT = 'GOLD dashboard, version {version}, deployed by dashboard/deploy_to_snowflake.py (D-046)'""")
         cur.execute(f"SHOW STREAMLITS LIKE 'DATATHLON_DASHBOARD' IN SCHEMA DATATHLON.APPS")
         cols = [d[0] for d in cur.description]
         row = dict(zip(cols, cur.fetchone()))

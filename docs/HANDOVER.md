@@ -44,7 +44,7 @@ Open choices, see D-022 points 1 and 2: who starts the jobs that run outside Sno
 
 Read GOLD only, as `DATATHLON_ANALYST` on warehouse `DATATHLON_BI_WH` (both exist). Pages: UC1 sales by day × channel × category with holidays shaded (`silver_holidays` → copy to gold if the analyst must read it); UC2 alerts table; data quality. The story to show: sales and stock alerts jump in the All Saints holidays (FR +74 % web orders, hiking alerts 22 %), Lyon's 24 Oct cents incident caught and fixed.
 
-**Done 4 Nov (D-043):** [dashboard/](../dashboard/) — 3 tabs, holidays copied to `GOLD_HOLIDAYS`, product and city names in `GOLD_STOCK_COVER_DAILY`, access test `dashboard/check_access.py` green.
+**Done 4 Nov (D-045):** [dashboard/](../dashboard/) — 3 tabs, holidays copied to `GOLD_HOLIDAYS`, product and city names in `GOLD_STOCK_COVER_DAILY`, access test `dashboard/check_access.py` green.
 
 ## 6. Step 12 · Incidents and evidence
 
@@ -55,7 +55,7 @@ Evidence: `GOLD.DBT_RUN_RESULTS`, `BRONZE.LOAD_RUNS`, `COPY_HISTORY`, query tags
 
 ## 7. Before the demo (6 Nov): bring all sources to yesterday
 
-Since step 10 (D-041, D-042) this is automatic and no laptop is involved: Cloud Scheduler starts the Cloud Run job `datathlon-morning-job` at 05:30 (web shop Postgres on Cloud SQL), Snowflake Tasks load and run dbt at 06:00. By hand: `gcloud run jobs execute datathlon-morning-job --region europe-west3 --wait` then `EXECUTE TASK DATATHLON.OPS.T_START;`. The manual order below is what the job does.
+Since step 10 (D-043, D-044) this is automatic and no laptop is involved: Cloud Scheduler starts the Cloud Run job `datathlon-morning-job` at 05:30 (web shop Postgres on Cloud SQL), Snowflake Tasks load and run dbt at 06:00. By hand: `gcloud run jobs execute datathlon-morning-job --region europe-west3 --wait` then `EXECUTE TASK DATATHLON.OPS.T_START;`. The manual order below is what the job does.
 
 Run once per missing day, in this order: `generate_orders.py --next-day` (it refuses days after today), the web loader, `till_feed.py --history` (since step 10 it uploads only the files missing from the bucket), `pull_apis.py`, `stock_export.py` (skips days already exported), the stage SQL, `dbt/dbt.sh build`.
 

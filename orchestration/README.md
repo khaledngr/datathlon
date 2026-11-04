@@ -1,11 +1,11 @@
-# orchestration/ · who starts what every morning (step 10, D-041, D-042)
+# orchestration/ · who starts what every morning (step 10, D-043, D-044)
 
 | When (Paris) | Where | What | File |
 | --- | --- | --- | --- |
 | 05:30 | Google Cloud: **Cloud Scheduler → Cloud Run job** `datathlon-morning-job` | web orders up to yesterday → Postgres (Cloud SQL) → BRONZE (MERGE + reconciliation); till, API and stock files → GCS | image `morning-job` in Artifact Registry (`Dockerfile`, `morning_job.py`), declared in [terraform/morning_job.tf](../terraform/morning_job.tf) |
 | 06:00 | **Snowflake Tasks** | COPY INTO tills / stock / API, stock reconciliation and web check (fail = run stops), `dbt build` in Snowflake, finalizer log + failure e-mail | [snowflake/tasks/01_daily_pipeline.sql](../snowflake/tasks/01_daily_pipeline.sql) |
 
-Snowflake cannot run the simulators nor reach a Postgres outside, so they run in the container; everything that can run where the data is (loads, checks, dbt) runs in Snowflake. The container runs on Cloud Run, not on a laptop: nobody's computer has to be on at 05:30 (D-042).
+Snowflake cannot run the simulators nor reach a Postgres outside, so they run in the container; everything that can run where the data is (loads, checks, dbt) runs in Snowflake. The container runs on Cloud Run, not on a laptop: nobody's computer has to be on at 05:30 (D-044).
 
 **Secrets:** none in the image nor in Git. The job runs as the service account `datathlon-morning-job` (Google sign-in, no key file); the Postgres password and the Snowflake private key of `DATATHLON_PIPELINE` come from Secret Manager; Cloud SQL is reached through the Cloud SQL connector (IAM), no open IP.
 

@@ -1,4 +1,4 @@
-# Datathlon · the morning job image (step 10, D-041, D-042), adapted from the resource pack
+# Datathlon · the morning job image (step 10, D-043, D-044), adapted from the resource pack
 # 06-orchestration-and-docker/docker/python-ingest-job. Built and pushed to Artifact Registry by
 # orchestration/push_image.sh; Cloud Run runs it every morning (terraform/morning_job.tf).
 # No secret inside: on Cloud Run the settings are environment variables, the Postgres password and the Snowflake key

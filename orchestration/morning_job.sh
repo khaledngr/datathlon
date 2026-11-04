@@ -1,6 +1,6 @@
 #!/bin/bash
-# Datathlon · run the morning job image on a LAPTOP, against the local Docker Postgres (step 10, D-041).
-# Since D-042 the daily run is the Cloud Run job (Cloud Scheduler 05:30): this script is for local tests only,
+# Datathlon · run the morning job image on a LAPTOP, against the local Docker Postgres (step 10, D-043).
+# Since D-044 the daily run is the Cloud Run job (Cloud Scheduler 05:30): this script is for local tests only,
 # never on a schedule (one producer per day). It writes to the same BRONZE and bucket: use it on a dev setup.
 # By hand: orchestration/morning_job.sh          (a run)
 #          orchestration/morning_job.sh --check  (connections only, writes nothing)

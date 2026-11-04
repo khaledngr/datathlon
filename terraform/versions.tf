@@ -12,7 +12,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.6" # the Cloud SQL password (D-042)
+      version = "~> 3.6" # the Cloud SQL password (D-044)
     }
   }
 

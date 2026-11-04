@@ -1,4 +1,4 @@
-# dashboard/ · Streamlit on GOLD (step 11, D-016, D-043)
+# dashboard/ · Streamlit on GOLD (step 11, D-016, D-045)
 
 A Streamlit app that reads **only** the GOLD tables, with the read-only role `DATATHLON_ANALYST` on the warehouse `DATATHLON_BI_WH` (XSMALL, auto-suspend 60 s). Adapted from the resource pack `08-visualisation/streamlit/streamlit_app.py`.
 

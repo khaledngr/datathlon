@@ -6,7 +6,7 @@ Reads GOLD only, as the read-only role DATATHLON_ANALYST on the warehouse DATATH
 Same rules as the pack's README: each title is the use case's question, freshness and source table shown, queries
 cached 10 minutes so the dashboard does not burn credits. Inside Snowflake (Streamlit in Snowflake) the same file uses
 the session Snowflake gives it.
-Inside Snowflake: app DATATHLON.APPS.DATATHLON_DASHBOARD, deployed by dashboard/deploy_to_snowflake.py (D-044).
+Inside Snowflake: app DATATHLON.APPS.DATATHLON_DASHBOARD, deployed by dashboard/deploy_to_snowflake.py (D-046).
 """
 from datetime import timedelta
 from pathlib import Path

@@ -18,7 +18,7 @@ resource "snowflake_schema" "layer" {
   comment  = "${each.key} layer - managed by Terraform"
 }
 
-# ---------- Pipeline objects (step 10, D-041): tasks, procedures, the dbt project, the run log ----------
+# ---------- Pipeline objects (step 10, D-043): tasks, procedures, the dbt project, the run log ----------
 # Not a data layer: the analyst gets nothing here.
 resource "snowflake_schema" "ops" {
   database = snowflake_database.datathlon.name
@@ -26,7 +26,7 @@ resource "snowflake_schema" "ops" {
   comment  = "Pipeline objects: Snowflake Tasks, load procedures, dbt project, run log - managed by Terraform"
 }
 
-# ---------- Dashboard app (step 11, D-044): the Streamlit in Snowflake app and its files ----------
+# ---------- Dashboard app (step 11, D-046): the Streamlit in Snowflake app and its files ----------
 # Not a data layer: no table here. The analyst publishes the app here; GOLD stays read-only for it.
 resource "snowflake_schema" "apps" {
   database = snowflake_database.datathlon.name

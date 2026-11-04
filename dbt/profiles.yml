@@ -14,7 +14,7 @@ datathlon:
       schema: SILVER
       threads: 4
       query_tag: "datathlon:dbt"
-    # dbt Projects on Snowflake (production, D-041): runs as the session or task owner, no account, user or key
+    # dbt Projects on Snowflake (production, D-043): runs as the session or task owner, no account, user or key
     # needed (Snowflake ignores them), started by the task OPS.T_DBT_BUILD with --target prod.
     prod:
       type: snowflake

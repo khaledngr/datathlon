@@ -45,7 +45,7 @@ box("cloud", 40, 810, 1640, 150, "", "cloud", dashed=True)
 box("snowflake_label", 700, 158, 660, 30, "SNOWFLAKE", "snowflake", size=18)
 box("cloud_label", 60, 818, 700, 30, "GOOGLE CLOUD · our one cloud provider · Frankfurt europe-west3, same region as Snowflake", "cloud", size=18)
 
-# step 10 (D-041, D-042): what runs outside Snowflake is one Docker job on Cloud Run, started by Cloud Scheduler;
+# step 10 (D-043, D-044): what runs outside Snowflake is one Docker job on Cloud Run, started by Cloud Scheduler;
 # Snowflake Tasks take over at 06:00
 box("morning", 40, 60, 590, 56,
     "Morning job · Docker image on Cloud Run · Cloud Scheduler 05:30\n"

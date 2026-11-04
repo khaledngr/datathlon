@@ -1,4 +1,4 @@
--- Datathlon · the daily pipeline inside Snowflake (step 10, D-041). Adapted from the resource pack
+-- Datathlon · the daily pipeline inside Snowflake (step 10, D-043). Adapted from the resource pack
 -- 06-orchestration-and-docker/snowflake-tasks/daily_pipeline_tasks.sql and TD 3.2 (dbt project started by a task).
 --
 --   05:30 Paris  laptop cron -> Docker morning job: web orders -> BRONZE, till / stock / API files -> GCS
@@ -160,7 +160,7 @@ CREATE OR REPLACE TASK DATATHLON.OPS.T_START
     SUSPEND_TASK_AFTER_NUM_FAILURES = 3
     TASK_AUTO_RETRY_ATTEMPTS = 2
     USER_TASK_TIMEOUT_MS = 1800000
-    COMMENT = 'Daily pipeline root, 06:00 Paris, after the 05:30 Docker morning job (D-041)'
+    COMMENT = 'Daily pipeline root, 06:00 Paris, after the 05:30 Docker morning job (D-043)'
 AS
     SELECT 'daily pipeline started';
 
