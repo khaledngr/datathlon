@@ -18,7 +18,7 @@ Each step says where its code comes from (TD or the teacher's resource pack, see
 | 8 ✅ | **dbt silver + quarantine + seed** (done 3 Nov, D-039): product catalogue seed, cleaning, bad rows to QUARANTINE, tests | TD 3.1–3.3, pack `03-cleaning-examples/dbt` | data-quality owner | `dbt build` green; every raw row in silver or quarantine |
 | 9 ✅ | **dbt gold** (done 3 Nov, D-040): UC1 sales by day × channel × category; UC3 days of cover; data quality table; reconciliation test | TD 3.2 gold models | UC1 / UC3 owners | Gold = silver test passes; numbers match a hand-checked day |
 | 10 ✅ | **Docker + Snowflake Tasks** (done 3 Nov, D-041; moved to Cloud Run + Cloud Scheduler + Cloud SQL on 4 Nov, D-042): Python ingestion job in Docker; task graph 06:00 → COPY INTO → MERGE → dbt build → gold, with retries, finalizer and email alert | TD 4.1, pack `06-orchestration-and-docker/snowflake-tasks`, `07-` | UC1 owner | Task history green; a forced failure retries without double counting |
-| 11 | **Streamlit dashboard** on GOLD | pack `08-visualisation` | data-quality owner | Opens on the laptop; numbers match gold |
+| 11 ✅ | **Streamlit dashboard** on GOLD (done 4 Nov, D-043) | pack `08-visualisation` | data-quality owner | Opens on the laptop; numbers match gold |
 | 12 | **Rehearse the 2 incidents, collect evidence, finish README and dbt docs** | — | all | Both incidents run live; run IDs and screenshots saved |
 
 Steps 4 to 7 can run in parallel once step 3 is done.

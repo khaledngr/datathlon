@@ -6,6 +6,8 @@ select
     s.store_id,
     st.country,
     s.sku,
+    p.name                                 as product_name,
+    st.city                                as store_city,
     p.category,
     p.status = 'discontinued'              as is_discontinued,   -- UC3 exclusion
     s.on_hand,

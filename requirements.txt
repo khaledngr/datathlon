@@ -6,3 +6,5 @@ python-dotenv==1.2.4               # reads .env
 google-cloud-storage==2.19.0       # upload till / stock / API files to the landing bucket
 dbt-core==1.9.11                   # transformations and tests (step 8), run with dbt/dbt.sh
 dbt-snowflake==1.9.4               # dbt adapter for Snowflake (same minor version as dbt-core)
+streamlit==1.50.0                  # dashboard (step 11); the pack's 1.39 needs protobuf 5, which breaks dbt
+altair==5.5.0                      # dashboard charts (holiday shading)

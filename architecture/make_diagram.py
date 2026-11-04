@@ -76,7 +76,7 @@ box("quarantine", 920, 560, 200, 120, "QUARANTINE\nbad rows + reason:\nduplicate
 box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC3\n\ngold_data_quality_daily", "gold")
 
 # outputs
-box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nteacher's resource pack\nUC1 revenue · UC3 alerts\n% rows quarantined", "output")
+box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only ANALYST · BI_WH\nUC1 sales vs holidays\nUC3 restock · quality", "output")
 box("html", 1440, 450, 240, 100, "HTML presentation\nshows the dashboard\nnot sure we keep it here", "output", dashed=True)
 
 # platform on Google Cloud

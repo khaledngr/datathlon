@@ -1,0 +1,9 @@
+# Datathlon dashboard theme (brand/brand-sheet.html), read when Streamlit starts from the repo root. Not a secret.
+[theme]
+primaryColor = "#3946C0"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#E8ECFF"
+textColor = "#101A4E"
+
+[browser]
+gatherUsageStats = false

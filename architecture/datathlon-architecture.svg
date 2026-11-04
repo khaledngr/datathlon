@@ -154,9 +154,9 @@
 <g opacity="1.0">
 <rect x="1520" y="270" width="240" height="130" rx="10" fill="#B2F2BB" stroke="#3946C0" stroke-width="2"/>
 <text x="1658.0" y="311.0" font-size="16" text-anchor="middle" fill="#101A4E" font-weight="700">Streamlit dashboard</text>
-<text x="1658.0" y="331.0" font-size="16" text-anchor="middle" fill="#101A4E">teacher's resource pack</text>
-<text x="1658.0" y="351.0" font-size="16" text-anchor="middle" fill="#101A4E">UC1 revenue · UC3 alerts</text>
-<text x="1658.0" y="371.0" font-size="16" text-anchor="middle" fill="#101A4E">% rows quarantined</text>
+<text x="1658.0" y="331.0" font-size="16" text-anchor="middle" fill="#101A4E">read-only ANALYST · BI_WH</text>
+<text x="1658.0" y="351.0" font-size="16" text-anchor="middle" fill="#101A4E">UC1 sales vs holidays</text>
+<text x="1658.0" y="371.0" font-size="16" text-anchor="middle" fill="#101A4E">UC3 restock · quality</text>
 </g>
 <svg x="1530" y="321.0" width="28" height="28" fill="#FF4B4B" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Streamlit</title><path d="M16.673 11.32l6.862-3.618c.233-.136.554.12.442.387L20.463 17.1zm-8.556-.229l3.473-5.187c.203-.328.578-.316.793-.028l7.886 11.75zm-3.375 7.25c-.28 0-.835-.284-.993-.716l-3.72-9.46c-.118-.331.139-.614.48-.464l19.474 10.306c-.149.147-.453.337-.72.334z"/></svg>
 <g opacity="0.4">

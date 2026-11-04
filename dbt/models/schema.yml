@@ -137,6 +137,16 @@ models:
         data_tests: [not_null]
       - name: is_alert
         data_tests: [not_null]
+      - name: product_name
+        data_tests: [not_null]
+      - name: store_city
+        data_tests: [not_null]
+
+  - name: gold_holidays
+    description: "Holidays copied from silver for the dashboard shading: the analyst role reads GOLD only (step 11)."
+    columns:
+      - name: holiday_key
+        data_tests: [unique, not_null]
 
   - name: gold_data_quality_daily
     description: "Till feed quality per file day x store: raw, silver and quarantined lines (by reason), prices fixed."
