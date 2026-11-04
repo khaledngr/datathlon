@@ -43,10 +43,12 @@ module "pipeline_warehouse" {
 }
 
 module "bi_warehouse" {
-  source  = "./modules/warehouse"
-  name    = "DATATHLON_BI_WH"
-  size    = "XSMALL"
-  comment = "Streamlit dashboard"
+  source           = "./modules/warehouse"
+  providers        = { snowflake = snowflake.admin } # only ACCOUNTADMIN may attach a resource monitor
+  name             = "DATATHLON_BI_WH"
+  size             = "XSMALL"
+  comment          = "Streamlit dashboard"
+  resource_monitor = snowflake_resource_monitor.bi.name
 }
 
 # ---------- Cost guard (step 2), now declared as code ----------
@@ -67,4 +69,17 @@ resource "snowflake_resource_monitor" "account" {
   notify_triggers           = [50, 80]
   suspend_trigger           = 100
   suspend_immediate_trigger = 110
+}
+
+# ---------- Cost guard for the dashboard (FinOps showback, 4 Nov) ----------
+# The Streamlit app keeps DATATHLON_BI_WH awake while a browser tab has it open: on 4 Nov it was the biggest cost line.
+# Its own cap, so a forgotten tab can never use the pipeline's budget: alert at 80 %, stop the BI warehouse at 100 %.
+# The account monitor above still caps everything at 20 credits.
+resource "snowflake_resource_monitor" "bi" {
+  provider        = snowflake.admin
+  name            = "DATATHLON_BI_MONITOR"
+  credit_quota    = 5
+  notify_users    = ["ROBINCCR", "KHALED"]
+  notify_triggers = [80]
+  suspend_trigger = 100
 }

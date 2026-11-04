@@ -11,6 +11,11 @@ variable "comment" {
   type    = string
   default = ""
 }
+variable "resource_monitor" {
+  description = "Optional resource monitor that caps this warehouse's credits"
+  type        = string
+  default     = null
+}
 
 resource "snowflake_warehouse" "this" {
   name                = var.name
@@ -19,6 +24,7 @@ resource "snowflake_warehouse" "this" {
   auto_resume         = true
   initially_suspended = true
   comment             = var.comment
+  resource_monitor    = var.resource_monitor
 }
 
 output "name" {
