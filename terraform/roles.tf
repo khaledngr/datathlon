@@ -136,7 +136,8 @@ resource "snowflake_service_user" "pipeline" {
   provider                       = snowflake.security
   name                           = "DATATHLON_PIPELINE"
   comment                        = "Datathlon pipeline (ingestion, dbt, Tasks) - managed by Terraform"
-  rsa_public_key                 = trimspace(file("${path.module}/keys/datathlon_pipeline.pub")) # public half: safe in Git
+  rsa_public_key                 = trimspace(file("${path.module}/keys/datathlon_pipeline.pub"))       # public half: safe in Git
+  rsa_public_key_2               = trimspace(file("${path.module}/keys/datathlon_pipeline_cloud.pub")) # second key: the Cloud Run morning job (D-042)
   default_role                   = snowflake_account_role.engineer.name
   default_warehouse              = module.pipeline_warehouse.name
   default_secondary_roles_option = "NONE"

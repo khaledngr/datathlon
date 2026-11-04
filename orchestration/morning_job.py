@@ -1,7 +1,10 @@
-"""Datathlon · the morning job (step 10, D-041): everything that runs OUTSIDE Snowflake, in order, in one container.
+"""Datathlon · the morning job (step 10, D-041, D-042): everything that runs OUTSIDE Snowflake, in order, in one container.
+Runs on Google Cloud: Cloud Scheduler starts the Cloud Run job datathlon-morning-job at 05:30 Paris (terraform/morning_job.tf).
 
-  docker run ... datathlon-morning-job:1.0.0            # the daily run (started by orchestration/morning_job.sh)
-  docker run ... datathlon-morning-job:1.0.0 --check    # only checks the connections (Postgres, Snowflake, GCS)
+  (no argument)   the daily run
+  --check         only checks the connections (Postgres, Snowflake, GCS), writes nothing
+  --init-db       once, on a new empty database: creates the tables (sources/postgres/01_schema.sql) and the history
+                  (generate_orders.py --init). Refuses if the database already has orders: it never wipes data.
 
   1. web shop orders up to yesterday   sources/postgres/generate_orders.py --next-day, once per missing day
   2. web orders Postgres -> BRONZE      ingestion/incremental_orders/load_web_orders.py (MERGE + reconciliation)
@@ -47,6 +50,20 @@ def last_order_day():
         return cur.fetchone()[0]
 
 
+def init_db():
+    """New empty database only: tables, then the history. Never on a database that already has orders."""
+    with psycopg2.connect() as pg, pg.cursor() as cur:
+        cur.execute("SELECT to_regclass('datathlon.orders') IS NOT NULL")
+        if not cur.fetchone()[0]:
+            cur.execute((APP / "sources" / "postgres" / "01_schema.sql").read_text())
+            log("tables created (sources/postgres/01_schema.sql)")
+    if last_order_day() is not None:
+        log(f"FAILED --init-db: the database already has orders up to {last_order_day()}, nothing done")
+        raise SystemExit(1)
+    run("web shop history", ["sources/postgres/generate_orders.py", "--init"])
+    log(f"web orders reach {last_order_day()}")
+
+
 def check():
     """Connections only, nothing written: Postgres, Snowflake (service key), Google Cloud Storage (bucket)."""
     sys.path.insert(0, str(APP / "ingestion"))
@@ -65,11 +82,14 @@ def main():
     if "--check" in sys.argv:
         check()
         return
+    if "--init-db" in sys.argv:
+        init_db()
+        return
     yesterday = date.today() - timedelta(1)
     log(f"Morning job for business day {yesterday}")
     last = last_order_day()
     if last is None:
-        log("FAILED web shop database is empty: run generate_orders.py --init once by hand (never in the job)")
+        log("FAILED web shop database is empty: run the job once with --init-db (never in the daily run)")
         raise SystemExit(1)
     while last < yesterday:
         run(f"web orders for {last + timedelta(1)}", ["sources/postgres/generate_orders.py", "--next-day"])

@@ -1,11 +1,11 @@
-# Datathlon · the morning job image (step 10, D-041), adapted from the resource pack
-# 06-orchestration-and-docker/docker/python-ingest-job. Build from the repo root:
-#   docker build -f orchestration/Dockerfile -t datathlon-morning-job:1.0.0 .
-# No secret inside: the .env settings, the Snowflake key and the Google sign-in are given at `docker run`
-# (orchestration/morning_job.sh), read-only.
+# Datathlon · the morning job image (step 10, D-041, D-042), adapted from the resource pack
+# 06-orchestration-and-docker/docker/python-ingest-job. Built and pushed to Artifact Registry by
+# orchestration/push_image.sh; Cloud Run runs it every morning (terraform/morning_job.tf).
+# No secret inside: on Cloud Run the settings are environment variables, the Postgres password and the Snowflake key
+# come from Secret Manager, Google sign-in is the job's service account. On a laptop: orchestration/morning_job.sh.
 FROM python:3.12.7-slim
 
-# host.docker.internal = the laptop that runs Docker: that is where Postgres (port 5433) listens
+# Default for a laptop run (host.docker.internal = the laptop, where the local Postgres listens); Cloud Run sets PGHOST
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \

@@ -45,16 +45,17 @@ box("cloud", 40, 810, 1640, 150, "", "cloud", dashed=True)
 box("snowflake_label", 700, 158, 660, 30, "SNOWFLAKE", "snowflake", size=18)
 box("cloud_label", 60, 818, 700, 30, "GOOGLE CLOUD · our one cloud provider · Frankfurt europe-west3, same region as Snowflake", "cloud", size=18)
 
-# step 10 (D-041): what runs outside Snowflake is one Docker job started by cron; Snowflake Tasks take over at 06:00
+# step 10 (D-041, D-042): what runs outside Snowflake is one Docker job on Cloud Run, started by Cloud Scheduler;
+# Snowflake Tasks take over at 06:00
 box("morning", 40, 60, 590, 56,
-    "Docker morning job · cron on the laptop · every day 05:30\n"
+    "Morning job · Docker image on Cloud Run · Cloud Scheduler 05:30\n"
     "web orders → BRONZE · till, stock, API files → GCS · TD4.1 + resource pack", "tasks", size=15)
 box("tasks", 680, 60, 700, 56,
     "Snowflake Tasks · every day 06:00: COPY INTO + checks → dbt build → gold\n"
     "a failed check stops the run · 2 automatic retries · a finalizer logs every run", "tasks", size=15)
 
 # 5 sources + the seed. 3 simulated OLTP systems, 2 real public APIs
-box("s_orders", 40, 170, 260, 88, "Web orders · Postgres\nOLTP · web shop database\nsimulated in Docker\nUC1 · web channel", "source")
+box("s_orders", 40, 170, 260, 88, "Web orders · Postgres\nOLTP · web shop database\non Cloud SQL · simulated\nUC1 · web channel", "source")
 box("s_tills", 40, 274, 260, 88, "Store tills · Python feed · TD3.3\nOLTP · a JSON file every 5 s\nUC1 · store channel\nsends bad rows on purpose", "source")
 box("s_stock", 40, 378, 260, 88, "Warehouse stock · CSV\nOLTP · night inventory count\nsimulated · UC3", "source")
 box("s_weather", 40, 482, 260, 88, "Weather · Open-Meteo API\nREAL · free, no key\nforecast + history per store city\nUC1 + UC3 context", "source")
@@ -62,7 +63,7 @@ box("s_holidays", 40, 586, 260, 88, "School + public holidays\nREAL · OpenHolid
 box("s_seed", 40, 690, 260, 64, "Product catalogue · CSV seed\nin the dbt repo · UC1 + UC3", "source")
 
 # ingestion: four methods
-box("i_incr", 360, 170, 270, 88, "Incremental load · TD2\nPython · watermark + MERGE\npulls new rows once a day\nin the 05:30 Docker job", "ingest")
+box("i_incr", 360, 170, 270, 88, "Incremental load · TD2\nPython · watermark + MERGE\npulls new rows once a day\nin the 05:30 Cloud Run job", "ingest")
 box("i_micro", 360, 274, 270, 88, "Micro-batch · TD3.3\nfiles → GCS bucket → COPY INTO\ndaily · live demo every 5 s", "ingest")
 box("i_batch", 360, 378, 270, 88, "Daily batch · TD2\nCSV → GCS bucket → COPY INTO\nonce a day", "ingest")
 box("i_api", 360, 482, 270, 192, "API pull · resource pack\n05-ingestion-methods\n\nPython · JSON files\n→ GCS → COPY INTO\nonce a day\ntimeout, retry, fail loudly", "ingest")
@@ -79,7 +80,7 @@ box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nteacher's resource p
 box("html", 1440, 450, 240, 100, "HTML presentation\nshows the dashboard\nnot sure we keep it here", "output", dashed=True)
 
 # platform on Google Cloud
-box("terraform", 60, 860, 380, 84, "Terraform · TD4.2 + resource pack\nSnowflake database, warehouses, roles, task rights\nGCS bucket + access for Snowflake · state in GCS", "tool")
+box("terraform", 60, 860, 380, 84, "Terraform · TD4.2 + resource pack\nSnowflake database, warehouses, roles, task rights\nbucket · Cloud Run · Cloud SQL · secrets · state", "tool")
 box("gha", 460, 860, 300, 84, "GitHub Actions\nterraform plan on every pull request", "tool")
 box("gcs", 780, 860, 340, 84, "GCS bucket\nlanding zone for till, stock, API files\n+ Terraform state", "tool")
 box("cost", 1140, 860, 520, 84, "Costs & security\nSnowflake resource monitor: alert 80 %, stop 100 %\nGCP budget alert · key-pair login · read-only role on GOLD", "tool")
@@ -113,10 +114,10 @@ LOGO_COLOR = {
     "streamlit": "#FF4B4B", "html5": "#E34F26", "terraform": "#844FBA", "githubactions": "#2088FF",
 }
 ICONS = {  # box -> logos shown on its left side
-    "s_orders": ["postgresql", "docker"], "s_tills": ["python"], "s_stock": ["microsoftexcel"], "s_seed": ["dbt"],
+    "s_orders": ["postgresql", "googlecloud"], "s_tills": ["python"], "s_stock": ["microsoftexcel"], "s_seed": ["dbt"],
     "i_incr": ["python"], "i_micro": ["googlecloudstorage"], "i_batch": ["googlecloudstorage"],
     "i_api": ["python", "googlecloudstorage"],
-    "morning": ["docker"], "tasks": ["snowflake"], "dbt": ["dbt"],
+    "morning": ["docker", "googlecloud"], "tasks": ["snowflake"], "dbt": ["dbt"],
     "dashboard": ["streamlit"], "html": ["html5"],
     "terraform": ["terraform"], "gha": ["githubactions"], "gcs": ["googlecloudstorage"], "cost": ["googlecloud"],
     "snowflake_label": ["snowflake"], "cloud_label": ["googlecloud"],

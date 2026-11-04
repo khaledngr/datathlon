@@ -1,7 +1,7 @@
 # sources/postgres · the web shop database (step 4, D-032)
 
 Datathlon's web shop writes its orders into its own **PostgreSQL** database (the OLTP source of UC1, web channel).
-Here it runs in **Docker** on the laptop and a generator plays the shop.
+A generator plays the shop. In production (since D-042) the database is **Postgres 16 on Cloud SQL**, filled and fed by the Cloud Run morning job ([orchestration/](../orchestration/)); the Docker database below is the local copy for development.
 
 | File | What it does | Comes from |
 | --- | --- | --- |

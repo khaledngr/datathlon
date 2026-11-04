@@ -9,10 +9,11 @@ How to switch everything off after the defense, so nothing keeps costing money o
 ```bash
 # Snowflake Tasks (step 10): suspend the root task so no run starts (in Snowsight or run_sql.py)
 #   ALTER TASK DATATHLON.OPS.T_START SUSPEND;
-# Morning job (step 10): remove the cron line and the image
-crontab -l | grep -v morning_job.sh | crontab -
+# Morning job (step 10): pause the schedule (terraform destroy below removes the job, Cloud SQL and the image registry)
+gcloud scheduler jobs pause datathlon-morning-job --location europe-west3
+# Old laptop setup (D-041, replaced by Cloud Run in D-042): local image, local web shop database and its data volume
 docker image rm datathlon-morning-job:1.0.0
-# Local web shop database: container and its data volume
+crontab -l | grep -v morning_job.sh | crontab -
 docker compose --env-file .env -f sources/postgres/docker-compose.yml down -v
 ```
 
@@ -31,7 +32,7 @@ cd terraform && terraform plan -destroy    # read the list first
 terraform destroy
 ```
 
-This removes: database `DATATHLON` with every schema and table in it (incl. `OPS`: tasks, procedures, dbt project), both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, e-mail integration, resource monitor, landing bucket and its IAM.
+This removes: database `DATATHLON` with every schema and table in it (incl. `OPS`: tasks, procedures, dbt project), both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, e-mail integration, resource monitor, landing bucket and its IAM; on Google Cloud the morning job (Cloud Scheduler, Cloud Run job, Artifact Registry with its images, both secrets, both service accounts) and the **Cloud SQL database** (the only thing that costs per hour, about €0.40 a day: destroy it right after the defense).
 
 ## 4. Remove what Terraform does not own
 
