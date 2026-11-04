@@ -18,7 +18,6 @@ Every important choice, with the reason and the credible alternative we weighed.
 - **Choice:** each member has their own Snowflake user (password + MFA) and Google account; no shared login. Two project roles: `DATATHLON_ENGINEER` builds in the `DATATHLON` database, `DATATHLON_ANALYST` reads GOLD only. ACCOUNTADMIN only for what Snowflake allows nobody else to do (resource monitor, integrations).
 - **Why:** graded access with an allowed / denied test ([snowflake/setup/02_access_test.sql](../snowflake/setup/02_access_test.sql), [dashboard/check_access.py](../dashboard/check_access.py)). Found while testing: Snowflake users have every role active at once by default (`DEFAULT_SECONDARY_ROLES = ALL`), so the tests switch secondary roles off; the service user has none.
 - **Service user `DATATHLON_PIPELINE`:** `TYPE = SERVICE`, key pair only (a robot cannot answer an MFA prompt), only the engineer role. The pipeline does not depend on one person's account, and its queries are tagged so every action is traceable.
-- **Visual:** [slides/access_map.png](slides/access_map.png).
 
 ### D-029 · Cost guards on both clouds
 - **Choice:** Snowflake resource monitor of 20 credits a month (notify at 50 / 80 %, suspend at 100 %, suspend immediately at 110 %) and a Google Cloud budget alert of €10 a month.
