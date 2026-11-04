@@ -23,5 +23,5 @@ def connect(query_tag, schema="BRONZE"):
         warehouse=os.environ.get("SNOWFLAKE_WAREHOUSE", "DATATHLON_WH"),
         database=os.environ.get("SNOWFLAKE_DATABASE", "DATATHLON"),
         schema=schema,
-        session_parameters={"QUERY_TAG": f"datathlon:{query_tag}"},  # cost per job in QUERY_HISTORY
+        session_parameters={"QUERY_TAG": f"datathlon:{query_tag}"},  # "<team>:<job>": who pays, in the showback
     )

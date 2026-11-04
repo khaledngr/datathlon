@@ -13,6 +13,7 @@ monitor does not cap and which ignores environment.yml. The warehouse runtime ru
 """
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,6 +26,9 @@ STAGE = "DATATHLON.APPS.DASHBOARD_SOURCE"
 FILES = ["streamlit_app.py", "environment.yml", "assets/datathlon-logo.png", "assets/datathlon-mark.png",
          "../.streamlit/config.toml"]  # the brand theme, at .streamlit/ of the app like on the laptop
 SNOWSIGHT = "https://app.snowflake.com/nvtlkdo/rp44213/#/streamlit-apps/" + APP
+# The open app keeps DATATHLON_BI_WH awake until it sleeps: 15 min after the last interaction by default, 5 here
+# (Snowflake's minimum). Without it the dashboard used as many credits as the whole pipeline (docs/COSTS.md).
+SLEEP_TIMER = "\n[snowflake]\n[snowflake.sleep]\nstreamlitSleepTimeoutMinutes = 5\n"
 
 
 def version_name():
@@ -37,10 +41,15 @@ def main():
     version = version_name()
     with connect() as sf, sf.cursor() as cur:
         cur.execute(f"CREATE STAGE IF NOT EXISTS {STAGE} COMMENT = 'Dashboard files, one folder per version (D-046)'")
+        tmp = Path(tempfile.mkdtemp())
         for rel in FILES:
             sub = Path(rel.replace("../", "")).parent.as_posix()
             folder = f"@{STAGE}/{version}" + ("" if sub == "." else f"/{sub}")
-            cur.execute(f"PUT 'file://{(HERE / rel).as_posix()}' '{folder}' AUTO_COMPRESS = FALSE OVERWRITE = TRUE")
+            src = HERE / rel
+            if src.name == "config.toml":  # Snowflake-only option: the laptop's Streamlit warns on it, so added here
+                src = tmp / "config.toml"
+                src.write_text((HERE / rel).read_text() + SLEEP_TIMER)
+            cur.execute(f"PUT 'file://{src.as_posix()}' '{folder}' AUTO_COMPRESS = FALSE OVERWRITE = TRUE")
         print(f"Uploaded {len(FILES)} files to @{STAGE}/{version}")
         cur.execute(f"""CREATE OR REPLACE STREAMLIT {APP}
                         FROM '@{STAGE}/{version}'

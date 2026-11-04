@@ -43,3 +43,9 @@ variable "morning_job_image_tag" {
   type        = string
   default     = "1.1.0"
 }
+
+variable "pii_readers" {
+  description = "Users who may switch to DATATHLON_PII_READER and see personal identifiers in clear (the admins)"
+  type        = list(string)
+  default     = ["ROBINCCR", "KHALED"]
+}

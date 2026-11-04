@@ -84,7 +84,7 @@ VALUES (s.order_id, s.line_no, s.sku, s.qty, s.unit_price_eur, CURRENT_TIMESTAMP
 
 def main():
     run_id, started = str(uuid.uuid4()), datetime.now(timezone.utc)
-    with connect("step5:web_orders") as sf, sf.cursor() as cur:
+    with connect("ingestion:web_orders") as sf, sf.cursor() as cur:
         for ddl in DDL:
             cur.execute(ddl)
 

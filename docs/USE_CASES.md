@@ -1,9 +1,9 @@
 # Use cases
 
-**Status: Decided (D-013): UC1 + UC2.** The live incident demo comes from the till feed, which becomes the store-side input of UC1 (D-014, option A). We need 1 to 3. Each one is written the way the grading matrix asks (C2): the decision and its user, the metric with its grain, formula and exclusions, the refresh frequency and why, and the acceptance test.
-All numbers about the company are assumptions, to be stated as such on the slides.
+Two use cases (D-013). Each one gives the decision and its user, the metric with its grain, formula and exclusions, the refresh frequency and why, and the acceptance test. The store sales of UC1 come from the till feed, which also carries the live incident (D-014).
+All numbers about the company are assumptions.
 
-## The company in numbers (assumptions, C1)
+## The company in numbers (assumptions)
 
 | | Assumption |
 | --- | --- |
@@ -27,8 +27,6 @@ All numbers about the company are assumptions, to be stated as such on the slide
 | **Acceptance test** | Gold revenue = silver revenue (dbt reconciliation test) and matches the source totals extracted from Postgres for the same day |
 | **Sources** | Postgres "web orders" database (OLTP): orders, order lines, products. Till feed for the store channel (D-014). Weather and holidays as context (D-021) |
 | **Ingestion** | Batch first load + **incremental** watermark and `MERGE` (no duplicates on re-run). Postgres is the web shop's live database: orders arrive all day, but it pushes nothing and triggers nothing. Our job *pulls* the rows changed since the last run (the watermark), once a day before 06:00, then the Snowflake Tasks take over (D-022) |
-| **Reused from** | TD 2 (`incremental_orders.py`, `COPY INTO` scripts), TD 3.1/3.2 dbt medallion (`gold_daily_sales`, `gold_revenue_by_channel`, `gold_top_products`, `assert_gold_matches_silver`), Snowflake Tasks from the resource pack (D-022) |
-| **New work** | Rename to Datathlon, change the sample data from football merch to sports products and channels |
 
 ## UC2 · Stock cover alert
 
@@ -39,23 +37,19 @@ All numbers about the company are assumptions, to be stated as such on the slide
 | **Metric** | **Days of cover** = stock on hand ÷ average daily units sold over the last 7 days. **Grain:** store × product × day. Alert when below 3 days. **Exclusions:** products discontinued, stores closed that day |
 | **Frequency** | Daily, after the night inventory count |
 | **Acceptance test** | Stock on hand in gold = warehouse snapshot total; no product with sales but no stock row |
-| **Sources** | Warehouse system (OLTP): daily stock CSV export after the night count, with a control file; plus units sold from UC1 (tills + paid click & collect) |
+| **Sources** | Store stock system (OLTP): daily stock CSV export after the night count, with a control file; plus units sold from UC1 (tills + paid click & collect) |
 | **Ingestion** | Daily **batch** (`COPY INTO` of the snapshot file, reconciled against the control file on every run) |
-| **Reused from** | TD 2 Part A (export → stage → `COPY INTO`), dbt patterns from TD 3 |
-| **New work** | The stock dataset and the days-of-cover model (not in any TD) |
 
 ---
 
-## How UC1 + UC2 fit the rules
+## How the two use cases cover the requirements
 
-| Rule | Covered by (chosen: option A of D-014) | Covered by (option B, not chosen) |
-| --- | --- | --- |
-| At least 3 sources | Postgres web orders, till feed for store sales (UC1); stock snapshot (UC2); product catalogue seed | Postgres web orders (UC1), stock snapshot (UC2), product catalogue seed (a seed as the 3rd source is weak) |
-| Several ingestion methods | Incremental `MERGE` and micro-batch files (UC1), daily `COPY INTO` batch (UC2) | Incremental `MERGE` (UC1), daily `COPY INTO` batch (UC2) |
-| dbt with tests and a seed | Both; the seed is the product catalogue | Same |
-| Corrupted row shown live | Bad till row → quarantine (UC1, TD 3.3 code) | Bad stock row → quarantine (UC2, new code) |
-| Two incident scenarios | Bad till data (quarantine); broken stock file, load aborted with nothing half-loaded (D-037); a Snowflake Task failure and retry without double counting comes with step 10 (D-022) | Bad stock row; a task failure |
+| Requirement | Covered by |
+| --- | --- |
+| Several sources | Postgres web orders and store till feed (UC1), store stock export (UC2), weather and holidays APIs (context for both), product and store catalogue as a dbt seed |
+| Several ingestion methods | Incremental `MERGE` with a watermark (web orders), micro-batch files every few seconds (tills), daily batch with a control file (stock), API pull (weather, holidays) |
+| dbt with tests and a seed | Silver, quarantine and gold models, 71 tests, the catalogue seed |
+| A corrupted row shown live | Bad till lines → quarantine with their reason, live ([INCIDENTS.md](INCIDENTS.md)) |
+| Incidents without a snowball effect | Broken stock file: load refused, nothing half-loaded, dbt skipped, team e-mailed; a failed task retried twice without double counting |
 
-## Choice
-
-The group chose **UC1 + UC2** (D-013). Build order: UC1 first (most TD code), then UC2 on top of it, since days of cover needs UC1's units sold.
+UC1 is built first; UC2 sits on top of it, since days of cover needs UC1's units sold.

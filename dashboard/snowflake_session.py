@@ -30,7 +30,7 @@ def connect():
         warehouse=WAREHOUSE,
         database="DATATHLON",
         schema="GOLD",
-        session_parameters={"QUERY_TAG": "datathlon:dashboard"},  # dashboard cost in QUERY_HISTORY
+        session_parameters={"QUERY_TAG": "datathlon:bi:dashboard"},  # team bi in the showback (docs/GOVERNANCE.md)
     )
     con.cursor().execute("USE SECONDARY ROLES NONE")
     return con
