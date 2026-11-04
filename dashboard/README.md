@@ -26,7 +26,7 @@ Opens at http://localhost:8501. Sign-in (`snowflake_session.py`): your own user 
 .venv/bin/python dashboard/deploy_to_snowflake.py    # files -> stage APPS.DASHBOARD_SOURCE, then CREATE OR REPLACE STREAMLIT
 ```
 
-The app `DATATHLON.APPS.DATATHLON_DASHBOARD` opens in Snowsight > Projects > Streamlit (the script prints its URL). It is owned by `DATATHLON_ANALYST` and runs with its owner's rights: GOLD only, on `DATATHLON_BI_WH`. Every member has the analyst role. Packages: `environment.yml`, same versions as the laptop. Redeploy after each change of the app.
+The app `DATATHLON.APPS.DATATHLON_DASHBOARD` opens in Snowsight > Projects > Streamlit (the script prints its URL). It is owned by `DATATHLON_ANALYST` and runs with its owner's rights: GOLD only, on `DATATHLON_BI_WH`. Every member has the analyst role. Packages: `environment.yml`, same versions as the laptop. The app sleeps 5 min after the last interaction (sleep timer, added at deploy; default 15) so it does not keep the BI warehouse awake. Redeploy after each change of the app.
 
 ## What it shows (data 1 Sep → 3 Nov, checked 4 Nov)
 
