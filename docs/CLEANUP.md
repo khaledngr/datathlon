@@ -32,13 +32,14 @@ cd terraform && terraform plan -destroy    # read the list first
 terraform destroy
 ```
 
-This removes: database `DATATHLON` with every schema and table in it (incl. `OPS`: tasks, procedures, dbt project), both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, e-mail integration, resource monitor, landing bucket and its IAM; on Google Cloud the morning job (Cloud Scheduler, Cloud Run job, Artifact Registry with its images, both secrets, both service accounts) and the **Cloud SQL database** (the only thing that costs per hour, about €0.40 a day: destroy it right after the defense).
+This removes: database `DATATHLON` with every schema and table in it (incl. `OPS`: tasks, procedures, dbt project), both warehouses, roles `DATATHLON_ENGINEER` / `DATATHLON_ANALYST` and their grants, service user `DATATHLON_PIPELINE`, storage integration, e-mail integration, both resource monitors, role `DATATHLON_PII_READER`, tags and masking policies, the two team budgets (in schema `GOVERNANCE`), landing bucket and its IAM; on Google Cloud the morning job (Cloud Scheduler, Cloud Run job, Artifact Registry with its images, both secrets, both service accounts) and the **Cloud SQL database** (the only thing that costs per hour, about €0.40 a day: destroy it right after the defense).
 
 ## 4. Remove what Terraform does not own
 
 | What | How | Who |
 | --- | --- | --- |
 | Terraform state bucket | `gcloud storage rm -r gs://datathlon-tfstate-513514` (after step 3: the state is no longer needed) | Khaled |
+| Account budget | `CALL SNOWFLAKE.LOCAL.ACCOUNT_ROOT_BUDGET!DEACTIVATE();` as ACCOUNTADMIN | Khaled |
 | Users `KHALED`, `RUDY` | `DROP USER KHALED; DROP USER RUDY;` as ACCOUNTADMIN | Robin |
 | Private keys on laptops | `rm ~/.snowflake/datathlon/*.p8` on every laptop | each person |
 | Local data and secrets | `rm -rf data/ .env terraform/terraform.tfvars` | each person |

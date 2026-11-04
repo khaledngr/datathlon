@@ -46,7 +46,7 @@ gcloud auth application-default login
 
 The last command lets Terraform use your login.
 
-## Python environment (step 4)
+## 5. Python environment
 
 One environment for all the Datathlon scripts, pinned versions in `requirements.txt`:
 

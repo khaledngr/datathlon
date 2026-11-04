@@ -67,7 +67,7 @@ A resource monitor **stops** compute at the cap. A budget **forecasts** the end 
 ## Set up once (in this order)
 
 ```bash
-cd terraform && terraform plan && terraform apply   # 68 objects: schema, tags, masking, PII role, grants
+cd terraform && terraform plan && terraform apply   # schema, tags, masking, PII role, grants
 ```
 
 Then in Snowsight as ACCOUNTADMIN: [04_budgets.sql](../snowflake/setup/04_budgets.sql). Then deploy dbt (the post-hook needs the tags): `.venv/bin/python dbt/deploy_to_snowflake.py`. The query tags of the Cloud Run job change with its next image (`orchestration/push_image.sh`); until then its old tags are still recognised.

@@ -45,7 +45,7 @@ for f in snowflake/stages/0*.sql; do .venv/bin/python snowflake/run_sql.py "$f";
 dbt/dbt.sh build                                                   # SILVER, QUARANTINE, GOLD + tests
 ```
 
-After that the pipeline runs every morning on its own.
+After that it runs every morning: Cloud Run job at 05:30, Snowflake Tasks at 06:00.
 
 ## See the results
 

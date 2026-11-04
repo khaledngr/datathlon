@@ -3,8 +3,8 @@
 | Folder | What | Build step |
 | --- | --- | --- |
 | `setup/` | One-time account setup: team users (`00`), resource monitor (`01`), access test allowed / denied (`02`), cost report as ACCOUNTADMIN (`03`), budgets (`04`), governance demo: masking, tags, showback (`05`), key pair generator (`gen_key.py`) | 0–3 |
-| `stages/` | Shared stage `LANDING` on the bucket + `NDJSON` format (`01`), `COPY INTO` for tills (`02`), stock with control-file reconciliation (`03`), API files (`04`) ✅ | 6, 7, 7b |
-| `tasks/` | Daily task graph in schema `OPS` (`01`): 06:00 → COPY INTO tills / stock / API + checks that fail the run → `EXECUTE DBT PROJECT` build → finalizer (run log `OPS.PIPELINE_RUNS`, failure e-mail); evidence queries (`02`) ✅ | 10 |
+| `stages/` | Shared stage `LANDING` on the bucket + `NDJSON` format (`01`), `COPY INTO` for tills (`02`), stock with control-file reconciliation (`03`), API files (`04`) | 6, 7, 7b |
+| `tasks/` | Daily task graph in schema `OPS` (`01`): 06:00 → COPY INTO tills / stock / API + checks that fail the run → `EXECUTE DBT PROJECT` build → finalizer (run log `OPS.PIPELINE_RUNS`, failure e-mail); evidence queries (`02`) | 10 |
 
 Run a file as the service user: `.venv/bin/python snowflake/run_sql.py snowflake/stages/02_tills.sql`
 
