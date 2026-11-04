@@ -53,7 +53,7 @@ After that the pipeline runs every morning on its own.
 | --- | --- |
 | Dashboard | Snowsight > Projects > Streamlit > *Datathlon · sales and stock*. Locally: `.venv/bin/streamlit run dashboard/streamlit_app.py` |
 | Last night's run | [snowflake/tasks/02_task_history.sql](snowflake/tasks/02_task_history.sql) (`OPS.PIPELINE_RUNS`) |
-| Quality | 71 dbt tests; rejected lines in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason |
+| Quality | 67 dbt tests; rejected lines in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason |
 | Data documentation | `dbt/dbt.sh docs generate && dbt/dbt.sh docs serve` (lineage, every gold column) |
 
 ## Docs
@@ -64,6 +64,7 @@ After that the pipeline runs every morning on its own.
 - [OWNERSHIP.md](docs/OWNERSHIP.md): who owns which part
 - [COSTS.md](docs/COSTS.md): what it costs, measured and projected
 - [GOVERNANCE.md](docs/GOVERNANCE.md): tags, masking of personal data, showback, budgets
+- [DEMO_VIDEO.md](docs/DEMO_VIDEO.md): the end-to-end demo, step by step
 - [MANUAL_STEPS.md](docs/MANUAL_STEPS.md): what Terraform cannot do
 - [CLEANUP.md](docs/CLEANUP.md): switching everything off
 
