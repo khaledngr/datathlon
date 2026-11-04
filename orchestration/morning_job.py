@@ -1,4 +1,4 @@
-"""Datathlon · the morning job (step 10, D-041, D-042): everything that runs OUTSIDE Snowflake, in order, in one container.
+"""Datathlon · the morning job (step 10, D-043, D-044): everything that runs OUTSIDE Snowflake, in order, in one container.
 Runs on Google Cloud: Cloud Scheduler starts the Cloud Run job datathlon-morning-job at 05:30 Paris (terraform/morning_job.tf).
 
   (no argument)   the daily run

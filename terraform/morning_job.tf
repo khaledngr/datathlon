@@ -1,4 +1,4 @@
-# Step 10 (D-042): the morning job runs on Google Cloud, not on a laptop that may be switched off.
+# Step 10 (D-044): the morning job runs on Google Cloud, not on a laptop that may be switched off.
 #   Cloud Scheduler 05:30 Paris -> Cloud Run job (the Docker image of orchestration/) -> Postgres on Cloud SQL,
 #   BRONZE in Snowflake, files in the landing bucket. Then the Snowflake Tasks take over at 06:00.
 # Secrets: the Postgres password is made here (random_password, so it is in the private Terraform state); the

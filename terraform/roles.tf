@@ -66,7 +66,7 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_schemas" {
   }
 }
 
-# Step 10 (D-041): the engineer owns the task graph and the dbt project in OPS
+# Step 10 (D-043): the engineer owns the task graph and the dbt project in OPS
 resource "snowflake_grant_privileges_to_account_role" "engineer_ops_schema" {
   provider          = snowflake.security
   account_role_name = snowflake_account_role.engineer.name
@@ -137,7 +137,7 @@ resource "snowflake_service_user" "pipeline" {
   name                           = "DATATHLON_PIPELINE"
   comment                        = "Datathlon pipeline (ingestion, dbt, Tasks) - managed by Terraform"
   rsa_public_key                 = trimspace(file("${path.module}/keys/datathlon_pipeline.pub"))       # public half: safe in Git
-  rsa_public_key_2               = trimspace(file("${path.module}/keys/datathlon_pipeline_cloud.pub")) # second key: the Cloud Run morning job (D-042)
+  rsa_public_key_2               = trimspace(file("${path.module}/keys/datathlon_pipeline_cloud.pub")) # second key: the Cloud Run morning job (D-044)
   default_role                   = snowflake_account_role.engineer.name
   default_warehouse              = module.pipeline_warehouse.name
   default_secondary_roles_option = "NONE"
@@ -150,7 +150,7 @@ resource "snowflake_grant_account_role" "engineer_to_pipeline" {
   user_name = snowflake_service_user.pipeline.name
 }
 
-# ---------- Failure e-mail (step 10, D-041) ----------
+# ---------- Failure e-mail (step 10, D-043) ----------
 # The task graph's finalizer sends an e-mail when a run fails (SYSTEM$SEND_EMAIL). Snowflake only sends to verified
 # e-mail addresses of users of this account; the recipients are kept in DATATHLON.OPS.ALERT_RECIPIENTS, not in Git.
 resource "snowflake_email_notification_integration" "alerts" {

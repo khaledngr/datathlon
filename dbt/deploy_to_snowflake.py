@@ -1,4 +1,4 @@
-"""Datathlon · deploy the dbt project INTO Snowflake (dbt Projects on Snowflake, TD 3.2, D-041).
+"""Datathlon · deploy the dbt project INTO Snowflake (dbt Projects on Snowflake, TD 3.2, D-043).
 
   .venv/bin/python dbt/deploy_to_snowflake.py              # upload the project, new version of OPS.DATATHLON_DBT
   .venv/bin/python dbt/deploy_to_snowflake.py --run build  # same, then run `dbt build --target prod` in Snowflake
@@ -72,7 +72,7 @@ def main():
             cur.execute(f"ALTER DBT PROJECT {PROJECT} ADD VERSION FROM '@{STAGE}/{version}'")
         else:
             cur.execute(f"CREATE DBT PROJECT {PROJECT} FROM '@{STAGE}/{version}' DEFAULT_TARGET = 'prod' "
-                        f"COMMENT = 'Datathlon dbt project, deployed by dbt/deploy_to_snowflake.py (D-041)'")
+                        f"COMMENT = 'Datathlon dbt project, deployed by dbt/deploy_to_snowflake.py (D-043)'")
         cur.execute(f"SHOW VERSIONS IN DBT PROJECT {PROJECT}")
         cols = [d[0] for d in cur.description]
         last = cur.fetchall()[-1]

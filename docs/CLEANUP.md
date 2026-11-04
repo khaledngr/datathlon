@@ -11,7 +11,7 @@ How to switch everything off after the defense, so nothing keeps costing money o
 #   ALTER TASK DATATHLON.OPS.T_START SUSPEND;
 # Morning job (step 10): pause the schedule (terraform destroy below removes the job, Cloud SQL and the image registry)
 gcloud scheduler jobs pause datathlon-morning-job --location europe-west3
-# Old laptop setup (D-041, replaced by Cloud Run in D-042): local image, local web shop database and its data volume
+# Old laptop setup (D-043, replaced by Cloud Run in D-044): local image, local web shop database and its data volume
 docker image rm datathlon-morning-job:1.0.0
 crontab -l | grep -v morning_job.sh | crontab -
 docker compose --env-file .env -f sources/postgres/docker-compose.yml down -v

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Datathlon · build the morning job image and push it to Artifact Registry (step 10, D-042). From the repo root:
+# Datathlon · build the morning job image and push it to Artifact Registry (step 10, D-044). From the repo root:
 #   orchestration/push_image.sh 1.1.0
 # Then set the same tag in terraform (variable morning_job_image_tag) and `terraform apply`: Cloud Run runs that tag.
 # linux/amd64: Cloud Run runs Intel machines, our Macs are ARM. Signs in with the Google ADC login (no key file).
