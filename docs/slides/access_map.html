@@ -11,13 +11,13 @@
   * { box-sizing: border-box; }
   body { margin: 0; width: 1600px; height: 900px; background: var(--bg); color: var(--navy); font: 16px/1.35 Inter, system-ui, sans-serif; padding: 44px 56px; }
   h1 { font: italic 800 52px/1 "Barlow Condensed", sans-serif; text-transform: uppercase; margin: 0; letter-spacing: .5px; }
-  .sub { color: var(--muted); font-size: 18px; margin: 8px 0 26px; }
+  .sub { color: var(--muted); font-size: 18px; margin: 8px 0 16px; }
   .sub b { color: var(--navy); }
-  table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
   th { font: italic 700 20px/1.1 "Barlow Condensed", sans-serif; text-transform: uppercase; color: var(--muted); text-align: center; padding: 0 6px 2px; letter-spacing: .4px; }
   th small { display: block; font: 400 12px Inter, sans-serif; text-transform: none; letter-spacing: 0; margin-top: 3px; }
   th:first-child { text-align: left; }
-  td { background: #fff; padding: 12px 8px; text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  td { background: #fff; padding: 9px 8px; text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   td:first-child { text-align: left; border-left: 1px solid var(--line); border-radius: 12px 0 0 12px; padding-left: 18px; width: 390px; }
   td:last-child { border-right: 1px solid var(--line); border-radius: 0 12px 12px 0; }
   .who { font-weight: 700; font-size: 18px; }
@@ -25,11 +25,13 @@
   .role { font: 600 13px ui-monospace, Menlo, monospace; color: var(--blue); margin-top: 3px; }
   .note { font-size: 13px; color: var(--muted); }
   .chip { display: inline-block; min-width: 82px; padding: 5px 12px; border-radius: 99px; font-weight: 700; font-size: 14px; }
+  .o { background: var(--navy); color: var(--mint); }
   .w { background: var(--blue); color: #fff; }
   .r { background: var(--mint); color: var(--navy); }
   .n { color: #B4BAD8; font-size: 22px; font-weight: 400; }
   .cell-note { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
   tr.machine td { background: #FBFCFF; }
+  tr.team td:first-child { box-shadow: inset 4px 0 0 var(--blue); }
   .bottom { display: grid; grid-template-columns: 1.25fr 1fr; gap: 22px; margin-top: 14px; }
   .box { background: var(--navy); color: #EEF0FF; border-radius: 14px; padding: 16px 20px; }
   .box h2 { font: italic 800 22px/1 "Barlow Condensed", sans-serif; text-transform: uppercase; margin: 0 0 10px; color: var(--mint); letter-spacing: .4px; }
@@ -45,13 +47,13 @@
 </style>
 </head>
 <body>
-<div class="legend"><span class="chip w">Writes</span> builds it <span class="chip r">Reads</span> sees it <span class="n">—</span> refused</div>
+<div class="legend"><span class="chip o">Owns</span> answers for it <span class="chip w">Writes</span> can change it <span class="chip r">Reads</span> sees it <span class="n">—</span> refused</div>
 <h1>Who sees what</h1>
-<p class="sub">One role per job, <b>least privilege</b>, declared in Terraform and <b>tested</b>: the analyst role reads GOLD and is refused everywhere else (<code>check_access.py</code>).</p>
+<p class="sub">One owner per part, one role per job, <b>least privilege</b>, declared in Terraform and <b>tested</b>: the analyst role reads GOLD and is refused everywhere else (<code>check_access.py</code>).</p>
 
 <table>
   <tr>
-    <th>Who (job) · Snowflake role</th>
+    <th>Who · Snowflake role used</th>
     <th>Dashboard<small>Streamlit, APPS</small></th>
     <th>Gold<small>4 business tables</small></th>
     <th>Silver<small>clean data</small></th>
@@ -62,28 +64,32 @@
   </tr>
   <tr>
     <td><div class="who">Category managers · CFO <span class="uc">UC1</span></div><div class="role">DATATHLON_ANALYST</div></td>
-    <td><span class="chip r">Reads</span><span class="cell-note">Sales, Data quality</span></td>
-    <td><span class="chip r">Reads</span></td>
-    <td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td>
+    <td><span class="chip r">Reads</span><span class="cell-note">Sales, Data quality</span></td><td><span class="chip r">Reads</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td>
     <td><span class="note">BI_WH</span></td>
   </tr>
   <tr>
     <td><div class="who">Supply chain manager <span class="uc">UC2</span></div><div class="role">DATATHLON_ANALYST</div></td>
-    <td><span class="chip r">Reads</span><span class="cell-note">Stock alerts</span></td>
-    <td><span class="chip r">Reads</span></td>
-    <td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td>
+    <td><span class="chip r">Reads</span><span class="cell-note">Stock alerts</span></td><td><span class="chip r">Reads</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td>
     <td><span class="note">BI_WH</span></td>
   </tr>
-  <tr>
-    <td><div class="who">Data engineers <span class="note">(Robin, Khaled, Rudy)</span></div><div class="role">DATATHLON_ENGINEER</div></td>
-    <td><span class="chip r">Reads</span><span class="cell-note">via the analyst role</span></td>
-    <td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td>
-    <td><span class="note">WH + BI_WH</span></td>
+  <tr class="team">
+    <td><div class="who">Rudy <span class="note">· BI and business</span></div><div class="role">DATATHLON_ANALYST</div></td>
+    <td><span class="chip o">Owns</span><span class="cell-note">deploys the app</span></td><td><span class="chip r">Reads</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td><td><span class="n">—</span></td>
+    <td><span class="note">BI_WH</span></td>
+  </tr>
+  <tr class="team">
+    <td><div class="who">Robin <span class="note">· transformation, orchestration</span></div><div class="role">DATATHLON_ENGINEER</div></td>
+    <td><span class="chip r">Reads</span></td><td><span class="chip o">Owns</span><span class="cell-note">dbt</span></td><td><span class="chip o">Owns</span><span class="cell-note">dbt</span></td><td><span class="chip o">Owns</span><span class="cell-note">rules</span></td><td><span class="chip w">Writes</span></td><td><span class="chip o">Owns</span><span class="cell-note">06:00 run</span></td>
+    <td><span class="note">WH</span></td>
+  </tr>
+  <tr class="team">
+    <td><div class="who">Khaled <span class="note">· ingestion, platform</span></div><div class="role">DATATHLON_ENGINEER</div></td>
+    <td><span class="chip r">Reads</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip o">Owns</span><span class="cell-note">5 sources</span></td><td><span class="chip w">Writes</span></td>
+    <td><span class="note">WH</span></td>
   </tr>
   <tr class="machine">
-    <td><div class="who">Pipeline <span class="note">(service user, no person)</span></div><div class="role">DATATHLON_PIPELINE → ENGINEER</div><div class="note">key pair only: no password, no Snowsight, no other role</div></td>
-    <td><span class="n">—</span></td>
-    <td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span><span class="cell-note">runs the 06:00 tasks</span></td>
+    <td><div class="who">Pipeline <span class="note">(service user, no person)</span></div><div class="role">DATATHLON_PIPELINE → ENGINEER</div></td>
+    <td><span class="n">—</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span></td><td><span class="chip w">Writes</span><span class="cell-note">runs the tasks</span></td>
     <td><span class="note">WH</span></td>
   </tr>
 </table>
@@ -106,6 +112,6 @@
     </ul>
   </div>
 </div>
-<p class="note" style="margin-top:18px;font-size:14px">Today the business teams share one read-only role. At Datathlon's size: one role per team (sales, supply chain, finance) and row filters per country, so each team sees only its own scope.</p>
+<p class="note" style="margin-top:18px;font-size:14px">Today the business users share the read-only role that owns the app. At Datathlon's size: they only get the right to open the app, and one role per team (sales, supply chain, finance) with row filters per country.</p>
 </body>
 </html>

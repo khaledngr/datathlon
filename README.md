@@ -37,7 +37,7 @@ Every day after that, nothing to type (step 10, D-043): at **05:30** Cloud Sched
 - **Did last night's run work?** [snowflake/tasks/02_task_history.sql](snowflake/tasks/02_task_history.sql): one row per run in `OPS.PIPELINE_RUNS`, every task and retry, every dbt run in `GOLD.DBT_RUN_RESULTS`. A failed run e-mails the team.
 - **Quality:** 62 dbt tests on every build (keys, accepted values, relationships, every raw till line in silver or quarantine exactly once, stock reconciled against its control file). Rejected till lines stay in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason.
 
-Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). What happens when data goes wrong (2 incidents, rehearsed): [docs/INCIDENTS.md](docs/INCIDENTS.md). What it costs, measured and projected: [docs/COSTS.md](docs/COSTS.md).
+Accounts, keys and sign-ins: [docs/SETUP.md](docs/SETUP.md). Switching everything off: [docs/CLEANUP.md](docs/CLEANUP.md). What happens when data goes wrong (2 incidents, rehearsed): [docs/INCIDENTS.md](docs/INCIDENTS.md). What it costs, measured and projected: [docs/COSTS.md](docs/COSTS.md). Why each tool, and the alternatives: [docs/DECISIONS.md](docs/DECISIONS.md). Who owns which part: [docs/OWNERSHIP.md](docs/OWNERSHIP.md).
 
 ## Repository
 
