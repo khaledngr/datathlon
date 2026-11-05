@@ -64,10 +64,23 @@ First result (2 → 4 Nov, 5.03 credits, equal to `WAREHOUSE_METERING_HISTORY` t
 
 A resource monitor **stops** compute at the cap. A budget **forecasts** the end of the month and e-mails the team (`OPS.ALERT_RECIPIENTS`) when the forecast goes over the limit. Snowsight > Admin > Cost management > Budgets shows both.
 
+## 5. Data quality monitored by Snowflake itself
+
+dbt's 67 tests check what dbt builds, when it runs. On top of them, Snowflake's **data metric functions** watch the raw tables on their own ([snowflake/setup/06_data_quality_monitoring.sql](../snowflake/setup/06_data_quality_monitoring.sql)):
+
+| Table (BRONZE) | Measured every day at 06:20 | Limit (`OPS.DATA_QUALITY_RULES`) |
+| --- | --- | --- |
+| `WEB_ORDERS` | rows, freshness, duplicate order IDs, orders without a date | 26 h, 0, 0 |
+| `TILL_SALES_RAW` | rows, freshness, % of last 24 h's lines without a sale ID (our own function) | 26 h, 5 % |
+| `STOCK_SNAPSHOTS` | rows, freshness, counts present twice for a store, product and day (our own function) | 26 h, 0 |
+| `WEATHER_RAW` | freshness | 26 h |
+
+Every value is kept in `SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS` (a history of each source's health), `OPS.DATA_QUALITY_STATUS` shows the latest one against its limit, and the alert `OPS.A_DATA_QUALITY` (06:30) e-mails the team if a limit is broken. They run on serverless compute and catch what a dbt test cannot: a source that **stopped sending** (nothing new to test) is a freshness breach. Only BRONZE is monitored: dbt re-creates silver and gold on every build, which would remove their monitors.
+
 ## Set up once (in this order)
 
 ```bash
 cd terraform && terraform plan && terraform apply   # schema, tags, masking, PII role, grants
 ```
 
-Then in Snowsight as ACCOUNTADMIN: [04_budgets.sql](../snowflake/setup/04_budgets.sql). Then deploy dbt (the post-hook needs the tags): `.venv/bin/python dbt/deploy_to_snowflake.py`. The query tags of the Cloud Run job change with its next image (`orchestration/push_image.sh`); until then its old tags are still recognised.
+Then in Snowsight as ACCOUNTADMIN: [04_budgets.sql](../snowflake/setup/04_budgets.sql). Then deploy dbt (the post-hook needs the tags): `.venv/bin/python dbt/deploy_to_snowflake.py`. Then the monitors: `.venv/bin/python snowflake/run_sql.py snowflake/setup/06_data_quality_monitoring.sql`. The query tags of the Cloud Run job change with its next image (`orchestration/push_image.sh`); until then its old tags are still recognised.

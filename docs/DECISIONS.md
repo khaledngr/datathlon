@@ -67,6 +67,21 @@ Every important choice, with the reason and the credible alternative we weighed.
 - **Choice:** one CSV per night count plus a control file (expected rows and units). `COPY INTO` with `ON_ERROR = ABORT_STATEMENT` and `NOT NULL` columns, then a two-way reconciliation (each control file = its snapshot, no snapshot without control).
 - **Why:** half a stock count is wrong stock: better no new data (gold keeps yesterday's) than a false alert. Found by testing: a short line was loaded with NULLs until the columns became `NOT NULL`.
 
+### D-049 · File formats: each source keeps its natural format; no Parquet, no Iceberg at this size
+- **Choice:**
+
+  | Data | Format in the bucket | Why this one | In Snowflake |
+  | --- | --- | --- | --- |
+  | Till sales | **NDJSON**, one JSON per line, a file every few seconds | A till appends one event at a time; each line stands alone, so a broken line never breaks the file; fields can be added or renamed (schema drift) without breaking the load | One `VARIANT` per line in BRONZE: nothing lost, parsed in dbt |
+  | Weather, holidays | **JSON**, the API answer as returned | Replayable: we keep exactly what the API said | `VARIANT`, flattened in dbt |
+  | Store stock | **CSV** with header + a control file | Fixed, flat columns from a legacy stock system; the format every store system can export; the control file proves the export is complete | Typed columns, `NOT NULL` |
+  | Web orders | none: Postgres rows read with SQL | The source is a database; a file would add a step | Typed columns, `MERGE` |
+
+  Inside Snowflake every table is stored the same way whatever the input: compressed, columnar micro-partitions, encrypted (AES-256).
+- **Why not Parquet:** Parquet is columnar and compressed, the right choice for large analytical exports. Our files are small (a till file is about 2 KB, the whole bucket 12 MB) and written by operational systems that produce rows, not columns; converting them would add a step and hide the raw line we keep as evidence. Parquet becomes worth it when one export is hundreds of MB, for example the full 40,000-product stock count of 180 stores (7 M rows a night).
+- **Why not Apache Iceberg (yet):** Iceberg is an open table format (Parquet files plus metadata: snapshots, schema evolution, time travel) that several engines (Spark, Trino, BigQuery, Snowflake) can read and write on the same files in our own bucket, without copying. It solves a multi-engine, vendor-independence problem we do not have: one engine (Snowflake) reads everything, and Snowflake's own tables already give time travel and schema changes. **When we would switch:** if a data science team wanted to read gold from Spark or BigQuery, gold would become Snowflake-managed Iceberg tables written to our GCS bucket (an external volume in Terraform, then one dbt setting: `table_format: iceberg`), the models themselves unchanged.
+- **Alternatives:** Avro (row-based with a schema, the Kafka standard: right if the tills streamed through Kafka); CSV for the tills (a free-text field with a comma or a new line would break the file, no nesting).
+
 ## Transformation
 
 ### D-039 · dbt: bronze → silver + quarantine, with a seed

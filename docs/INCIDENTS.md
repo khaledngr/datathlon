@@ -1,6 +1,6 @@
 # Incidents · how the pipeline behaves when data goes wrong (step 12, D-047)
 
-Two incidents, each rehearsed on the real platform on 4 Nov and runnable live at the defense. Plus the two task failures already seen in step 10. Every number below comes from the run it cites; the IDs can be opened in Snowsight > Monitoring > Query History (query ID) or `GOLD.DBT_RUN_RESULTS` (dbt invocation ID).
+Three incidents, each runnable live at the defense: the first two rehearsed on the real platform on 4 Nov, the third on clones of the real tables on 5 Nov. Plus the two task failures already seen in step 10. Every number below comes from the run it cites; the IDs can be opened in Snowsight > Monitoring > Query History (query ID) or `GOLD.DBT_RUN_RESULTS` (dbt invocation ID).
 
 ## Incident 1 · Bad till data, live
 
@@ -54,6 +54,21 @@ The script copies the latest real export, keeps 40 lines and cuts line 41 in hal
 | File removed (the stock team re-sends the day) | OK: `0 rows loaded, reconciled` | `01c82f42-0001-34f1-0000-da610006e376` | unchanged |
 
 In the scheduled run the same failure makes `T_LOAD_STOCK` fail, dbt is skipped (gold keeps yesterday's figures instead of wrong ones), and after the 2 retries the finalizer e-mails the team. That path was proven in step 10, below.
+
+## Incident 3 · Data deleted or dropped by mistake (Time Travel)
+
+**Story:** someone runs a `DELETE` without its `WHERE` on raw data, or drops a table the dashboard reads. BRONZE is the one layer that cannot be rebuilt (the bucket deletes files after 90 days); silver and gold can (one dbt build).
+
+**Run it (1 min):** [snowflake/incidents/03_time_travel_recovery.sql](../snowflake/incidents/03_time_travel_recovery.sql), block by block in Snowsight.
+
+1. The last 7 days of night stock counts are deleted from `BRONZE.STOCK_SNAPSHOTS`.
+2. `SELECT ... AT (TIMESTAMP => $before)` still reads the table as it was.
+3. The deleted rows are inserted back from the past. Not a clone swapped in: a clone has no load history, so the next `COPY INTO` would load every stock file twice.
+4. `DROP TABLE GOLD.GOLD_HOLIDAYS` (the dashboard breaks), then `UNDROP`: back with its rows, grants and tags; the analyst reads it again.
+
+**Rehearsed 5 Nov** on zero-copy clones of the same tables, so no real data was at risk before the defense: 13,980 rows → 1,500 deleted → 12,480 → 1,500 inserted back → 13,980, units 532,346 before and after (`stock_identical_to_before = TRUE`); the dropped table back with its 16 rows.
+
+**Retention, by design:** every table keeps 1 day of Time Travel. BRONZE tables are permanent (then 7 days of Fail-safe, Snowflake support only); dbt's silver and gold tables are transient (dbt's default): no Fail-safe storage to pay for data one build re-creates.
 
 ## Already seen in step 10 (D-043, D-044)
 

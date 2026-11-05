@@ -261,8 +261,25 @@ resource "snowflake_grant_privileges_to_account_role" "engineer_apply_tags" {
 
 # Credits per warehouse and per query (ACCOUNT_USAGE), for the showback model gold_cost_showback_daily
 resource "snowflake_grant_database_role" "engineer_usage_views" {
-  for_each           = toset(["USAGE_VIEWER", "GOVERNANCE_VIEWER"])
+  for_each           = toset(["USAGE_VIEWER", "GOVERNANCE_VIEWER", "DATA_METRIC_USER"]) # DATA_METRIC_USER: system data metric functions
   provider           = snowflake.admin
   database_role_name = "\"SNOWFLAKE\".\"${each.key}\""
   parent_role_name   = snowflake_account_role.engineer.name
+}
+
+# ---------- Native data quality monitoring (snowflake/setup/06_data_quality_monitoring.sql) ----------
+# The engineer owns the BRONZE tables, so it attaches data metric functions to them and owns the alert that reads the
+# results. Account privileges: granted by ACCOUNTADMIN.
+resource "snowflake_grant_privileges_to_account_role" "engineer_data_quality" {
+  provider          = snowflake.admin
+  account_role_name = snowflake_account_role.engineer.name
+  privileges        = ["EXECUTE DATA METRIC FUNCTION", "EXECUTE ALERT"]
+  on_account        = true
+}
+
+# Read the measurements in SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS
+resource "snowflake_grant_application_role" "engineer_data_quality_viewer" {
+  provider                 = snowflake.admin
+  application_role_name    = "\"SNOWFLAKE\".\"DATA_QUALITY_MONITORING_VIEWER\""
+  parent_account_role_name = snowflake_account_role.engineer.name
 }
