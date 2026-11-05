@@ -272,3 +272,19 @@ models:
         description: "query_credits + idle_credits: what the team is charged."
       - name: total_usd
         description: "total_credits x the account's price per credit (var credit_price_usd)."
+
+  - name: gold_source_freshness
+    description: "Data freshness: when each of the 5 sources last delivered to BRONZE (a live view, read by the dashboard's Data quality tab)."
+    columns:
+      - name: position
+        description: "Order of the source on the dashboard."
+      - name: source_name
+        description: "Web orders, Store tills, Stock counts, Weather, Holidays."
+        data_tests: [unique, not_null]
+      - name: ingestion
+        description: "How the source arrives."
+      - name: last_loaded_utc
+        description: "Last time a row of this source reached BRONZE (UTC)."
+        data_tests: [not_null]
+      - name: rows_in_bronze
+        description: "Rows of this source in BRONZE."
