@@ -71,11 +71,11 @@ dbt's 67 tests check what dbt builds, when it runs. On top of them, Snowflake's 
 | Table (BRONZE) | Measured every day at 06:20 | Limit (`OPS.DATA_QUALITY_RULES`) |
 | --- | --- | --- |
 | `WEB_ORDERS` | rows, freshness, duplicate order IDs, orders without a date | 26 h, 0, 0 |
-| `TILL_SALES_RAW` | rows, freshness, % of last 24 h's lines without a sale ID (our own function) | 26 h, 5 % |
+| `TILL_SALES_RAW` | rows, freshness, % of the lines of the last day of loads without a sale ID (our own function) | 26 h, 5 % |
 | `STOCK_SNAPSHOTS` | rows, freshness, counts present twice for a store, product and day (our own function) | 26 h, 0 |
 | `WEATHER_RAW` | freshness | 26 h |
 
-Every value is kept in `SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS` (a history of each source's health), `OPS.DATA_QUALITY_STATUS` shows the latest one against its limit, and the alert `OPS.A_DATA_QUALITY` (06:30) e-mails the team if a limit is broken. They run on serverless compute and catch what a dbt test cannot: a source that **stopped sending** (nothing new to test) is a freshness breach. Only BRONZE is monitored: dbt re-creates silver and gold on every build, which would remove their monitors.
+Every value is kept in `SNOWFLAKE.LOCAL.DATA_QUALITY_MONITORING_RESULTS` (a history of each source's health), `OPS.DATA_QUALITY_STATUS` shows the latest one against its limit, and the alert `OPS.A_DATA_QUALITY` (06:30) e-mails the team if a limit is broken. They run on serverless compute and catch what a dbt test cannot: a source that **stopped sending** (nothing new to test) is a freshness breach. Only BRONZE is monitored: dbt re-creates silver and gold on every build, which would remove their monitors. Installed 5 Nov: 11 metrics on 4 tables; first values: till files 3.6 h old, 0 duplicate order IDs, 0.44 % of the last day's till lines without a sale ID, 0 stock count loaded twice.
 
 ## Set up once (in this order)
 

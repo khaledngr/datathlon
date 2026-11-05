@@ -15,17 +15,18 @@ USE SECONDARY ROLES NONE;
 USE WAREHOUSE DATATHLON_WH;
 
 -- ---------- 1. Two metrics Snowflake does not have ----------
--- Share of the till lines loaded in the last 24 h that have no sale ID (the live feed sends ~4 %, the history ~1 %)
+-- Share of the till lines of the last day of loads that have no sale ID (the live feed sends ~4 %, the history ~1 %).
+-- "Last day" = the 24 h before the newest load: a metric must give the same value on the same data (no CURRENT_TIMESTAMP)
 CREATE OR REPLACE DATA METRIC FUNCTION DATATHLON.OPS.PCT_TILL_LINES_WITHOUT_SALE_ID_24H(
     t TABLE (raw VARIANT, loaded_at TIMESTAMP_TZ))
 RETURNS NUMBER
-COMMENT = 'Percent of the till lines loaded in the last 24 h with no sale ID'
+COMMENT = 'Percent of the till lines loaded in the 24 h before the newest load with no sale ID'
 AS
 $$
     SELECT COALESCE(ROUND(100 * COUNT_IF(raw:sale_id IS NULL OR IS_NULL_VALUE(raw:sale_id) OR raw:sale_id::STRING = '')
                           / NULLIF(COUNT(*), 0), 2), 0)
     FROM t
-    WHERE loaded_at > DATEADD('hour', -24, CURRENT_TIMESTAMP())
+    WHERE loaded_at > (SELECT DATEADD('hour', -24, MAX(loaded_at)) FROM t)
 $$;
 
 -- Night counts present twice for the same store, product and day (a stock file loaded twice)
@@ -69,10 +70,10 @@ BEGIN
             EXECUTE IMMEDIATE :statement;
             added := added + 1;
         EXCEPTION
-            WHEN OTHER THEN kept := kept || ' | ' || SQLERRM;   -- "already exists" on a re-run
+            WHEN OTHER THEN kept := kept || ' | ' || SQLERRM;
         END;
     END FOR;
-    RETURN added || ' metrics added' || IFF(kept = '', '', ', not added:' || kept);
+    RETURN added || ' metrics attached (one already attached is kept as is)' || IFF(kept = '', '', ', errors:' || kept);
 END;
 $$;
 
