@@ -66,7 +66,7 @@ A resource monitor **stops** compute at the cap. A budget **forecasts** the end 
 
 ## 5. Data quality monitored by Snowflake itself
 
-dbt's 67 tests check what dbt builds, when it runs. On top of them, Snowflake's **data metric functions** watch the raw tables on their own ([snowflake/setup/06_data_quality_monitoring.sql](../snowflake/setup/06_data_quality_monitoring.sql)):
+dbt's 70 tests check what dbt builds, when it runs. On top of them, Snowflake's **data metric functions** watch the raw tables on their own ([snowflake/setup/06_data_quality_monitoring.sql](../snowflake/setup/06_data_quality_monitoring.sql)):
 
 | Table (BRONZE) | Measured every day at 06:20 | Limit (`OPS.DATA_QUALITY_RULES`) |
 | --- | --- | --- |

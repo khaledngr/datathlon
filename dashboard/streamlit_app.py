@@ -69,6 +69,10 @@ def session():
 
 @st.cache_data(ttl=600)  # re-query at most every 10 minutes
 def load(sql):
+    return query(sql)
+
+
+def query(sql):
     s = session()
     if hasattr(s, "sql"):
         df = s.sql(sql).to_pandas()
@@ -132,6 +136,37 @@ def kpis(items):
 def source(*tables):
     html('<p class="source">Source: ' + " · ".join(f"<code>{GOLD}.{t}</code>" for t in tables)
          + " · gold layer, rebuilt every day at 06:00</p>")
+
+
+@st.cache_data(ttl=60)  # freshness is about minutes: re-query every minute (a tiny view, 5 rows)
+def load_freshness():
+    return query(f"""SELECT source_name, ingestion, last_loaded_utc FROM {GOLD}.GOLD_SOURCE_FRESHNESS
+                                ORDER BY position""")
+
+
+def ago(seconds):
+    if seconds < 60:
+        return f"{max(int(seconds), 1)} s ago"
+    if seconds < 3600:
+        return f"{int(seconds // 60)} min ago"
+    if seconds < 48 * 3600:
+        return f"{int(seconds // 3600)} h ago"
+    return f"{int(seconds // 86400)} days ago"
+
+
+def freshness_strip():
+    """One slim card per source: its name, and how long ago it last reached BRONZE. Green under 26 h (one daily
+    load), orange under 50 h (one missed morning), red beyond: the same limits as dbt's source freshness."""
+    fresh = load_freshness()
+    now = pd.Timestamp.now(tz="UTC").tz_localize(None)
+    cards = []
+    for r in fresh.itertuples():
+        age = (now - pd.Timestamp(r.last_loaded_utc)).total_seconds()
+        tone = "ok" if age < 26 * 3600 else "late" if age < 50 * 3600 else "stale"
+        cards.append(f'<div class="fresh-card" title="{r.ingestion}"><div class="fresh-name"><span class="fresh-dot {tone}">'
+                     f'</span>{r.source_name}</div><div class="fresh-age">{ago(age)}</div></div>')
+    html('<div class="fresh-title">Data freshness · last load into the platform</div>'
+         f'<div class="fresh">{"".join(cards)}</div>')
 
 
 def week_windows(start, end):
@@ -211,6 +246,18 @@ p.note {{ color: {MUTED}; font-size: .92rem; margin: 0 0 6px; }}
 p.source {{ color: #6B7090; font-size: .8rem; margin-top: 26px; padding-top: 12px; border-top: 1px solid {LINE}; }}
 p.source code {{ font-size: .76rem; color: {MUTED}; background: {SOFT}; }}
 [data-testid="stDataFrame"] {{ border: 1px solid {LINE}; border-radius: 12px; overflow: hidden; }}
+.fresh-title {{ color: {MUTED}; font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+                margin: 18px 0 8px; }}
+.fresh {{ display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 4px; }}
+@media (max-width: 900px) {{ .fresh {{ grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }} }}
+.fresh-card {{ border: 1px solid {LINE}; border-radius: 14px; padding: 9px 14px; background: #fff; }}
+.fresh-name {{ display: flex; align-items: center; gap: 8px; color: {INK}; font-size: .9rem; font-weight: 600;
+               white-space: nowrap; }}
+.fresh-age {{ color: #8A8FA8; font-size: .8rem; margin: 2px 0 0 16px; }}
+.fresh-dot {{ width: 8px; height: 8px; border-radius: 50%; flex: none; }}
+.fresh-dot.ok {{ background: #1FB36B; box-shadow: 0 0 0 3px #1FB36B22; }}
+.fresh-dot.late {{ background: #E39B2D; box-shadow: 0 0 0 3px #E39B2D22; }}
+.fresh-dot.stale {{ background: {RED}; box-shadow: 0 0 0 3px {RED}22; }}
 </style>""")
 
 sales = load(f"SELECT sales_date, channel, country, category, units, revenue_eur FROM {GOLD}.GOLD_SALES_DAILY")
@@ -518,6 +565,7 @@ with tab_stock:
 
 # ---------- data quality ----------
 with tab_quality:
+    freshness_strip()
     question("Data quality", "Can we trust the store sales figures?")
     qview = quality[quality.file_date.between(start, end)]
     st.caption("All stores: the till feed is checked before any country filter.")

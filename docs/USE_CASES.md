@@ -48,7 +48,7 @@ All numbers about the company are assumptions.
 | --- | --- |
 | Several sources | Postgres web orders and store till feed (UC1), store stock export (UC2), weather and holidays APIs (context for both), product and store catalogue as a dbt seed |
 | Several ingestion methods | Incremental `MERGE` with a watermark (web orders), micro-batch files every few seconds (tills), daily batch with a control file (stock), API pull (weather, holidays) |
-| dbt with tests and a seed | Silver, quarantine and gold models, 67 tests, the catalogue seed |
+| dbt with tests and a seed | Silver, quarantine and gold models, 70 tests, the catalogue seed |
 | A corrupted row shown live | Bad till lines → quarantine with their reason, live ([INCIDENTS.md](INCIDENTS.md)) |
 | Incidents without a snowball effect | Broken stock file: load refused, nothing half-loaded, dbt skipped, team e-mailed; a failed task retried twice without double counting |
 

@@ -43,6 +43,7 @@ models:
       gold_data_quality_daily: {+meta: {data_domain: quality}}
       gold_holidays: {+meta: {data_domain: context, confidentiality: public}}
       gold_cost_showback_daily: {+meta: {data_domain: cost, source_system: snowflake_metering}}
+      gold_source_freshness: {+materialized: view, +meta: {data_domain: quality}}   # live, read by the dashboard
 
 vars:
   credit_price_usd: 3.90         # our account's price per credit (ORGANIZATION_USAGE.USAGE_IN_CURRENCY_DAILY, docs/COSTS.md)
