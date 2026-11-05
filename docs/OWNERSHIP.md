@@ -24,6 +24,7 @@ The **owner** is the business person who decides what the data means and who may
 | Weather, holidays (public APIs) | — (public data) | Khaled |
 | Gold sales (UC1) | CFO | Robin |
 | Gold stock cover (UC2) | Supply chain manager | Robin |
+| Gold store weather (context) | Store managers | Robin |
 | Dashboard | Category managers, supply chain | Rudy |
 
 A failed morning run e-mails the whole team; the steward of the failed part fixes it (the e-mail names the failed task).

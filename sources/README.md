@@ -15,7 +15,7 @@ Till feed (from the repo root, Google sign-in done):
 
 ```bash
 .venv/bin/python sources/tills/till_feed.py --history            # 1 Sep -> yesterday
-.venv/bin/python sources/tills/till_feed.py --live --batches 12  # live incident demo
+.venv/bin/python sources/tills/till_feed.py --live --batches 3   # live incident demo (~25 lines)
 ```
 
 Stock export (after the tills and the web orders, it reads their sales): `.venv/bin/python sources/stock/stock_export.py`

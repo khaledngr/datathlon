@@ -208,6 +208,44 @@ models:
       - name: share
         description: "Share of the country on holiday: 0.5 for Belgium's autumn breaks (French- and Dutch-speaking communities differ), else 1."
 
+  - name: gold_store_weather_daily
+    description: "Weather per store x day (Open-Meteo): measured past next to the store's till sales, plus the 7-day forecast to prepare the week. Context only: no weather effect is claimed (D-021)."
+    columns:
+      - name: weather_key
+        description: "Row key: store_id|weather_date."
+        data_tests: [unique, not_null]
+      - name: store_id
+        description: "Store code, as in the stores seed."
+        data_tests:
+          - not_null
+          - relationships: {to: ref('stores'), field: store_id}
+      - name: store_city
+        description: "City of the store."
+      - name: country
+        description: "FR, BE or ES."
+      - name: weather_date
+        description: "Day of the weather (local day of the store)."
+        data_tests: [not_null]
+      - name: is_forecast
+        description: "True for the days still to come (forecast); false once the day is measured."
+        data_tests: [not_null]
+      - name: temp_max_c
+        description: "Highest temperature of the day, in degrees C."
+      - name: temp_min_c
+        description: "Lowest temperature of the day, in degrees C."
+      - name: rain_mm
+        description: "Rain over the day, in mm."
+      - name: wind_max_kmh
+        description: "Strongest wind of the day, in km/h."
+      - name: weather_label
+        description: "rainy (2 mm of rain or more), hot (25 C or more), cold (under 8 C), else mild."
+        data_tests:
+          - accepted_values: {values: ['rainy', 'hot', 'cold', 'mild']}
+      - name: store_units
+        description: "Units sold at the store's tills that day (complete days only; empty for forecast days)."
+      - name: store_revenue_eur
+        description: "Till revenue of the store that day, in EUR (complete days only; empty for forecast days)."
+
   - name: gold_data_quality_daily
     description: "Till feed quality per file day x store: raw, silver and quarantined lines (by reason), prices fixed."
     columns:

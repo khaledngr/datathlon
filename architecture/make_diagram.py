@@ -73,7 +73,7 @@ box("dbt", 920, 200, 430, 50, "dbt Projects on Snowflake · tests · seed · doc
 box("bronze", 710, 200, 180, 480, "BRONZE\nraw, as received\n\nweb_orders\nweb_order_lines\ntill_sales_raw\nstock_snapshots\nweather_raw\nholidays_raw", "bronze")
 box("silver", 920, 270, 200, 250, "SILVER\ncleaned, typed,\ndeduplicated\n\norders · till sales\nstock · products\nweather · holidays", "silver")
 box("quarantine", 920, 560, 200, 120, "QUARANTINE\nbad rows + reason:\nduplicate, unknown\nproduct, 2099 date…", "quarantine")
-box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC2\n\ngold_data_quality_daily", "gold")
+box("gold", 1150, 270, 200, 410, "GOLD\ncomplete days only\n\ngold_sales_daily\nUC1\n\ngold_stock_cover_daily\nUC2\n\ngold_store_weather_daily\nweather + 7-day forecast\n\ngold_data_quality_daily", "gold")
 
 # outputs
 box("dashboard", 1440, 270, 240, 130, "Streamlit dashboard\nread-only · GOLD only\nUC1 sales vs holidays\nUC2 restock · quality", "output")
