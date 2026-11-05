@@ -3,7 +3,9 @@ same deliberate defects, now for 8 Datathlon stores, the shared catalogue and th
 
   python sources/tills/till_feed.py --history            # one file per store per day, 1 Sep -> yesterday (uploads the missing ones)
   python sources/tills/till_feed.py --live               # today: a batch every 5 s from all stores (Ctrl+C)
-  python sources/tills/till_feed.py --live --batches 12  # stop after 12 batches (the live incident demo)
+  python sources/tills/till_feed.py --live --batches 3   # stop after 3 batches (the live incident demo, ~25 lines)
+The live files are added on top of the day's normal till file, so each live line is an extra sale of that day:
+3 batches (~25 lines, ~4 % of a day) show every kind of defect without visibly inflating the day's sales.
 
 Files go to gs://<GCS_LANDING_BUCKET>/tills/YYYY/MM/DD/ (a copy stays in data/landing/, git-ignored), then Snowflake
 loads them with COPY INTO (snowflake/stages/02_tills.sql). One row = one product line scanned at a till.

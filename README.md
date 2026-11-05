@@ -53,7 +53,7 @@ After that it runs every morning: Cloud Run job at 05:30, Snowflake Tasks at 06:
 | --- | --- |
 | Dashboard | Snowsight > Projects > Streamlit > *Datathlon · sales and stock*. Locally: `.venv/bin/streamlit run dashboard/streamlit_app.py` |
 | Last night's run | [snowflake/tasks/02_task_history.sql](snowflake/tasks/02_task_history.sql) (`OPS.PIPELINE_RUNS`) |
-| Quality | 70 dbt tests; rejected lines in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason |
+| Quality | 77 dbt tests; rejected lines in `QUARANTINE.QUARANTINE_TILL_SALES` with their reason |
 | Data documentation | `dbt/dbt.sh docs generate && dbt/dbt.sh docs serve` (lineage, every gold column) |
 
 ## Docs

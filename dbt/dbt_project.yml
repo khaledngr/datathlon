@@ -42,6 +42,7 @@ models:
       gold_stock_cover_daily: {+meta: {data_domain: stock}}
       gold_data_quality_daily: {+meta: {data_domain: quality}}
       gold_holidays: {+meta: {data_domain: context, confidentiality: public}}
+      gold_store_weather_daily: {+meta: {data_domain: context, source_system: open_meteo_api}}   # with store sales: internal
       gold_cost_showback_daily: {+meta: {data_domain: cost, source_system: snowflake_metering}}
       gold_source_freshness: {+materialized: view, +meta: {data_domain: quality}}   # live, read by the dashboard
 

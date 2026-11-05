@@ -10,7 +10,7 @@ Three incidents, each runnable live at the defense: the first two rehearsed on t
 
 ```bash
 .venv/bin/python snowflake/run_sql.py snowflake/incidents/01_bad_tills_live.sql   # before
-.venv/bin/python sources/tills/till_feed.py --live --batches 12                     # 12 files, one every 5 s, to GCS
+.venv/bin/python sources/tills/till_feed.py --live --batches 3                      # 3 files, one every 5 s (~25 lines: defects show, the day's sales barely move)
 .venv/bin/python snowflake/run_sql.py snowflake/stages/02_tills.sql                 # GCS -> BRONZE (COPY INTO)
 dbt/dbt.sh build                                                                     # BRONZE -> SILVER / QUARANTINE -> GOLD + tests
 .venv/bin/python snowflake/run_sql.py snowflake/incidents/01_bad_tills_live.sql   # after

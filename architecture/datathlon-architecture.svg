@@ -140,16 +140,19 @@
 </g>
 <g opacity="1.0">
 <rect x="1230" y="270" width="200" height="410" rx="10" fill="#FFEC99" stroke="#3946C0" stroke-width="2"/>
-<text x="1330.0" y="391.0" font-size="16" text-anchor="middle" fill="#101A4E" font-weight="700">GOLD</text>
-<text x="1330.0" y="411.0" font-size="16" text-anchor="middle" fill="#101A4E">complete days only</text>
-<text x="1330.0" y="431.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
-<text x="1330.0" y="451.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_sales_daily</text>
-<text x="1330.0" y="471.0" font-size="16" text-anchor="middle" fill="#101A4E">UC1</text>
-<text x="1330.0" y="491.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
-<text x="1330.0" y="511.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_stock_cover_daily</text>
-<text x="1330.0" y="531.0" font-size="16" text-anchor="middle" fill="#101A4E">UC2</text>
-<text x="1330.0" y="551.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
-<text x="1330.0" y="571.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_data_quality_daily</text>
+<text x="1330.0" y="361.0" font-size="16" text-anchor="middle" fill="#101A4E" font-weight="700">GOLD</text>
+<text x="1330.0" y="381.0" font-size="16" text-anchor="middle" fill="#101A4E">complete days only</text>
+<text x="1330.0" y="401.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
+<text x="1330.0" y="421.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_sales_daily</text>
+<text x="1330.0" y="441.0" font-size="16" text-anchor="middle" fill="#101A4E">UC1</text>
+<text x="1330.0" y="461.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
+<text x="1330.0" y="481.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_stock_cover_daily</text>
+<text x="1330.0" y="501.0" font-size="16" text-anchor="middle" fill="#101A4E">UC2</text>
+<text x="1330.0" y="521.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
+<text x="1330.0" y="541.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_store_weather_daily</text>
+<text x="1330.0" y="561.0" font-size="16" text-anchor="middle" fill="#101A4E">weather + 7-day forecast</text>
+<text x="1330.0" y="581.0" font-size="16" text-anchor="middle" fill="#101A4E"></text>
+<text x="1330.0" y="601.0" font-size="16" text-anchor="middle" fill="#101A4E">gold_data_quality_daily</text>
 </g>
 <g opacity="1.0">
 <rect x="1520" y="270" width="240" height="130" rx="10" fill="#B2F2BB" stroke="#3946C0" stroke-width="2"/>

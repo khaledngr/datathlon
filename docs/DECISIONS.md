@@ -34,6 +34,7 @@ Every important choice, with the reason and the credible alternative we weighed.
 - **Choice:** web shop orders (Postgres, OLTP), store tills (event files), store stock (daily CSV export), **weather** (Open-Meteo API, real) and **public and school holidays** (OpenHolidays API, real), plus the product and store catalogue as a dbt seed.
 - **Why:** each source explains sales or stock (holidays and weather drive sports sales) and each brings a different ingestion method. The three internal systems are simulated because a fictional company has no real ones; we say so.
 - **Alternatives:** data.gouv.fr for holidays (France only; OpenHolidays covers France, Belgium and Spain).
+- **Weather in gold:** `gold_store_weather_daily` puts each store's weather next to its till sales and adds the 7-day forecast, so a manager can prepare the week. Our till generator does not use the weather, so we show it as context and claim no effect on sales.
 
 ### D-033 · The simulated data carries the patterns the dashboard must show
 - **Choice:** the generators follow the real holiday calendar the pipeline loads: school holidays +60 %, back to school +30 %, weekends, category mix (hiking, cycling and swimming up in holidays). Deterministic (fixed seed per day).
@@ -90,7 +91,7 @@ Every important choice, with the reason and the credible alternative we weighed.
 - **Alternatives:** cleaning in Python before loading (untested, raw lost); Snowflake stored procedures (no lineage, no tests, no docs).
 
 ### D-040 · dbt gold: one table per decision, a single source of truth
-- **Choice:** `gold_sales_daily` (UC1), `gold_stock_cover_daily` (UC2), `gold_data_quality_daily`, `gold_holidays`. Rules: business day = UTC date; gold shows complete days only.
+- **Choice:** `gold_sales_daily` (UC1), `gold_stock_cover_daily` (UC2), `gold_data_quality_daily`, `gold_holidays`, `gold_store_weather_daily` (weather per store and day, with the 7-day forecast). Rules: business day = UTC date; gold shows complete days only.
 - **Why:** revenue is computed once, in gold, and tested against silver and against a day counted by hand; the dashboard only reads gold (pre-aggregated per day: cheap and fast).
 
 ## Orchestration and monitoring
